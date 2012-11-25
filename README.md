@@ -3,7 +3,6 @@
 Compatible with Spring Data [`PagingAndSortingRepository`](http://static.springsource.org/spring-data/data-commons/docs/1.1.0.RELEASE/api/org/springframework/data/repository/PagingAndSortingRepository.html) abstraction, all these methods are implemented for you:
 
 	public interface PagingAndSortingRepository<T, ID extends Serializable> extends CrudRepository<T, ID> {
-
 		T save(T entity);
 		Iterable<T> save(Iterable<? extends T> entities);
 		T findOne(ID id);
@@ -18,7 +17,6 @@ Compatible with Spring Data [`PagingAndSortingRepository`](http://static.springs
 		Page<T> findAll(Pageable pageable);
 	}
 
-
 ## Design objectives
 
 * Lightweight, fast and low-overhead. Only a handful of classes, **no XML, annotations, reflection**
@@ -26,6 +24,8 @@ Compatible with Spring Data [`PagingAndSortingRepository`](http://static.springs
 * CRUD implemented in seconds
 * For small applications where JPA is an overkill
 * Use when simplicity is needed or when future migration e.g. to JPA is considered
+
+## Contributions
 
 Original implementation based on [this Gist](https://gist.github.com/1206700) by [*sheenobu*](https://github.com/sheenobu).
 
