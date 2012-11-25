@@ -66,6 +66,40 @@ public class AbstractJdbcRepositoryTest {
 	}
 
 	@Test
+	public void shouldSaveOneRecord() {
+		//given
+		User john = new User(
+			null,
+			"john",
+			"john",
+			"John Smith",
+			"admin");
+
+		//when
+		User john2 = userRepository.save(john);
+		Iterable<User> all = userRepository.findAll();
+
+		//then
+		assertThat(john2).isNotNull();
+		assertThat(john2.getId()).isNotNull();
+		assertThat(john2.getUserName()).isEqualTo(john.getUserName());
+		assertThat(john2.getPassword()).isEqualTo(john.getPassword());
+		assertThat(john2.getFullName()).isEqualTo(john.getFullName());
+		assertThat(john2.getPassword()).isEqualTo(john.getPassword());
+		assertThat(john2.getRole()).isEqualTo(john.getRole());
+
+		assertThat(all).hasSize(1);
+		User record = all.iterator().next();
+		assertThat(record.getId()).isEqualTo(john2.getId());
+		assertThat(record.getUserName()).isEqualTo(john2.getUserName());
+		assertThat(record.getPassword()).isEqualTo(john2.getPassword());
+		assertThat(record.getFullName()).isEqualTo(john2.getFullName());
+		assertThat(record.getPassword()).isEqualTo(john2.getPassword());
+		assertThat(record.getRole()).isEqualTo(john2.getRole());
+
+	}
+
+	@Test
 	public void shouldReturnOneRecordById() {
 		//given
 		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?, ?)", "john", "johnsmith", "John Smith", "secret", "USER");
