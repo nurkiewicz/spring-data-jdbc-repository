@@ -2,45 +2,43 @@ package org.springframework.data.jdbc;
 
 import org.springframework.data.domain.Persistable;
 
-import java.io.Serializable;
-
 public class User implements Persistable<String> {
 
 	private String id;
 
-	private String username;
+	private String userName;
 	private String password;
 	
-	private String fullname;
+	private String fullName;
 	
 	private String role;
 
-	protected void setUsername(String username) {
-		this.username = username;
+	protected void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	protected void setPassword(String password) {
 		this.password = password;
 	}
 
-	protected void setFullname(String fullname) {
-		this.fullname = fullname;
+	protected void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 
 	protected void setRole(String role) {
 		this.role = role;
 	}
 
-	public String getUsername() {
-		return username;
+	public String getUserName() {
+		return userName;
 	}
 
 	public String getPassword() {
 		return password;
 	}
 
-	public String getFullname() {
-		return fullname;
+	public String getFullName() {
+		return fullName;
 	}
 
 	public String getRole() {
@@ -49,14 +47,14 @@ public class User implements Persistable<String> {
 
 	public User(
 			String id,
-			String username, 
+			String userName,
 			String password, 
-			String fullname,
+			String fullName,
 			String role) {
 		this.id = id;
-		this.username = username;
+		this.userName = userName;
 		this.password = password;
-		this.fullname = fullname;
+		this.fullName = fullName;
 		this.role = role;
 	}
 
