@@ -30,10 +30,10 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 				rs.getString("userName"),
 				rs.getString("password"),
 				rs.getString("fullName"),
-				rs.getString("role"));				
+				rs.getString("role"));
 		}
 	};
-	
+
 	static Updater<User> userUpdaterMapper = new Updater<User>() {
 		@Override
 		public void mapColumns(User t, Map<String, Object> mapping) {

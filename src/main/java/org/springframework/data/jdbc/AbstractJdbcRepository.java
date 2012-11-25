@@ -21,40 +21,40 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	private JdbcTemplate jdbcTemplate;
 	private String tableName;
 	private String idColumn;
-	
+
 	private final String deleteQuery;
 	private final String selectAll;
 	private final String selectById;
 	private final String countQuery;
-	
+
 	RowMapper<T> rowMapper;
 	Updater<T> updater;
-	
+
 	public interface Updater<T> {
-		public void mapColumns(T t,Map<String,Object> mapping);	
+		public void mapColumns(T t,Map<String,Object> mapping);
 	}
-	
+
 	public AbstractJdbcRepository(
 			RowMapper<T> rowMapper,
 			Updater<T> updater,
 			String tableName,
 			String idColumn,
 			JdbcTemplate jdbcTemplate) {
-		
+
 		this.updater = updater;
 		this.rowMapper = rowMapper;
-		
+
 		this.jdbcTemplate = jdbcTemplate;
 		this.tableName = tableName;
 		this.idColumn = idColumn;
-		
+
 		this.deleteQuery = String.format("delete from %s where %s = ?",tableName,idColumn);
 		this.selectAll = String.format("select * from %s",tableName);
 		this.selectById = String.format("select * from %s where %s = ?",tableName,idColumn);
 		this.countQuery = String.format("select count(%s) from %s",idColumn, tableName);
-	
+
 	}
-	
+
 	@Override
 	public long count() {
 		return jdbcTemplate.queryForLong(this.countQuery);
@@ -106,22 +106,22 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 		updater.mapColumns(entity, columns);
 
 		String updateQuery = String.format("update %s set ",this.tableName);
-		
+
 		Object[] obj = new Object[columns.size()];
 		int i = 0;
-		
+
 		for(Map.Entry<String,Object> e : columns.entrySet())
 		{
 			obj[i++] = e.getValue();
-			updateQuery += " "  + e.getKey() + " = ? "; 
+			updateQuery += " "  + e.getKey() + " = ? ";
 		}
-		
+
 		obj[i] = entity.getId();
-		
+
 		updateQuery += String.format(" where %s = ? ",this.idColumn);
-				
-		jdbcTemplate.update(updateQuery,obj);		
-		
+
+		jdbcTemplate.update(updateQuery,obj);
+
 		return entity;
 	}
 
@@ -138,12 +138,12 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	@Override
 	public Iterable<T> findAll(Sort sort) {
 		String qu = this.selectAll;
-		
+
 		for(Order o : sort)
 		{
 			qu += " ORDER BY " + o.getProperty() + " " + o.getDirection().toString() + " ";
 		}
-		
+
 		return jdbcTemplate.query(qu,this.rowMapper);
 	}
 

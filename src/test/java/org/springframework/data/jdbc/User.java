@@ -8,9 +8,9 @@ public class User implements Persistable<String> {
 
 	private String userName;
 	private String password;
-	
+
 	private String fullName;
-	
+
 	private String role;
 
 	protected void setUserName(String userName) {
@@ -48,7 +48,7 @@ public class User implements Persistable<String> {
 	public User(
 			String id,
 			String userName,
-			String password, 
+			String password,
 			String fullName,
 			String role) {
 		this.id = id;
