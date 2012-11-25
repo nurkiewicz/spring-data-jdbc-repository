@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -16,7 +17,7 @@ import org.springframework.jdbc.core.RowMapper;
 /**
  * Implementation of PagingAndSortingRepository using JdbcTemplate
  */
-public abstract class AbstractJdbcRepository<T extends BaseModel,ID extends Serializable> implements PagingAndSortingRepository<T,ID>{
+public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extends Serializable> implements PagingAndSortingRepository<T,ID>{
 
 	private JdbcTemplate jdbcTemplate;
 	private String tableName;

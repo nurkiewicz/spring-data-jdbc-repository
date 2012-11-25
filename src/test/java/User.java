@@ -1,6 +1,10 @@
+import org.springframework.data.domain.Persistable;
 
+import java.io.Serializable;
 
-public class User extends BaseModel{
+public class User implements Persistable {
+
+	private String id;
 
 	private String username;
 	private String password;
@@ -47,11 +51,24 @@ public class User extends BaseModel{
 			String password, 
 			String fullname,
 			String role) {
-		super(id);
+		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.fullname = fullname;
 		this.role = role;
 	}
-	
+
+	@Override
+	public Serializable getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@Override
+	public boolean isNew() {
+		return id == null;
+	}
 }
