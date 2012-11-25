@@ -146,23 +146,28 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 		return jdbcTemplate.query(qu,this.rowMapper);
 	}
 
+
 	@Override
-	public Page<T> findAll(Pageable arg0) {
-		String qu = this.selectAll;
-		
-		for(Order o : arg0.getSort())
+	public Page<T> findAll(Pageable page) {
+		StringBuilder query = new StringBuilder(this.selectAll);
+		for(Order o : page.getSort())
 		{
-			qu += " ORDER BY " + o.getProperty() + " " + o.getDirection().toString() + " ";
+			query.
+					append(" ORDER BY ").
+					append(o.getProperty()).
+					append(" ").
+					append(o.getDirection().toString()).
+					append(" ");
 		}
-		
 		int pageSize = 10;
-		
-		qu += " LIMIT " + arg0.getPageNumber()*pageSize + " " + pageSize + " ";
-		
-		
-		long count = count();
-		
-		return new PageImpl<T>(jdbcTemplate.query(qu,this.rowMapper), arg0,count);
+
+		query.
+				append(" LIMIT ").
+				append(page.getPageNumber() * pageSize).
+				append(" ").
+				append(pageSize).
+				append(" ");
+		return new PageImpl<T>(jdbcTemplate.query(query.toString(), this.rowMapper), page, count());
 	}
 
 }
