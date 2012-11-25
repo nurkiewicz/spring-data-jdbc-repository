@@ -143,4 +143,39 @@ public class AbstractJdbcRepositoryTest {
 		assertThat(page.getContent().get(0).getId()).isEqualTo("john6");
 	}
 
+	@Test
+	public void shouldReturnFalseWhenExistsCalledOnEmptyDatabase() {
+		//given
+
+		//when
+		boolean exists = userRepository.exists("john");
+
+		//then
+		assertThat(exists).isFalse();
+	}
+
+	@Test
+	public void shouldReturnFalseWhenEntityWithSuchIdDoesNotExist() {
+		//given
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?, ?)", "john7", "johnsmith", "John Smith", "secret", "USER");
+
+		//when
+		boolean exists = userRepository.exists("john6");
+
+		//then
+		assertThat(exists).isFalse();
+	}
+
+	@Test
+	public void shouldReturnTrueWhenEntityForGivenIdExists() {
+		//given
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?, ?)", "john8", "johnsmith", "John Smith", "secret", "USER");
+
+		//when
+		boolean exists = userRepository.exists("john8");
+
+		//then
+		assertThat(exists).isTrue();
+	}
+
 }
