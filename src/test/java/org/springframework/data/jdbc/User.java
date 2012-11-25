@@ -1,3 +1,5 @@
+package org.springframework.data.jdbc;
+
 import org.springframework.data.domain.Persistable;
 
 import java.io.Serializable;

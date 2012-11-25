@@ -1,3 +1,4 @@
+package org.springframework.data.jdbc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
