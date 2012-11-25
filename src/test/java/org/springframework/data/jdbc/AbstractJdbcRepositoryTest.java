@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -126,5 +127,20 @@ public class AbstractJdbcRepositoryTest {
 		assertThat(page.getNumber()).isEqualTo(1);
 	}
 
+	@Test
+	public void shouldReturnPageWithOneItemWithSortingApplied() {
+		//given
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?, ?)", "john6", "johnsmith", "John Smith", "secret", "USER");
+
+		//when
+		Page<User> page = userRepository.findAll(new PageRequest(0, 5, Sort.Direction.ASC, "userName"));
+
+		//then
+		assertThat(page).hasSize(1);
+		assertThat(page.getTotalElements()).isEqualTo(1);
+		assertThat(page.getSize()).isEqualTo(5);
+		assertThat(page.getNumber()).isZero();
+		assertThat(page.getContent().get(0).getId()).isEqualTo("john6");
+	}
 
 }
