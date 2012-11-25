@@ -4,7 +4,7 @@ import org.springframework.data.domain.Persistable;
 
 import java.io.Serializable;
 
-public class User implements Persistable {
+public class User implements Persistable<String> {
 
 	private String id;
 
@@ -61,7 +61,7 @@ public class User implements Persistable {
 	}
 
 	@Override
-	public Serializable getId() {
+	public String getId() {
 		return id;
 	}
 
