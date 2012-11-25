@@ -9,11 +9,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
-@Service("userRepository")
-public class UserRepositoryJdbc extends AbstractJdbcRepository<User, String> {
+@Service
+public class UserRepository extends AbstractJdbcRepository<User, String> {
 
 	@Autowired
-	public UserRepositoryJdbc(JdbcTemplate template) {
+	public UserRepository(JdbcTemplate template) {
 		super(
 			userRowMapper,
 			userUpdaterMapper,
