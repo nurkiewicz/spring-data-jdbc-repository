@@ -38,7 +38,7 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 		@Override
 		public void mapColumns(User t, Map<String, Object> mapping) {
 			mapping.put("id",t.getId());
-			mapping.put("username",t.getUserName());
+			mapping.put("userName",t.getUserName());
 			mapping.put("password",t.getPassword());
 			mapping.put("fullName",t.getFullName());
 			mapping.put("role",t.getRole());
