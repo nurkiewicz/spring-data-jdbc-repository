@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<logger name="org" level="INFO" />
+
+	<root level="ALL">
+		<appender class="ch.qos.logback.core.ConsoleAppender">
+			<encoder>
+				<Pattern>%d{HH:mm:ss:SSS} | %-5level | %thread | %logger{20} | %msg%n%rEx</Pattern>
+			</encoder>
+		</appender>
+	</root>
+</configuration>
