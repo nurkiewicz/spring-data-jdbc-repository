@@ -61,18 +61,18 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	}
 
 	@Override
-	public void delete(ID arg0) {
-		this.jdbcTemplate.update(this.deleteQuery,arg0);
+	public void delete(ID id) {
+		this.jdbcTemplate.update(this.deleteQuery,id);
 	}
 
 	@Override
-	public void delete(T arg0) {
-		this.jdbcTemplate.update(this.deleteQuery,arg0.getId());
+	public void delete(T entity) {
+		this.jdbcTemplate.update(this.deleteQuery, entity.getId());
 	}
 
 	@Override
-	public void delete(Iterable<? extends T> arg0) {
-		for(T t : arg0)
+	public void delete(Iterable<? extends T> entities) {
+		for(T t : entities)
 		{
 			delete(t);
 		}
@@ -84,8 +84,8 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	}
 
 	@Override
-	public boolean exists(ID arg0) {
-		return findOne(arg0) != null;
+	public boolean exists(ID id) {
+		return findOne(id) != null;
 	}
 
 	@Override
@@ -100,10 +100,10 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	}
 
 	@Override
-	public T save(T arg0) {
+	public T save(T entity) {
 
 		Map<String,Object> columns = new HashMap<String, Object>();
-		updater.mapColumns(arg0, columns);
+		updater.mapColumns(entity, columns);
 
 		String updateQuery = String.format("update %s set ",this.tableName);
 		
@@ -116,19 +116,19 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 			updateQuery += " "  + e.getKey() + " = ? "; 
 		}
 		
-		obj[i] = arg0.getId();
+		obj[i] = entity.getId();
 		
 		updateQuery += String.format(" where %s = ? ",this.idColumn);
 				
 		jdbcTemplate.update(updateQuery,obj);		
 		
-		return arg0;
+		return entity;
 	}
 
 	@Override
-	public Iterable<T> save(Iterable<? extends T> arg0) {
+	public Iterable<T> save(Iterable<? extends T> entities) {
 		List<T> ret = new ArrayList<T>();
-		for(T t : arg0)
+		for(T t : entities)
 		{
 			ret.add(save(t));
 		}
@@ -136,10 +136,10 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	}
 
 	@Override
-	public Iterable<T> findAll(Sort arg0) {
+	public Iterable<T> findAll(Sort sort) {
 		String qu = this.selectAll;
 		
-		for(Order o : arg0)
+		for(Order o : sort)
 		{
 			qu += " ORDER BY " + o.getProperty() + " " + o.getDirection().toString() + " ";
 		}
