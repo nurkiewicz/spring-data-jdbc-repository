@@ -116,7 +116,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 			updateQuery += " "  + e.getKey() + " = ? "; 
 		}
 		
-		obj[i++] = arg0.getId(); 
+		obj[i] = arg0.getId();
 		
 		updateQuery += String.format(" where %s = ? ",this.idColumn);
 				
