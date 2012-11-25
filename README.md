@@ -29,5 +29,9 @@ Compatible with Spring Data [`PagingAndSortingRepository`](http://static.springs
 
 Original implementation based on [this Gist](https://gist.github.com/1206700) by [*sheenobu*](https://github.com/sheenobu).
 
+## Continuous integration
+
+[![Build Status](https://secure.travis-ci.org/nurkiewicz/spring-data-jdbc-repository.png?branch=master)](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository)
+
 ## License
 This project is released under version 2.0 of the [Apache License](http://www.apache.org/licenses/LICENSE-2.0) (same as [Spring framework](https://github.com/SpringSource/spring-framework)).
