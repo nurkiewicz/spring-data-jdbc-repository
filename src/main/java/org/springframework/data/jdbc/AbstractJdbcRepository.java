@@ -29,20 +29,27 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	RowMapper<T> rowMapper;
 	Updater<T> updater;
+	KeyGenerator<T> keyGenerator;
 
 	public interface Updater<T> {
 		public void mapColumns(T t,Map<String,Object> mapping);
 	}
 
+	public interface KeyGenerator<T> {
+		public T newKey(T entity);
+	}
+
 	public AbstractJdbcRepository(
 			RowMapper<T> rowMapper,
 			Updater<T> updater,
+			KeyGenerator<T> keyGenerator,
 			String tableName,
 			String idColumn,
 			JdbcTemplate jdbcTemplate) {
 
 		this.updater = updater;
 		this.rowMapper = rowMapper;
+		this.keyGenerator = keyGenerator;
 
 		this.jdbcTemplate = jdbcTemplate;
 		this.tableName = tableName;
@@ -105,22 +112,44 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 		Map<String,Object> columns = new HashMap<String, Object>();
 		updater.mapColumns(entity, columns);
 
-		String updateQuery = String.format("update %s set ",this.tableName);
+		String updateQuery;
+		boolean insert = false;
 
-		Object[] obj = new Object[columns.size()];
+		if(entity.getId() == null)
+		{
+			insert = true;
+			updateQuery = String.format("insert into %s (", this.tableName);
+		}else{
+			updateQuery = String.format("update %s set ",this.tableName);
+		}
+
+		List<Object> obj = new ArrayList(columns.size());
 		int i = 0;
 
 		for(Map.Entry<String,Object> e : columns.entrySet())
 		{
-			obj[i++] = e.getValue();
-			updateQuery += " "  + e.getKey() + " = ? ";
+			obj.add(i++, e.getValue());
+			if(insert)
+				updateQuery += e.getKey() + ",";
+			else
+				updateQuery += " "  + e.getKey() + " = ? ";
 		}
 
-		obj[i] = entity.getId();
+		if(insert)
+		{
+			updateQuery += ")";
+			updateQuery = updateQuery.replace(",)",")");
+			updateQuery += "values (" + String.format(String.format("%%0%dd", i-1), 0).replace("0","?,") + "?);";
+			entity = this.keyGenerator.newKey(entity);
+			obj.set(0,entity.getId());
+		}
+		else
+		{
+			obj.set(i,entity.getId());
+			updateQuery += String.format(" where %s = ? ",this.idColumn);
+		}
 
-		updateQuery += String.format(" where %s = ? ",this.idColumn);
-
-		jdbcTemplate.update(updateQuery,obj);
+		jdbcTemplate.update(updateQuery,obj.toArray());
 
 		return entity;
 	}

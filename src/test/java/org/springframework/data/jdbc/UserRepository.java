@@ -3,6 +3,7 @@ package org.springframework.data.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,6 +18,7 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 		super(
 			userRowMapper,
 			userUpdaterMapper,
+			userKeyGenerator,
 			"USER",
 			"id",
 			template);
@@ -42,6 +44,16 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 			mapping.put("password",t.getPassword());
 			mapping.put("fullName",t.getFullName());
 			mapping.put("role",t.getRole());
+		}
+	};
+
+	static KeyGenerator<User> userKeyGenerator = new KeyGenerator<User>() {
+		@Override
+		public User newKey(User t) {
+			String id = UUID.randomUUID().toString();
+			t.setId(id); // since the Persistable interface doesn't have a setId you must call setId within the key generator.
+						 // another option, if your objects are read-only, is to return a new copy of the object with ID populated.
+			return t;
 		}
 	};
 
