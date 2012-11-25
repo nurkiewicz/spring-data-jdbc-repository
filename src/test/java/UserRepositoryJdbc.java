@@ -9,25 +9,16 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 @Service("userRepository")
-public class UserRepositoryJdbc extends AbstractJdbcRepository<User, String> implements UserRepository {
+public class UserRepositoryJdbc extends AbstractJdbcRepository<User, String> {
 
-	OfficeRepository officeRepository;
-	
 	@Autowired
-	public UserRepositoryJdbc(OfficeRepository officeRepository,JdbcTemplate template) {
+	public UserRepositoryJdbc(JdbcTemplate template) {
 		super(
 			userRowMapper,
 			userUpdaterMapper,
 			"USER",
 			"id",
 			template);
-		this.officeRepository = officeRepository; 
-		
-	}
-
-	@Override
-	public User findByUsername(String username) {
-		return this.findOneByColumn("username",username);
 	}
 
 	static RowMapper<User> userRowMapper = new RowMapper<User>() {
@@ -38,8 +29,7 @@ public class UserRepositoryJdbc extends AbstractJdbcRepository<User, String> imp
 				rs.getString("username"),
 				rs.getString("password"),
 				rs.getString("fullName"),
-				rs.getString("role"),
-				officeRepository.findOne(rs.getString("office_id"));				
+				rs.getString("role"));				
 		}
 	};
 	
@@ -51,7 +41,6 @@ public class UserRepositoryJdbc extends AbstractJdbcRepository<User, String> imp
 			mapping.put("password",t.getPassword());
 			mapping.put("fullName",t.getFullname());
 			mapping.put("role",t.getRole());
-			mapping.put("office_id",t.getOffice().getId());
 		}
 	};
 
