@@ -27,7 +27,7 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 		public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 			return new User(
 				rs.getString("id"),
-				rs.getString("username"),
+				rs.getString("userName"),
 				rs.getString("password"),
 				rs.getString("fullName"),
 				rs.getString("role"));				
@@ -38,9 +38,9 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 		@Override
 		public void mapColumns(User t, Map<String, Object> mapping) {
 			mapping.put("id",t.getId());
-			mapping.put("username",t.getUsername());
+			mapping.put("username",t.getUserName());
 			mapping.put("password",t.getPassword());
-			mapping.put("fullName",t.getFullname());
+			mapping.put("fullName",t.getFullName());
 			mapping.put("role",t.getRole());
 		}
 	};

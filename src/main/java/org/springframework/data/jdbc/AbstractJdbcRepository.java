@@ -22,10 +22,10 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	private String tableName;
 	private String idColumn;
 	
-	private String deleteQuery;
-	private String selectAll;
-	private String selectById;
-	private String countQuery;	
+	private final String deleteQuery;
+	private final String selectAll;
+	private final String selectById;
+	private final String countQuery;
 	
 	RowMapper<T> rowMapper;
 	Updater<T> updater;
@@ -94,8 +94,9 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	}
 
 	@Override
-	public T findOne(ID arg0) {
-		return jdbcTemplate.queryForObject(this.selectById,new Object[]{arg0},this.rowMapper);
+	public T findOne(ID id) {
+		List<T> entityOrEmpty = jdbcTemplate.query(selectById, new Object[]{id}, rowMapper);
+		return entityOrEmpty.isEmpty()? null : entityOrEmpty.get(0);
 	}
 
 	@Override
@@ -150,22 +151,23 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	@Override
 	public Page<T> findAll(Pageable page) {
 		StringBuilder query = new StringBuilder(this.selectAll);
-		for(Order o : page.getSort())
-		{
-			query.
-					append(" ORDER BY ").
-					append(o.getProperty()).
-					append(" ").
-					append(o.getDirection().toString()).
-					append(" ");
+		if (page.getSort() != null) {
+			for(Order o : page.getSort())
+			{
+				query.
+						append(" ORDER BY ").
+						append(o.getProperty()).
+						append(" ").
+						append(o.getDirection().toString()).
+						append(" ");
+			}
 		}
-		int pageSize = 10;
 
 		query.
 				append(" LIMIT ").
-				append(page.getPageNumber() * pageSize).
-				append(" ").
-				append(pageSize).
+				append(page.getPageNumber() * page.getPageSize()).
+				append(", ").
+				append(page.getPageSize()).
 				append(" ");
 		return new PageImpl<T>(jdbcTemplate.query(query.toString(), this.rowMapper), page, count());
 	}
