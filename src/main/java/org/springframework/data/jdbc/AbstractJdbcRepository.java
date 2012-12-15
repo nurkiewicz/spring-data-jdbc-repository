@@ -3,7 +3,6 @@ package org.springframework.data.jdbc;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -123,7 +122,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 			updateQuery = String.format("update %s set ",this.tableName);
 		}
 
-		List<Object> obj = new ArrayList(columns.size());
+		List<Object> obj = new ArrayList<Object>(columns.size());
 		int i = 0;
 
 		for(Map.Entry<String,Object> e : columns.entrySet())
