@@ -30,7 +30,6 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-                <!-- Checkstyle -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -39,7 +38,7 @@
                     <configLocation>checkstyle.xml</configLocation>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
                     <consoleOutput>true</consoleOutput>
-                    <failsOnError>false</failsOnError>
+                    <failsOnError>true</failsOnError>
                     <useFile/>
                 </configuration>
                 <executions>

@@ -27,7 +27,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	Updater<T> updater;
 
 	public interface Updater<T> {
-		public void mapColumns(T t,Map<String,Object> mapping);
+		void mapColumns(T t,Map<String,Object> mapping);
 	}
 
 	public AbstractJdbcRepository(
