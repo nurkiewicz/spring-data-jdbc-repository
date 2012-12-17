@@ -204,17 +204,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	@Override
 	public Page<T> findAll(Pageable page) {
 		StringBuilder query = new StringBuilder(this.selectAll);
-		if (page.getSort() != null) {
-			for(Order o : page.getSort())
-			{
-				query.
-						append(" ORDER BY ").
-						append(o.getProperty()).
-						append(" ").
-						append(o.getDirection().toString()).
-						append(" ");
-			}
-		}
+		applySortingIfRequired(page, query);
 
 		query.
 				append(" LIMIT ").
@@ -223,6 +213,22 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 				append(page.getPageSize()).
 				append(" ");
 		return new PageImpl<T>(jdbcTemplate.query(query.toString(), this.rowMapper), page, count());
+	}
+
+	private void applySortingIfRequired(Pageable page, StringBuilder query) {
+		if (page.getSort() != null) {
+			query.append(" ORDER BY ");
+			for(Iterator<Order> iterator = page.getSort().iterator(); iterator.hasNext();) {
+				final Order order = iterator.next();
+				query.
+						append(order.getProperty()).
+						append(" ").
+						append(order.getDirection().toString());
+				if (iterator.hasNext()) {
+					query.append(", ");
+				}
+			}
+		}
 	}
 
 }

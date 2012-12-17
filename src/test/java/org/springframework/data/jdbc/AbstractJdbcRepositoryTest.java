@@ -16,6 +16,8 @@ import javax.annotation.Resource;
 import java.util.Date;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.springframework.data.domain.Sort.Direction;
+import static org.springframework.data.domain.Sort.Order;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = AbstractJdbcRepositoryTestConfig.class)
@@ -172,7 +174,23 @@ public class AbstractJdbcRepositoryTest {
 		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, 42, true);
 
 		//when
-		Page<User> page = repository.findAll(new PageRequest(0, 5, Sort.Direction.ASC, "user_name"));
+		Page<User> page = repository.findAll(new PageRequest(0, 5, Direction.ASC, "user_name"));
+
+		//then
+		assertThat(page).hasSize(1);
+		assertThat(page.getTotalElements()).isEqualTo(1);
+		assertThat(page.getSize()).isEqualTo(5);
+		assertThat(page.getNumber()).isZero();
+		assertThat(page.getContent().get(0).getId()).isEqualTo("john6");
+	}
+
+	@Test
+	public void shouldReturnPageWithOneItemWithSortingAppliedOnTwoProperties() {
+		//given
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, 42, true);
+
+		//when
+		Page<User> page = repository.findAll(new PageRequest(0, 5, new Sort(new Order(Direction.DESC, "reputation"), new Order(Direction.ASC, "user_name"))));
 
 		//then
 		assertThat(page).hasSize(1);
