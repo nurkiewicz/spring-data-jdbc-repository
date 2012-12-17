@@ -3,6 +3,11 @@ package org.springframework.data.jdbc;
 import java.io.Serializable;
 import java.util.*;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -10,10 +15,12 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import javax.sql.DataSource;
+
 /**
  * Implementation of {@link PagingAndSortingRepository} using {@link JdbcTemplate}
  */
-public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extends Serializable> implements PagingAndSortingRepository<T,ID>{
+public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extends Serializable> implements PagingAndSortingRepository<T,ID>, InitializingBean, BeanFactoryAware {
 
 	private JdbcOperations jdbcOperations;
 	private String tableName;
@@ -24,8 +31,9 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	private final String selectById;
 	private final String countQuery;
 
-	RowMapper<T> rowMapper;
-	Updater<T> updater;
+	private RowMapper<T> rowMapper;
+	private Updater<T> updater;
+	private BeanFactory beanFactory;
 
 	public interface Updater<T> {
 		void mapColumns(T t,Map<String,Object> mapping);
@@ -35,13 +43,11 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 			RowMapper<T> rowMapper,
 			Updater<T> updater,
 			String tableName,
-			String idColumn,
-			JdbcOperations jdbcOperations) {
+			String idColumn) {
 
 		this.updater = updater;
 		this.rowMapper = rowMapper;
 
-		this.jdbcOperations = jdbcOperations;
 		this.tableName = tableName;
 		this.idColumn = idColumn;
 
@@ -49,7 +55,21 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 		this.selectAll = "SELECT * FROM " + tableName;
 		this.selectById = "SELECT * FROM " + tableName + " WHERE " + idColumn + " = ?";
 		this.countQuery = "SELECT COUNT(" + idColumn + ") FROM " + tableName;
+	}
 
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		try {
+			jdbcOperations = beanFactory.getBean(JdbcOperations.class);
+		} catch (NoSuchBeanDefinitionException e) {
+			final DataSource dataSource = beanFactory.getBean(DataSource.class);
+			jdbcOperations = new JdbcTemplate(dataSource);
+		}
+	}
+
+	@Override
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		this.beanFactory = beanFactory;
 	}
 
 	@Override
