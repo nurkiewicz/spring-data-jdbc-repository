@@ -1,8 +1,5 @@
 package org.springframework.data.jdbc;
 
-import java.io.Serializable;
-import java.util.*;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -16,6 +13,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Implementation of {@link PagingAndSortingRepository} using {@link JdbcTemplate}
@@ -39,25 +38,22 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 		void mapColumns(T t,Map<String,Object> mapping);
 	}
 
-	public AbstractJdbcRepository(
-			RowMapper<T> rowMapper,
-			Updater<T> updater,
-			String tableName,
-			String idColumn) {
-
+	public AbstractJdbcRepository(RowMapper<T> rowMapper, Updater<T> updater, String tableName, String idColumn) {
 		this.updater = updater;
 		this.rowMapper = rowMapper;
-
 		this.tableName = tableName;
 		this.idColumn = idColumn;
-
 		this.deleteQuery = "DELETE FROM " + tableName + " WHERE " + idColumn + " = ?";
 		this.selectAll = "SELECT * FROM " + tableName;
 		this.selectById = "SELECT * FROM " + tableName + " WHERE " + idColumn + " = ?";
 		this.countQuery = "SELECT COUNT(" + idColumn + ") FROM " + tableName;
 	}
 
-	@Override
+	public AbstractJdbcRepository(RowMapper<T> rowMapper, Updater<T> updater, String tableName) {
+		this(rowMapper, updater, tableName, "id");
+	}
+
+		@Override
 	public void afterPropertiesSet() throws Exception {
 		try {
 			jdbcOperations = beanFactory.getBean(JdbcOperations.class);
