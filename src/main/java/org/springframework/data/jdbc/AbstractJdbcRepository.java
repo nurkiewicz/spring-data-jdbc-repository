@@ -1,10 +1,7 @@
 package org.springframework.data.jdbc;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort.Order;
@@ -13,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 /**
- * Implementation of PagingAndSortingRepository using JdbcTemplate
+ * Implementation of {@link PagingAndSortingRepository} using {@link JdbcTemplate}
  */
 public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extends Serializable> implements PagingAndSortingRepository<T,ID>{
 
@@ -28,36 +25,29 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	RowMapper<T> rowMapper;
 	Updater<T> updater;
-	KeyGenerator<T> keyGenerator;
 
 	public interface Updater<T> {
 		public void mapColumns(T t,Map<String,Object> mapping);
 	}
 
-	public interface KeyGenerator<T> {
-		public T newKey(T entity);
-	}
-
 	public AbstractJdbcRepository(
 			RowMapper<T> rowMapper,
 			Updater<T> updater,
-			KeyGenerator<T> keyGenerator,
 			String tableName,
 			String idColumn,
 			JdbcTemplate jdbcTemplate) {
 
 		this.updater = updater;
 		this.rowMapper = rowMapper;
-		this.keyGenerator = keyGenerator;
 
 		this.jdbcTemplate = jdbcTemplate;
 		this.tableName = tableName;
 		this.idColumn = idColumn;
 
-		this.deleteQuery = String.format("delete from %s where %s = ?",tableName,idColumn);
-		this.selectAll = String.format("select * from %s",tableName);
-		this.selectById = String.format("select * from %s where %s = ?",tableName,idColumn);
-		this.countQuery = String.format("select count(%s) from %s",idColumn, tableName);
+		this.deleteQuery = "DELETE FROM " + tableName + " WHERE " + idColumn + " = ?";
+		this.selectAll = "SELECT * FROM " + tableName;
+		this.selectById = "SELECT * FROM " + tableName + " WHERE " + idColumn + " = ?";
+		this.countQuery = "SELECT COUNT(" + idColumn + ") FROM " + tableName;
 
 	}
 
@@ -108,49 +98,84 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	@Override
 	public T save(T entity) {
 
-		Map<String,Object> columns = new HashMap<String, Object>();
+		Map<String,Object> columns = new LinkedHashMap<String, Object>();
 		updater.mapColumns(entity, columns);
-
-		String updateQuery;
-		boolean insert = false;
-
-		if(entity.getId() == null)
-		{
-			insert = true;
-			updateQuery = String.format("insert into %s (", this.tableName);
-		}else{
-			updateQuery = String.format("update %s set ",this.tableName);
+		if(entity.isNew()) {
+			return create(entity, columns);
+		} else {
+			return update(entity, columns);
 		}
+	}
 
-		List<Object> obj = new ArrayList<Object>(columns.size());
-		int i = 0;
+	private T update(T entity, Map<String, Object> columns) {
+		final Object idValue = columns.remove(idColumn);
+		final String updateQuery = buildUpdateQuery(columns);
+		columns.put(idColumn, idValue);
+		final Object[] queryParams = columns.values().toArray();
+		jdbcTemplate.update(updateQuery, queryParams);
+		return postUpdate(entity);
+	}
 
-		for(Map.Entry<String,Object> e : columns.entrySet())
-		{
-			obj.add(i++, e.getValue());
-			if(insert)
-				updateQuery += e.getKey() + ",";
-			else
-				updateQuery += " "  + e.getKey() + " = ? ";
-		}
+	private T create(T entity, Map<String, Object> columns) {
+		final String createQuery = buildCreateQuery(columns);
+		final Object[] queryParams = columns.values().toArray();
+		jdbcTemplate.update(createQuery, queryParams);
+		return postCreate(entity);
+	}
 
-		if(insert)
-		{
-			updateQuery += ")";
-			updateQuery = updateQuery.replace(",)",")");
-			updateQuery += "values (" + String.format(String.format("%%0%dd", i-1), 0).replace("0","?,") + "?);";
-			entity = this.keyGenerator.newKey(entity);
-			obj.set(0,entity.getId());
-		}
-		else
-		{
-			obj.set(i,entity.getId());
-			updateQuery += String.format(" where %s = ? ",this.idColumn);
-		}
-
-		jdbcTemplate.update(updateQuery,obj.toArray());
-
+	protected T postUpdate(T entity) {
 		return entity;
+	}
+
+	/**
+	 * General purpose hook method that is called every time {@link #create} is called with a new entity.
+	 *
+	 * OVerride this method e.g. if you want to fetch auto-generated key from database
+	 * @param entity Entity that was passed to {@link #create}
+	 * @return Either the same object as an argument or completely different one
+	 */
+	protected T postCreate(T entity) {
+		return entity;
+	}
+
+	private String buildUpdateQuery(Map<String, Object> columns) {
+		final StringBuilder updateQuery = new StringBuilder("UPDATE " + this.tableName + " SET ");
+		for(Iterator<Map.Entry<String,Object>> iterator = columns.entrySet().iterator(); iterator.hasNext();) {
+			Map.Entry<String, Object> column = iterator.next();
+			updateQuery.append(column.getKey()).append(" = ?");
+			if (iterator.hasNext()) {
+				updateQuery.append(", ");
+			}
+		}
+		updateQuery.append(" WHERE ").append(this.idColumn).append(" = ?");
+		return updateQuery.toString();
+	}
+
+	private String buildCreateQuery(Map<String, Object> columns) {
+		final StringBuilder createQuery = new StringBuilder("INSERT INTO " + this.tableName + " (");
+		appendColumnNames(createQuery, columns.keySet());
+		createQuery.append(")").append(" VALUES (");
+		createQuery.append(repeat("?", ", ", columns.size()));
+		return createQuery.append(")").toString();
+	}
+
+	private void appendColumnNames(StringBuilder createQuery, Set<String> columnNames) {
+		for(Iterator<String> iterator = columnNames.iterator(); iterator.hasNext();) {
+			final String column = iterator.next();
+			createQuery.append(column);
+			if (iterator.hasNext()) {
+				createQuery.append(", ");
+			}
+		}
+	}
+
+	// Unfortunately {@link org.apache.commons.lang3.StringUtils} not available
+	private static String repeat(String s, String separator, int count) {
+		StringBuilder string = new StringBuilder((s.length() + separator.length()) * count);
+		while (--count > 0) {
+			string.append(s).append(separator);
+		}
+		return string.append(s).toString();
 	}
 
 	@Override

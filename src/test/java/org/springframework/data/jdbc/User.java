@@ -2,73 +2,99 @@ package org.springframework.data.jdbc;
 
 import org.springframework.data.domain.Persistable;
 
+import java.util.Date;
+
 public class User implements Persistable<String> {
 
-	private String id;
+	private transient boolean persisted;
 
 	private String userName;
-	private String password;
 
-	private String fullName;
+	private Date dateOfBirth;
 
-	private String role;
+	private int reputation;
 
-	protected void setUserName(String userName) {
+	private boolean enabled;
+
+	public User(String userName, Date dateOfBirth, int reputation, boolean enabled) {
 		this.userName = userName;
+		this.dateOfBirth = dateOfBirth;
+		this.reputation = reputation;
+		this.enabled = enabled;
 	}
 
-	protected void setPassword(String password) {
-		this.password = password;
+	@Override
+	public String getId() {
+		return userName;
 	}
 
-	protected void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
-
-	protected void setRole(String role) {
-		this.role = role;
+	@Override
+	public boolean isNew() {
+		return !persisted;
 	}
 
 	public String getUserName() {
 		return userName;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public String getFullName() {
-		return fullName;
-	}
-
-	public String getRole() {
-		return role;
-	}
-
-	public User(
-			String id,
-			String userName,
-			String password,
-			String fullName,
-			String role) {
-		this.id = id;
+	public void setUserName(String userName) {
 		this.userName = userName;
-		this.password = password;
-		this.fullName = fullName;
-		this.role = role;
+	}
+
+	public Date getDateOfBirth() {
+		return dateOfBirth;
+	}
+
+	public void setDateOfBirth(Date dateOfBirth) {
+		this.dateOfBirth = dateOfBirth;
+	}
+
+	public int getReputation() {
+		return reputation;
+	}
+
+	public void setReputation(int reputation) {
+		this.reputation = reputation;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public User withPersisted(boolean persisted) {
+		this.persisted = persisted;
+		return this;
 	}
 
 	@Override
-	public String getId() {
-		return id;
-	}
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 
-	public void setId(String id) {
-		this.id = id;
+		User user = (User) o;
+
+		if (enabled != user.enabled) return false;
+		if (reputation != user.reputation) return false;
+		if (dateOfBirth != null ? !dateOfBirth.equals(user.dateOfBirth) : user.dateOfBirth != null) return false;
+		return !(userName != null ? !userName.equals(user.userName) : user.userName != null);
+
 	}
 
 	@Override
-	public boolean isNew() {
-		return id == null;
+	public int hashCode() {
+		int result = userName != null ? userName.hashCode() : 0;
+		result = 31 * result + (dateOfBirth != null ? dateOfBirth.hashCode() : 0);
+		result = 31 * result + reputation;
+		result = 31 * result + (enabled ? 1 : 0);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "User(userName='" + userName + '\'' + ", dateOfBirth=" + dateOfBirth + ", reputation=" + reputation + ", enabled=" + enabled + ')';
 	}
 }

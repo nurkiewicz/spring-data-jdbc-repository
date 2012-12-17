@@ -3,7 +3,6 @@ package org.springframework.data.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,45 +15,42 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 	@Autowired
 	public UserRepository(JdbcTemplate template) {
 		super(
-			userRowMapper,
-			userUpdaterMapper,
-			userKeyGenerator,
-			"USER",
-			"id",
-			template);
+				USER_ROW_MAPPER,
+				USER_UPDATER,
+				"USER",
+				"user_name",
+				template);
 	}
 
-	static RowMapper<User> userRowMapper = new RowMapper<User>() {
+	private static RowMapper<User> USER_ROW_MAPPER = new RowMapper<User>() {
 		@Override
 		public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 			return new User(
-				rs.getString("id"),
-				rs.getString("userName"),
-				rs.getString("password"),
-				rs.getString("fullName"),
-				rs.getString("role"));
+					rs.getString("user_name"),
+					rs.getTimestamp("date_of_birth"),
+					rs.getInt("reputation"),
+					rs.getBoolean("enabled")
+			).withPersisted(true);
 		}
 	};
 
-	static Updater<User> userUpdaterMapper = new Updater<User>() {
+	private static Updater<User> USER_UPDATER = new Updater<User>() {
 		@Override
 		public void mapColumns(User t, Map<String, Object> mapping) {
-			mapping.put("id",t.getId());
-			mapping.put("userName",t.getUserName());
-			mapping.put("password",t.getPassword());
-			mapping.put("fullName",t.getFullName());
-			mapping.put("role",t.getRole());
+			mapping.put("user_name", t.getUserName());
+			mapping.put("date_of_birth", t.getDateOfBirth());
+			mapping.put("reputation", t.getReputation());
+			mapping.put("enabled", t.isEnabled());
 		}
 	};
 
-	static KeyGenerator<User> userKeyGenerator = new KeyGenerator<User>() {
-		@Override
-		public User newKey(User t) {
-			String id = UUID.randomUUID().toString();
-			t.setId(id); // since the Persistable interface doesn't have a setId you must call setId within the key generator.
-						 // another option, if your objects are read-only, is to return a new copy of the object with ID populated.
-			return t;
-		}
-	};
+	@Override
+	protected User postUpdate(User entity) {
+		return entity.withPersisted(true);
+	}
 
+	@Override
+	protected User postCreate(User entity) {
+		return entity.withPersisted(true);
+	}
 }

@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
-import java.util.Arrays;
+import java.util.Date;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -23,10 +23,12 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class AbstractJdbcRepositoryTest {
 
 	@Resource
-	private UserRepository userRepository;
+	private UserRepository repository;
 
 	@Resource
 	private JdbcTemplate jdbcTemplate;
+
+	private static final Date someDateOfBirth = new Date();
 
 	@Test
 	public void shouldReturnNullWhenDatabaseEmptyAndSearchingById() {
@@ -34,7 +36,7 @@ public class AbstractJdbcRepositoryTest {
 		String NOT_EXISTING_ID = "Foo";
 
 		//when
-		User user = userRepository.findOne(NOT_EXISTING_ID);
+		User user = repository.findOne(NOT_EXISTING_ID);
 
 		//then
 		assertThat(user).isNull();
@@ -45,7 +47,7 @@ public class AbstractJdbcRepositoryTest {
 		//given
 
 		//when
-		Iterable<User> all = userRepository.findAll();
+		Iterable<User> all = repository.findAll();
 
 		//then
 		assertThat(all).isEmpty();
@@ -56,7 +58,7 @@ public class AbstractJdbcRepositoryTest {
 		//given
 
 		//when
-		Page<User> firstPage = userRepository.findAll(new PageRequest(0, 20));
+		Page<User> firstPage = repository.findAll(new PageRequest(0, 20));
 
 		//then
 		assertThat(firstPage).isEmpty();
@@ -68,61 +70,64 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldSaveOneRecord() {
 		//given
-		User john = new User(
-			null,
-			"john",
-			"john",
-			"John Smith",
-			"admin");
+		User john = new User("john", someDateOfBirth, 42, true);
 
 		//when
-		User john2 = userRepository.save(john);
-		Iterable<User> all = userRepository.findAll();
+		repository.save(john);
+		Iterable<User> all = repository.findAll();
 
 		//then
-		assertThat(john2).isNotNull();
-		assertThat(john2.getId()).isNotNull();
-		assertThat(john2.getUserName()).isEqualTo(john.getUserName());
-		assertThat(john2.getPassword()).isEqualTo(john.getPassword());
-		assertThat(john2.getFullName()).isEqualTo(john.getFullName());
-		assertThat(john2.getPassword()).isEqualTo(john.getPassword());
-		assertThat(john2.getRole()).isEqualTo(john.getRole());
-
 		assertThat(all).hasSize(1);
 		User record = all.iterator().next();
-		assertThat(record.getId()).isEqualTo(john2.getId());
-		assertThat(record.getUserName()).isEqualTo(john2.getUserName());
-		assertThat(record.getPassword()).isEqualTo(john2.getPassword());
-		assertThat(record.getFullName()).isEqualTo(john2.getFullName());
-		assertThat(record.getPassword()).isEqualTo(john2.getPassword());
-		assertThat(record.getRole()).isEqualTo(john2.getRole());
+		assertThat(record).isEqualTo(new User("john", someDateOfBirth, 42, true));
+	}
 
+	@Test
+	public void shouldUpdatePreviouslySavedRecord() throws Exception {
+		//given
+		User john = repository.save(new User("john", someDateOfBirth, 42, true));
+		john.setEnabled(false);
+		john.setReputation(45);
+
+		//when
+		repository.save(john);
+
+		//then
+		User updated = repository.findOne("john");
+		assertThat(updated).isEqualTo(new User("john", someDateOfBirth, 45, false));
 	}
 
 	@Test
 	public void shouldReturnOneRecordById() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?, ?)", "john", "johnsmith", "John Smith", "secret", "USER");
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "james", someDateOfBirth, 43, false);
 
 		//when
-		User john = userRepository.findOne("john");
+		User user = repository.findOne("james");
 
 		//then
-		assertThat(john).isNotNull();
-		assertThat(john.getId()).isEqualTo("john");
-		assertThat(john.getUserName()).isEqualTo("johnsmith");
-		assertThat(john.getFullName()).isEqualTo("John Smith");
-		assertThat(john.getPassword()).isEqualTo("secret");
-		assertThat(john.getRole()).isEqualTo("USER");
+		assertThat(user).isEqualTo(new User("james", someDateOfBirth, 43, false));
+	}
+
+	@Test
+	public void shouldReturnNullWhenEntityForGivenIdDoesNotExist() throws Exception {
+		//given
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "james", someDateOfBirth, 43, false);
+
+		//when
+		User user = repository.findOne("john");
+
+		//then
+		assertThat(user).isNull();
 	}
 
 	@Test
 	public void shouldReturnListWithOneItemWhenOneRecordInDatabase() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?, ?)", "john2", "johnsmith", "John Smith", "secret", "USER");
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john2", someDateOfBirth, 42, true);
 
 		//when
-		Iterable<User> all = userRepository.findAll();
+		Iterable<User> all = repository.findAll();
 
 		//then
 		assertThat(all).hasSize(1);
@@ -133,10 +138,10 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnPageWithOneItemWhenOneRecordInDatabase() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?, ?)", "john4", "johnsmith", "John Smith", "secret", "USER");
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john4", someDateOfBirth, 42, true);
 
 		//when
-		Page<User> page = userRepository.findAll(new PageRequest(0, 5));
+		Page<User> page = repository.findAll(new PageRequest(0, 5));
 
 		//then
 		assertThat(page).hasSize(1);
@@ -149,10 +154,10 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnNothingWhenOnlyOneRecordInDatabaseButSecondPageRequested() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?, ?)", "john5", "johnsmith", "John Smith", "secret", "USER");
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john5", someDateOfBirth, 42, true);
 
 		//when
-		Page<User> page = userRepository.findAll(new PageRequest(1, 5));
+		Page<User> page = repository.findAll(new PageRequest(1, 5));
 
 		//then
 		assertThat(page).hasSize(0);
@@ -164,10 +169,10 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnPageWithOneItemWithSortingApplied() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?, ?)", "john6", "johnsmith", "John Smith", "secret", "USER");
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, 42, true);
 
 		//when
-		Page<User> page = userRepository.findAll(new PageRequest(0, 5, Sort.Direction.ASC, "userName"));
+		Page<User> page = repository.findAll(new PageRequest(0, 5, Sort.Direction.ASC, "user_name"));
 
 		//then
 		assertThat(page).hasSize(1);
@@ -182,7 +187,7 @@ public class AbstractJdbcRepositoryTest {
 		//given
 
 		//when
-		boolean exists = userRepository.exists("john");
+		boolean exists = repository.exists("john");
 
 		//then
 		assertThat(exists).isFalse();
@@ -191,10 +196,10 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnFalseWhenEntityWithSuchIdDoesNotExist() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?, ?)", "john7", "johnsmith", "John Smith", "secret", "USER");
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john7", someDateOfBirth, 42, true);
 
 		//when
-		boolean exists = userRepository.exists("john6");
+		boolean exists = repository.exists("john6");
 
 		//then
 		assertThat(exists).isFalse();
@@ -203,10 +208,10 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnTrueWhenEntityForGivenIdExists() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?, ?)", "john8", "johnsmith", "John Smith", "secret", "USER");
+		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john8", someDateOfBirth, 42, true);
 
 		//when
-		boolean exists = userRepository.exists("john8");
+		boolean exists = repository.exists("john8");
 
 		//then
 		assertThat(exists).isTrue();
