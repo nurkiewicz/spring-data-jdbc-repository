@@ -6,6 +6,7 @@ import java.util.*;
 import org.springframework.data.domain.*;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -14,7 +15,7 @@ import org.springframework.jdbc.core.RowMapper;
  */
 public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extends Serializable> implements PagingAndSortingRepository<T,ID>{
 
-	private JdbcTemplate jdbcTemplate;
+	private JdbcOperations jdbcOperations;
 	private String tableName;
 	private String idColumn;
 
@@ -35,12 +36,12 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 			Updater<T> updater,
 			String tableName,
 			String idColumn,
-			JdbcTemplate jdbcTemplate) {
+			JdbcOperations jdbcOperations) {
 
 		this.updater = updater;
 		this.rowMapper = rowMapper;
 
-		this.jdbcTemplate = jdbcTemplate;
+		this.jdbcOperations = jdbcOperations;
 		this.tableName = tableName;
 		this.idColumn = idColumn;
 
@@ -53,17 +54,17 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	@Override
 	public long count() {
-		return jdbcTemplate.queryForLong(this.countQuery);
+		return jdbcOperations.queryForLong(this.countQuery);
 	}
 
 	@Override
 	public void delete(ID id) {
-		this.jdbcTemplate.update(this.deleteQuery,id);
+		this.jdbcOperations.update(this.deleteQuery, id);
 	}
 
 	@Override
 	public void delete(T entity) {
-		this.jdbcTemplate.update(this.deleteQuery, entity.getId());
+		this.jdbcOperations.update(this.deleteQuery, entity.getId());
 	}
 
 	@Override
@@ -86,12 +87,12 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	@Override
 	public Iterable<T> findAll() {
-		return jdbcTemplate.query(this.selectAll,this.rowMapper);
+		return jdbcOperations.query(this.selectAll,this.rowMapper);
 	}
 
 	@Override
 	public T findOne(ID id) {
-		List<T> entityOrEmpty = jdbcTemplate.query(selectById, new Object[]{id}, rowMapper);
+		List<T> entityOrEmpty = jdbcOperations.query(selectById, new Object[]{id}, rowMapper);
 		return entityOrEmpty.isEmpty()? null : entityOrEmpty.get(0);
 	}
 
@@ -112,14 +113,14 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 		final String updateQuery = buildUpdateQuery(columns);
 		columns.put(idColumn, idValue);
 		final Object[] queryParams = columns.values().toArray();
-		jdbcTemplate.update(updateQuery, queryParams);
+		jdbcOperations.update(updateQuery, queryParams);
 		return postUpdate(entity);
 	}
 
 	private T create(T entity, Map<String, Object> columns) {
 		final String createQuery = buildCreateQuery(columns);
 		final Object[] queryParams = columns.values().toArray();
-		jdbcTemplate.update(createQuery, queryParams);
+		jdbcOperations.update(createQuery, queryParams);
 		return postCreate(entity);
 	}
 
@@ -197,7 +198,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 			qu += " ORDER BY " + o.getProperty() + " " + o.getDirection().toString() + " ";
 		}
 
-		return jdbcTemplate.query(qu,this.rowMapper);
+		return jdbcOperations.query(qu,this.rowMapper);
 	}
 
 
@@ -212,7 +213,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 				append(", ").
 				append(page.getPageSize()).
 				append(" ");
-		return new PageImpl<T>(jdbcTemplate.query(query.toString(), this.rowMapper), page, count());
+		return new PageImpl<T>(jdbcOperations.query(query.toString(), this.rowMapper), page, count());
 	}
 
 	private void applySortingIfRequired(Pageable page, StringBuilder query) {

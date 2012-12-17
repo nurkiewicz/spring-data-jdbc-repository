@@ -5,21 +5,23 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-@Service
+@Repository
 public class UserRepository extends AbstractJdbcRepository<User, String> {
 
 	@Autowired
-	public UserRepository(JdbcTemplate template) {
+	public UserRepository(JdbcOperations operations) {
 		super(
 				USER_ROW_MAPPER,
 				USER_UPDATER,
 				"USER",
 				"user_name",
-				template);
+				operations);
 	}
 
 	private static RowMapper<User> USER_ROW_MAPPER = new RowMapper<User>() {
