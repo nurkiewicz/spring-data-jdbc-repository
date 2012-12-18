@@ -220,6 +220,53 @@ public class AbstractJdbcRepositoryTest {
 	}
 
 	@Test
+	public void shouldReturnFirstPageSortedByReputation() {
+		//given
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john11", someDateOfBirth, SOME_REPUTATION + 2, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john12", someDateOfBirth, SOME_REPUTATION + 1, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john13", someDateOfBirth, SOME_REPUTATION + 2, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john14", someDateOfBirth, SOME_REPUTATION    , true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john15", someDateOfBirth, SOME_REPUTATION + 1, true);
+
+		//when
+		Page<User> page = repository.findAll(new PageRequest(0, 3, new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
+
+		//then
+		assertThat(page).hasSize(3);
+		assertThat(page.getTotalElements()).isEqualTo(5);
+		assertThat(page.getSize()).isEqualTo(3);
+		assertThat(page.getNumber()).isZero();
+		assertThat(page.getContent()).containsExactly(
+				new User("john11", someDateOfBirth, SOME_REPUTATION + 2, true),
+				new User("john13", someDateOfBirth, SOME_REPUTATION + 2, true),
+				new User("john12", someDateOfBirth, SOME_REPUTATION + 1, true)
+		);
+	}
+
+	@Test
+	public void shouldReturnSecondPageSortedByReputation() {
+		//given
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john11", someDateOfBirth, SOME_REPUTATION + 2, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john12", someDateOfBirth, SOME_REPUTATION + 1, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john13", someDateOfBirth, SOME_REPUTATION + 2, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john14", someDateOfBirth, SOME_REPUTATION    , true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john15", someDateOfBirth, SOME_REPUTATION + 1, true);
+
+		//when
+		Page<User> page = repository.findAll(new PageRequest(1, 3, new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
+
+		//then
+		assertThat(page).hasSize(2);
+		assertThat(page.getTotalElements()).isEqualTo(5);
+		assertThat(page.getSize()).isEqualTo(3);
+		assertThat(page.getNumber()).isEqualTo(1);
+		assertThat(page.getContent()).containsExactly(
+				new User("john15", someDateOfBirth, SOME_REPUTATION + 1, true),
+				new User("john14", someDateOfBirth, SOME_REPUTATION    , true)
+		);
+	}
+
+	@Test
 	public void shouldReturnEmptyListWhenFindAllCalledWithoutPaging() throws Exception {
 		//given
 		final Sort sort = new Sort("reputation");
