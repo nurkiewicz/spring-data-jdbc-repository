@@ -1,5 +1,6 @@
 package org.springframework.data.jdbc;
 
+import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,10 +81,14 @@ public class AbstractJdbcRepositoryTest {
 		assertThat(firstPage.getNumber()).isZero();
 	}
 
+	private User user(String userName) {
+		return new User(userName,  someDateOfBirth, SOME_REPUTATION, true);
+	}
+
 	@Test
 	public void shouldSaveOneRecord() {
 		//given
-		User john = new User("john", someDateOfBirth, 42, true);
+		User john = user("john");
 
 		//when
 		repository.save(john);
@@ -92,13 +97,13 @@ public class AbstractJdbcRepositoryTest {
 		//then
 		assertThat(all).hasSize(1);
 		User record = all.iterator().next();
-		assertThat(record).isEqualTo(new User("john", someDateOfBirth, 42, true));
+		assertThat(record).isEqualTo(user("john"));
 	}
 
 	@Test
 	public void shouldUpdatePreviouslySavedRecord() throws Exception {
 		//given
-		User john = repository.save(new User("john", someDateOfBirth, 42, true));
+		User john = repository.save(user("john"));
 		john.setEnabled(false);
 		john.setReputation(45);
 
@@ -137,7 +142,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnListWithOneItemWhenOneRecordInDatabase() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john2", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john2", someDateOfBirth, SOME_REPUTATION, true);
 
 		//when
 		Iterable<User> all = repository.findAll();
@@ -151,7 +156,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnPageWithOneItemWhenOneRecordInDatabase() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john4", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john4", someDateOfBirth, SOME_REPUTATION, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(0, 5));
@@ -167,7 +172,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnNothingWhenOnlyOneRecordInDatabaseButSecondPageRequested() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john5", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john5", someDateOfBirth, SOME_REPUTATION, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(1, 5));
@@ -182,7 +187,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnPageWithOneItemWithSortingApplied() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, SOME_REPUTATION, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(0, 5, Direction.ASC, "user_name"));
@@ -198,7 +203,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnPageWithOneItemWithSortingAppliedOnTwoProperties() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, SOME_REPUTATION, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(0, 5, new Sort(new Order(Direction.DESC, "reputation"), new Order(Direction.ASC, "user_name"))));
@@ -225,7 +230,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnFalseWhenEntityWithSuchIdDoesNotExist() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john7", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john7", someDateOfBirth, SOME_REPUTATION, true);
 
 		//when
 		boolean exists = repository.exists("john6");
@@ -237,7 +242,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnTrueWhenEntityForGivenIdExists() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john8", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john8", someDateOfBirth, SOME_REPUTATION, true);
 
 		//when
 		boolean exists = repository.exists("john8");
@@ -250,7 +255,7 @@ public class AbstractJdbcRepositoryTest {
 	public void shouldDeleteEntityById() throws Exception {
 		//given
 		final String SOME_ID = "john9";
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", SOME_ID, someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", SOME_ID, someDateOfBirth, SOME_REPUTATION, true);
 
 		//when
 		repository.delete(SOME_ID);
@@ -288,7 +293,7 @@ public class AbstractJdbcRepositoryTest {
 	public void shouldDeleteByEntity() throws Exception {
 		//given
 		final String SOME_ID = "john12";
-		final User user = repository.save(new User(SOME_ID, someDateOfBirth, SOME_REPUTATION, true));
+		final User user = repository.save(user(SOME_ID));
 
 		//when
 		repository.delete(user);
@@ -333,6 +338,63 @@ public class AbstractJdbcRepositoryTest {
 
 		//then
 		assertThat(count).isEqualTo(3);
+	}
+
+	@Test
+	public void shouldSaveMultipleEntities() throws Exception {
+		//given
+		User john = user("john");
+		User alice = user("alice");
+
+		//when
+		repository.save(ImmutableList.of(john, alice));
+
+		//then
+		assertThat(jdbc.queryForList("SELECT user_name FROM USER ORDER BY user_name", String.class)).containsExactly("alice", "john");
+	}
+
+	@Test
+	public void shouldDeleteMultipleEntities() throws Exception {
+		//given
+		User john = user("john");
+		User alice = user("alice");
+		repository.save(ImmutableList.of(john, alice));
+		
+		//when
+		repository.delete(ImmutableList.of(john, alice));
+
+		//then
+		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USER")).isZero();
+	}
+
+	@Test
+	public void shouldSkipNonListedEntitiesWhenDeletingInBatch() throws Exception {
+		//given
+		User john = user("john");
+		User alice = user("alice");
+		final User bobby = user("bobby");
+		repository.save(ImmutableList.of(john, alice, bobby));
+
+		//when
+		repository.delete(ImmutableList.of(john, alice));
+
+		//then
+		assertThat(jdbc.queryForList("SELECT user_name FROM USER", String.class)).containsExactly("bobby");
+	}
+
+	@Test
+	public void shouldSkipNonExistingEntitiesWhenDeletingInBatch() throws Exception {
+		//given
+		User john = user("john");
+		User alice = user("alice");
+		final User bobby = user("bobby");
+		repository.save(ImmutableList.of(john, alice, bobby));
+
+		//when
+		repository.delete(ImmutableList.of(john, alice, user("bogus")));
+
+		//then
+		assertThat(jdbc.queryForList("SELECT user_name FROM USER", String.class)).containsExactly("bobby");
 	}
 
 }
