@@ -39,7 +39,7 @@ public class AbstractJdbcRepositoryTest {
 
 	private JdbcOperations jdbc;
 
-	private static final Date someDateOfBirth = new Date();
+	private static final Date SOME_DATE_OF_BIRTH = new Date();
 
 	@Before
 	public void setup() {
@@ -50,10 +50,10 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnNullWhenDatabaseEmptyAndSearchingById() {
 		//given
-		String NOT_EXISTING_ID = "Foo";
+		String notExistingId = "Foo";
 
 		//when
-		User user = repository.findOne(NOT_EXISTING_ID);
+		User user = repository.findOne(notExistingId);
 
 		//then
 		assertThat(user).isNull();
@@ -85,7 +85,7 @@ public class AbstractJdbcRepositoryTest {
 	}
 
 	private User user(String userName) {
-		return new User(userName,  someDateOfBirth, SOME_REPUTATION, true);
+		return new User(userName, SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 	}
 
 	@Test
@@ -115,25 +115,25 @@ public class AbstractJdbcRepositoryTest {
 
 		//then
 		User updated = repository.findOne("john");
-		assertThat(updated).isEqualTo(new User("john", someDateOfBirth, 45, false));
+		assertThat(updated).isEqualTo(new User("john", SOME_DATE_OF_BIRTH, 45, false));
 	}
 
 	@Test
 	public void shouldReturnOneRecordById() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "james", someDateOfBirth, 43, false);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "james", SOME_DATE_OF_BIRTH, 43, false);
 
 		//when
 		User user = repository.findOne("james");
 
 		//then
-		assertThat(user).isEqualTo(new User("james", someDateOfBirth, 43, false));
+		assertThat(user).isEqualTo(new User("james", SOME_DATE_OF_BIRTH, 43, false));
 	}
 
 	@Test
 	public void shouldReturnNullWhenEntityForGivenIdDoesNotExist() throws Exception {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "james", someDateOfBirth, 43, false);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "james", SOME_DATE_OF_BIRTH, 43, false);
 
 		//when
 		User user = repository.findOne("john");
@@ -145,7 +145,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnListWithOneItemWhenOneRecordInDatabase() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john2", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john2", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
 		Iterable<User> all = repository.findAll();
@@ -159,7 +159,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnPageWithOneItemWhenOneRecordInDatabase() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john4", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john4", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(0, 5));
@@ -175,7 +175,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnNothingWhenOnlyOneRecordInDatabaseButSecondPageRequested() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john5", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john5", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(1, 5));
@@ -190,7 +190,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnPageWithOneItemWithSortingApplied() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(0, 5, ASC, "user_name"));
@@ -206,7 +206,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnPageWithOneItemWithSortingAppliedOnTwoProperties() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(0, 5, new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
@@ -222,11 +222,11 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnFirstPageSortedByReputation() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john11", someDateOfBirth, SOME_REPUTATION + 2, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john12", someDateOfBirth, SOME_REPUTATION + 1, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john13", someDateOfBirth, SOME_REPUTATION + 2, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john14", someDateOfBirth, SOME_REPUTATION    , true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john15", someDateOfBirth, SOME_REPUTATION + 1, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john11", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 2, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john12", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john13", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 2, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john14", SOME_DATE_OF_BIRTH, SOME_REPUTATION    , true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john15", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(0, 3, new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
@@ -237,20 +237,20 @@ public class AbstractJdbcRepositoryTest {
 		assertThat(page.getSize()).isEqualTo(3);
 		assertThat(page.getNumber()).isZero();
 		assertThat(page.getContent()).containsExactly(
-				new User("john11", someDateOfBirth, SOME_REPUTATION + 2, true),
-				new User("john13", someDateOfBirth, SOME_REPUTATION + 2, true),
-				new User("john12", someDateOfBirth, SOME_REPUTATION + 1, true)
+				new User("john11", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 2, true),
+				new User("john13", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 2, true),
+				new User("john12", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true)
 		);
 	}
 
 	@Test
 	public void shouldReturnSecondPageSortedByReputation() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john11", someDateOfBirth, SOME_REPUTATION + 2, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john12", someDateOfBirth, SOME_REPUTATION + 1, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john13", someDateOfBirth, SOME_REPUTATION + 2, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john14", someDateOfBirth, SOME_REPUTATION    , true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john15", someDateOfBirth, SOME_REPUTATION + 1, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john11", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 2, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john12", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john13", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 2, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john14", SOME_DATE_OF_BIRTH, SOME_REPUTATION    , true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john15", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(1, 3, new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
@@ -261,8 +261,8 @@ public class AbstractJdbcRepositoryTest {
 		assertThat(page.getSize()).isEqualTo(3);
 		assertThat(page.getNumber()).isEqualTo(1);
 		assertThat(page.getContent()).containsExactly(
-				new User("john15", someDateOfBirth, SOME_REPUTATION + 1, true),
-				new User("john14", someDateOfBirth, SOME_REPUTATION    , true)
+				new User("john15", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true),
+				new User("john14", SOME_DATE_OF_BIRTH, SOME_REPUTATION    , true)
 		);
 	}
 
@@ -293,7 +293,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnSingleRecordWhenFindAllWithoutPagingButWithSorting() throws Exception {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john7", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john7", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 		final Sort sort = new Sort(new Order(DESC, "reputation"), new Order(ASC, "date_of_birth"));
 
 		//when
@@ -301,16 +301,16 @@ public class AbstractJdbcRepositoryTest {
 
 		//then
 		assertThat(all).hasSize(1);
-		assertThat(all.iterator().next()).isEqualTo(new User("john7", someDateOfBirth, SOME_REPUTATION, true));
+		assertThat(all.iterator().next()).isEqualTo(new User("john7", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true));
 	}
 
 	@Test
 	public void shouldSortMultipleRecordsByTwoDifferentOrderingProperties() throws Exception {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john3", someDateOfBirth, SOME_REPUTATION, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john5", someDateOfBirth, SOME_REPUTATION + 1, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john4", someDateOfBirth, SOME_REPUTATION + 1, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, SOME_REPUTATION - 1, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john3", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john5", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john4", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", SOME_DATE_OF_BIRTH, SOME_REPUTATION - 1, true);
 		final Sort sort = new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"));
 
 		//when
@@ -318,10 +318,10 @@ public class AbstractJdbcRepositoryTest {
 
 		//then
 		assertThat(all).containsExactly(
-				new User("john4", someDateOfBirth, SOME_REPUTATION + 1, true),
-				new User("john5", someDateOfBirth, SOME_REPUTATION + 1, true),
-				new User("john3", someDateOfBirth, SOME_REPUTATION, true),
-				new User("john6", someDateOfBirth, SOME_REPUTATION - 1, true)
+				new User("john4", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true),
+				new User("john5", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true),
+				new User("john3", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true),
+				new User("john6", SOME_DATE_OF_BIRTH, SOME_REPUTATION - 1, true)
 		);
 	}
 
@@ -339,7 +339,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnFalseWhenEntityWithSuchIdDoesNotExist() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john7", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john7", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
 		boolean exists = repository.exists("john6");
@@ -351,7 +351,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnTrueWhenEntityForGivenIdExists() {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john8", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john8", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
 		boolean exists = repository.exists("john8");
@@ -363,23 +363,23 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldDeleteEntityById() throws Exception {
 		//given
-		final String SOME_ID = "john9";
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", SOME_ID, someDateOfBirth, SOME_REPUTATION, true);
+		final String someId = "john9";
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", someId, SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
-		repository.delete(SOME_ID);
+		repository.delete(someId);
 
 		//then
-		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USER WHERE user_name = ?", SOME_ID)).isZero();
+		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USER WHERE user_name = ?", someId)).isZero();
 	}
 
 	@Test
 	public void shouldDoNothingWhenEntityForGivenIdDoesNotExist() throws Exception {
 		//given
-		final String SOME_ID = "john10";
+		final String someId = "john10";
 
 		//when
-		repository.delete(SOME_ID);
+		repository.delete(someId);
 
 		//then
 		//no exception
@@ -388,27 +388,27 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldNotDeleteEntityWithDifferentId() throws Exception {
 		//given
-		final String SOME_ID = "john11";
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", SOME_ID, someDateOfBirth, SOME_REPUTATION, true);
+		final String someId = "john11";
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", someId, SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
-		repository.delete(SOME_ID + "_");
+		repository.delete(someId + "_");
 
 		//then
-		assertThat(jdbc.queryForList("SELECT user_name FROM USER WHERE user_name = ?", String.class, SOME_ID)).containsExactly(SOME_ID);
+		assertThat(jdbc.queryForList("SELECT user_name FROM USER WHERE user_name = ?", String.class, someId)).containsExactly(someId);
 	}
 
 	@Test
 	public void shouldDeleteByEntity() throws Exception {
 		//given
-		final String SOME_ID = "john12";
-		final User user = repository.save(user(SOME_ID));
+		final String someId = "john12";
+		final User user = repository.save(user(someId));
 
 		//when
 		repository.delete(user);
 
 		//then
-		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USER WHERE user_name = ?", SOME_ID)).isZero();
+		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USER WHERE user_name = ?", someId)).isZero();
 	}
 
 	@Test
@@ -425,8 +425,8 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnOneWhenSingleElementInTable() throws Exception {
 		//given
-		final String SOME_ID = "john12";
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", SOME_ID, someDateOfBirth, SOME_REPUTATION, true);
+		final String someId = "john12";
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", someId, SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
 		final long count = repository.count();
@@ -438,9 +438,9 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnCountOfRecordsInTable() throws Exception {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "1", someDateOfBirth, SOME_REPUTATION, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "2", someDateOfBirth, SOME_REPUTATION, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "3", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "1", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "2", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "3", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
 		final long count = repository.count();
@@ -520,9 +520,9 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldDeleteAllRecordsInTable() throws Exception {
 		//given
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "1", someDateOfBirth, SOME_REPUTATION, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "2", someDateOfBirth, SOME_REPUTATION, true);
-		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "3", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "1", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "2", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "3", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
 		repository.deleteAll();
