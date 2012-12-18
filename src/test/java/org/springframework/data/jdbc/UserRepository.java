@@ -12,7 +12,7 @@ import java.util.Map;
 public class UserRepository extends AbstractJdbcRepository<User, String> {
 
 	public UserRepository() {
-		super(MAPPER, UPDATER, "USER", "user_name");
+		super(MAPPER, ROW_UNMAPPER, "USER", "user_name");
 	}
 
 	private static final RowMapper<User> MAPPER = new RowMapper<User>() {
@@ -27,7 +27,7 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 		}
 	};
 
-	private static final Updater<User> UPDATER = new Updater<User>() {
+	private static final RowUnmapper<User> ROW_UNMAPPER = new RowUnmapper<User>() {
 		@Override
 		public Map<String, Object> mapColumns(User t) {
 			return ImmutableMap.<String, Object>of(

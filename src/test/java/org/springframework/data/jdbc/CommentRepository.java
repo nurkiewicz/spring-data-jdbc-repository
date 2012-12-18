@@ -16,7 +16,7 @@ import java.util.Map;
 public class CommentRepository extends AbstractJdbcRepository<Comment, Integer> {
 
 	public CommentRepository() {
-		super(MAPPER, UPDATER, "COMMENT");
+		super(MAPPER, ROW_UNMAPPER, "COMMENT");
 	}
 
 	private static final RowMapper<Comment> MAPPER = new RowMapper<Comment>() {
@@ -33,7 +33,7 @@ public class CommentRepository extends AbstractJdbcRepository<Comment, Integer> 
 		}
 	};
 
-	private static final Updater<Comment> UPDATER = new Updater<Comment>() {
+	private static final RowUnmapper<Comment> ROW_UNMAPPER = new RowUnmapper<Comment>() {
 		@Override
 		public Map<String, Object> mapColumns(Comment comment) {
 			return ImmutableMap.<String, Object>builder()

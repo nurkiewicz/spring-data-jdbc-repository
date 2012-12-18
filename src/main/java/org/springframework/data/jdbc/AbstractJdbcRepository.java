@@ -31,11 +31,11 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	private final String countQuery;
 
 	private RowMapper<T> rowMapper;
-	private Updater<T> updater;
+	private RowUnmapper<T> rowUnmapper;
 	private BeanFactory beanFactory;
 
-	public AbstractJdbcRepository(RowMapper<T> rowMapper, Updater<T> updater, String tableName, String idColumn) {
-		this.updater = updater;
+	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName, String idColumn) {
+		this.rowUnmapper = rowUnmapper;
 		this.rowMapper = rowMapper;
 		this.tableName = tableName;
 		this.idColumn = idColumn;
@@ -45,8 +45,8 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 		this.countQuery = "SELECT COUNT(" + idColumn + ") FROM " + tableName;
 	}
 
-	public AbstractJdbcRepository(RowMapper<T> rowMapper, Updater<T> updater, String tableName) {
-		this(rowMapper, updater, tableName, "id");
+	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName) {
+		this(rowMapper, rowUnmapper, tableName, "id");
 	}
 
 		@Override
@@ -136,7 +136,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	}
 
 	private LinkedHashMap<String, Object> columns(T entity) {
-		return new LinkedHashMap<String, Object>(updater.mapColumns(entity));
+		return new LinkedHashMap<String, Object>(rowUnmapper.mapColumns(entity));
 	}
 
 	protected T postUpdate(T entity) {
