@@ -23,26 +23,26 @@ public class SqlGenerator {
 		this("*");
 	}
 
-	public String count(String tableName, String idColumn) {
-		return "SELECT COUNT(" + idColumn + ") FROM " + tableName;
+	public String count(TableDescription table) {
+		return "SELECT COUNT(" + table.getIdColumn() + ") FROM " + table.getName();
 	}
 
-	public String deleteById(String tableName, String idColumn) {
-		return "DELETE FROM " + tableName + " WHERE " + idColumn + " = ?";
+	public String deleteById(TableDescription table) {
+		return "DELETE FROM " + table.getName() + " WHERE " + table.getIdColumn() + " = ?";
 	}
 
-	public String selectAll(String tableName) {
-		return "SELECT " + allColumnsClause + " FROM " + tableName;
+	public String selectAll(TableDescription table) {
+		return "SELECT " + allColumnsClause + " FROM " + table.getName();
 	}
 
-	public String selectAll(String tableName, Pageable page) {
-		return selectAll(tableName) +
+	public String selectAll(TableDescription table, Pageable page) {
+		return selectAll(table) +
 				sortingClauseIfRequired(page.getSort()) +
 				limitClause(page);
 	}
 
-	public String selectAll(String tableName, Sort sort) {
-		return selectAll(tableName) + sortingClauseIfRequired(sort);
+	public String selectAll(TableDescription table, Sort sort) {
+		return selectAll(table) + sortingClauseIfRequired(sort);
 	}
 
 	protected String limitClause(Pageable page) {
@@ -50,8 +50,8 @@ public class SqlGenerator {
 		return " LIMIT " + offset + ", " + page.getPageSize();
 	}
 
-	public String selectById(String tableName, String idColumn) {
-		return selectAll(tableName) + " WHERE " + idColumn + " = ?";
+	public String selectById(TableDescription table) {
+		return selectAll(table) + " WHERE " + table.getIdColumn() + " = ?";
 	}
 
 	protected String sortingClauseIfRequired(Sort sort) {
@@ -73,8 +73,8 @@ public class SqlGenerator {
 		return orderByClause.toString();
 	}
 
-	public String update(String tableName, String idColumn, Map<String, Object> columns) {
-		final StringBuilder updateQuery = new StringBuilder("UPDATE " + tableName + " SET ");
+	public String update(TableDescription table, Map<String, Object> columns) {
+		final StringBuilder updateQuery = new StringBuilder("UPDATE " + table.getName() + " SET ");
 		for(Iterator<Map.Entry<String,Object>> iterator = columns.entrySet().iterator(); iterator.hasNext();) {
 			Map.Entry<String, Object> column = iterator.next();
 			updateQuery.append(column.getKey()).append(" = ?");
@@ -82,12 +82,12 @@ public class SqlGenerator {
 				updateQuery.append(", ");
 			}
 		}
-		updateQuery.append(" WHERE ").append(idColumn).append(" = ?");
+		updateQuery.append(" WHERE ").append(table.getIdColumn()).append(" = ?");
 		return updateQuery.toString();
 	}
 
-	public String create(String tableName, Map<String, Object> columns) {
-		final StringBuilder createQuery = new StringBuilder("INSERT INTO " + tableName + " (");
+	public String create(TableDescription table, Map<String, Object> columns) {
+		final StringBuilder createQuery = new StringBuilder("INSERT INTO " + table.getName() + " (");
 		appendColumnNames(createQuery, columns.keySet());
 		createQuery.append(")").append(" VALUES (");
 		createQuery.append(repeat("?", ", ", columns.size()));

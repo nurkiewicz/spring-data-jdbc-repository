@@ -21,34 +21,37 @@ import java.util.Map;
 /**
  * Implementation of {@link PagingAndSortingRepository} using {@link JdbcTemplate}
  */
-public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extends Serializable> implements PagingAndSortingRepository<T,ID>, InitializingBean, BeanFactoryAware {
+public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID extends Serializable> implements PagingAndSortingRepository<T, ID>, InitializingBean, BeanFactoryAware {
 
-	private JdbcOperations jdbcOperations;
-	private SqlGenerator sqlGenerator;
-	private String tableName;
-	private String idColumn;
+	private final TableDescription table;
 
-	private RowMapper<T> rowMapper;
-	private RowUnmapper<T> rowUnmapper;
+	private final RowMapper<T> rowMapper;
+	private final RowUnmapper<T> rowUnmapper;
+
+	private final SqlGenerator sqlGenerator;
 	private BeanFactory beanFactory;
+	private JdbcOperations jdbcOperations;
 
-	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, SqlGenerator sqlGenerator, String tableName, String idColumn) {
+	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, SqlGenerator sqlGenerator, TableDescription table) {
 		this.rowUnmapper = rowUnmapper;
 		this.rowMapper = rowMapper;
 		this.sqlGenerator = sqlGenerator;
-		this.tableName = tableName;
-		this.idColumn = idColumn;
+		this.table = table;
+	}
+
+	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, TableDescription table) {
+		this(rowMapper, rowUnmapper, new SqlGenerator(), table);
 	}
 
 	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName, String idColumn) {
-		this(rowMapper, rowUnmapper, new SqlGenerator(), tableName, idColumn);
+		this(rowMapper, rowUnmapper, new SqlGenerator(), new TableDescription(tableName, idColumn));
 	}
 
 	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName) {
-		this(rowMapper, rowUnmapper, tableName, "id");
+		this(rowMapper, rowUnmapper, new TableDescription(tableName, "id"));
 	}
 
-		@Override
+	@Override
 	public void afterPropertiesSet() throws Exception {
 		try {
 			jdbcOperations = beanFactory.getBean(JdbcOperations.class);
@@ -65,17 +68,17 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	@Override
 	public long count() {
-		return jdbcOperations.queryForLong(sqlGenerator.count(tableName, idColumn));
+		return jdbcOperations.queryForLong(sqlGenerator.count(table));
 	}
 
 	@Override
 	public void delete(ID id) {
-		jdbcOperations.update(sqlGenerator.deleteById(tableName, idColumn), id);
+		jdbcOperations.update(sqlGenerator.deleteById(table), id);
 	}
 
 	@Override
 	public void delete(T entity) {
-		jdbcOperations.update(sqlGenerator.deleteById(tableName, idColumn), entity.getId());
+		jdbcOperations.update(sqlGenerator.deleteById(table), entity.getId());
 	}
 
 	@Override
@@ -99,18 +102,18 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	@Override
 	public Iterable<T> findAll() {
-		return jdbcOperations.query(sqlGenerator.selectAll(tableName), rowMapper);
+		return jdbcOperations.query(sqlGenerator.selectAll(table), rowMapper);
 	}
 
 	@Override
 	public T findOne(ID id) {
-		List<T> entityOrEmpty = jdbcOperations.query(sqlGenerator.selectById(tableName, idColumn), new Object[]{id}, rowMapper);
-		return entityOrEmpty.isEmpty()? null : entityOrEmpty.get(0);
+		List<T> entityOrEmpty = jdbcOperations.query(sqlGenerator.selectById(table), new Object[]{id}, rowMapper);
+		return entityOrEmpty.isEmpty() ? null : entityOrEmpty.get(0);
 	}
 
 	@Override
 	public T save(T entity) {
-		if(entity.isNew()) {
+		if (entity.isNew()) {
 			return create(entity);
 		} else {
 			return update(entity);
@@ -119,9 +122,9 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	private T update(T entity) {
 		final Map<String, Object> columns = columns(entity);
-		final Object idValue = columns.remove(idColumn);
-		final String updateQuery = sqlGenerator.update(tableName, idColumn, columns);
-		columns.put(idColumn, idValue);
+		final Object idValue = columns.remove(table.getIdColumn());
+		final String updateQuery = sqlGenerator.update(table, columns);
+		columns.put(table.getIdColumn(), idValue);
 		final Object[] queryParams = columns.values().toArray();
 		jdbcOperations.update(updateQuery, queryParams);
 		return postUpdate(entity);
@@ -129,7 +132,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	private T create(T entity) {
 		final Map<String, Object> columns = columns(entity);
-		final String createQuery = sqlGenerator.create(tableName, columns);
+		final String createQuery = sqlGenerator.create(table, columns);
 		final Object[] queryParams = columns.values().toArray();
 		jdbcOperations.update(createQuery, queryParams);
 		return postCreate(entity);
@@ -145,8 +148,9 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	/**
 	 * General purpose hook method that is called every time {@link #create} is called with a new entity.
-	 *
+	 * <p/>
 	 * OVerride this method e.g. if you want to fetch auto-generated key from database
+	 *
 	 * @param entity Entity that was passed to {@link #create}
 	 * @return Either the same object as an argument or completely different one
 	 */
@@ -157,8 +161,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	@Override
 	public Iterable<T> save(Iterable<? extends T> entities) {
 		List<T> ret = new ArrayList<T>();
-		for(T t : entities)
-		{
+		for (T t : entities) {
 			ret.add(save(t));
 		}
 		return ret;
@@ -166,12 +169,12 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	@Override
 	public Iterable<T> findAll(Sort sort) {
-		return jdbcOperations.query(sqlGenerator.selectAll(tableName, sort), rowMapper);
+		return jdbcOperations.query(sqlGenerator.selectAll(table, sort), rowMapper);
 	}
 
 	@Override
 	public Page<T> findAll(Pageable page) {
-		String query = sqlGenerator.selectAll(tableName, page);
+		String query = sqlGenerator.selectAll(table, page);
 		return new PageImpl<T>(jdbcOperations.query(query, rowMapper), page, count());
 	}
 
