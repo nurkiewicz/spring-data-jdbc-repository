@@ -247,11 +247,11 @@ public class AbstractJdbcRepositoryTest {
 		final Sort sort = new Sort(new Order(Direction.DESC, "reputation"), new Order(Direction.ASC, "date_of_birth"));
 
 		//when
-		final Iterable<User> reputation = repository.findAll(sort);
+		final Iterable<User> all = repository.findAll(sort);
 
 		//then
-		assertThat(reputation).hasSize(1);
-		//TODO [tnurkiewicz]
+		assertThat(all).hasSize(1);
+		assertThat(all.iterator().next()).isEqualTo(new User("john7", someDateOfBirth, SOME_REPUTATION, true));
 	}
 
 	@Test
