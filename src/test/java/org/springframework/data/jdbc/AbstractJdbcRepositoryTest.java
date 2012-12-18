@@ -1,6 +1,7 @@
 package org.springframework.data.jdbc;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.Date;
+import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.springframework.data.domain.Sort.Direction;
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.data.domain.Sort.Order;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -190,7 +193,7 @@ public class AbstractJdbcRepositoryTest {
 		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, SOME_REPUTATION, true);
 
 		//when
-		Page<User> page = repository.findAll(new PageRequest(0, 5, Direction.ASC, "user_name"));
+		Page<User> page = repository.findAll(new PageRequest(0, 5, ASC, "user_name"));
 
 		//then
 		assertThat(page).hasSize(1);
@@ -206,7 +209,7 @@ public class AbstractJdbcRepositoryTest {
 		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, SOME_REPUTATION, true);
 
 		//when
-		Page<User> page = repository.findAll(new PageRequest(0, 5, new Sort(new Order(Direction.DESC, "reputation"), new Order(Direction.ASC, "user_name"))));
+		Page<User> page = repository.findAll(new PageRequest(0, 5, new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
 
 		//then
 		assertThat(page).hasSize(1);
@@ -231,7 +234,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnEmptyListWhenFindAllCalledWithoutPagingButWithSortingOnMultipleProperties() throws Exception {
 		//given
-		final Sort sort = new Sort(new Order(Direction.DESC, "reputation"), new Order(Direction.ASC, "date_of_birth"));
+		final Sort sort = new Sort(new Order(DESC, "reputation"), new Order(ASC, "date_of_birth"));
 
 		//when
 		final Iterable<User> reputation = repository.findAll(sort);
@@ -244,7 +247,7 @@ public class AbstractJdbcRepositoryTest {
 	public void shouldReturnSingleRecordWhenFindAllWithoutPagingButWithSorting() throws Exception {
 		//given
 		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john7", someDateOfBirth, SOME_REPUTATION, true);
-		final Sort sort = new Sort(new Order(Direction.DESC, "reputation"), new Order(Direction.ASC, "date_of_birth"));
+		final Sort sort = new Sort(new Order(DESC, "reputation"), new Order(ASC, "date_of_birth"));
 
 		//when
 		final Iterable<User> all = repository.findAll(sort);
@@ -252,6 +255,27 @@ public class AbstractJdbcRepositoryTest {
 		//then
 		assertThat(all).hasSize(1);
 		assertThat(all.iterator().next()).isEqualTo(new User("john7", someDateOfBirth, SOME_REPUTATION, true));
+	}
+
+	@Test
+	public void shouldSortMultipleRecordsByTwoDifferentOrderingProperties() throws Exception {
+		//given
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john3", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john5", someDateOfBirth, SOME_REPUTATION + 1, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john4", someDateOfBirth, SOME_REPUTATION + 1, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, SOME_REPUTATION - 1, true);
+		final Sort sort = new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"));
+
+		//when
+		final List<User> all = Lists.newArrayList(repository.findAll(sort));
+
+		//then
+		assertThat(all).containsExactly(
+				new User("john4", someDateOfBirth, SOME_REPUTATION + 1, true),
+				new User("john5", someDateOfBirth, SOME_REPUTATION + 1, true),
+				new User("john3", someDateOfBirth, SOME_REPUTATION, true),
+				new User("john6", someDateOfBirth, SOME_REPUTATION - 1, true)
+		);
 	}
 
 	@Test
