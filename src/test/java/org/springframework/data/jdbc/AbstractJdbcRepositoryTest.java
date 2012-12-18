@@ -246,4 +246,43 @@ public class AbstractJdbcRepositoryTest {
 		assertThat(exists).isTrue();
 	}
 
+	@Test
+	public void shouldDeleteEntityById() throws Exception {
+		//given
+		final String SOME_ID = "john9";
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", SOME_ID, someDateOfBirth, 42, true);
+
+		//when
+		repository.delete(SOME_ID);
+
+		//then
+		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USER WHERE user_name = ?", SOME_ID)).isZero();
+	}
+
+	@Test
+	public void shouldDoNothingWhenEntityForGivenIdDoesNotExist() throws Exception {
+		//given
+		final String SOME_ID = "john10";
+
+		//when
+		repository.delete(SOME_ID);
+
+		//then
+		//no exception
+	}
+
+	@Test
+	public void shouldNotDeleteEntityWithDifferentId() throws Exception {
+		//given
+		final String SOME_ID = "john11";
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", SOME_ID, someDateOfBirth, SOME_REPUTATION, true);
+
+		//when
+		repository.delete(SOME_ID + "_");
+
+		//then
+		assertThat(jdbc.queryForList("SELECT user_name FROM USER WHERE user_name = ?", String.class, SOME_ID)).containsExactly(SOME_ID);
+	}
+
+
 }
