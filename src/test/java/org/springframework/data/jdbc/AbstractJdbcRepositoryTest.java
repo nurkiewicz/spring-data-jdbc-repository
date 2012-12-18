@@ -217,6 +217,44 @@ public class AbstractJdbcRepositoryTest {
 	}
 
 	@Test
+	public void shouldReturnEmptyListWhenFindAllCalledWithoutPaging() throws Exception {
+		//given
+		final Sort sort = new Sort("reputation");
+
+		//when
+		final Iterable<User> reputation = repository.findAll(sort);
+
+		//then
+		assertThat(reputation).isEmpty();
+	}
+
+	@Test
+	public void shouldReturnEmptyListWhenFindAllCalledWithoutPagingButWithSortingOnMultipleProperties() throws Exception {
+		//given
+		final Sort sort = new Sort(new Order(Direction.DESC, "reputation"), new Order(Direction.ASC, "date_of_birth"));
+
+		//when
+		final Iterable<User> reputation = repository.findAll(sort);
+
+		//then
+		assertThat(reputation).isEmpty();
+	}
+
+	@Test
+	public void shouldReturnSingleRecordWhenFindAllWithoutPagingButWithSorting() throws Exception {
+		//given
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john7", someDateOfBirth, SOME_REPUTATION, true);
+		final Sort sort = new Sort(new Order(Direction.DESC, "reputation"), new Order(Direction.ASC, "date_of_birth"));
+
+		//when
+		final Iterable<User> reputation = repository.findAll(sort);
+
+		//then
+		assertThat(reputation).hasSize(1);
+		//TODO [tnurkiewicz]
+	}
+
+	@Test
 	public void shouldReturnFalseWhenExistsCalledOnEmptyDatabase() {
 		//given
 

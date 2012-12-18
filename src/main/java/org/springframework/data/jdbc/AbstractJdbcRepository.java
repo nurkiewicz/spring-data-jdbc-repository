@@ -208,21 +208,14 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	@Override
 	public Iterable<T> findAll(Sort sort) {
-		String qu = this.selectAll;
-
-		for(Order o : sort)
-		{
-			qu += " ORDER BY " + o.getProperty() + " " + o.getDirection().toString() + " ";
-		}
-
+		String qu = this.selectAll + sortingClauseIfRequired(sort);
 		return jdbcOperations.query(qu,this.rowMapper);
 	}
-
 
 	@Override
 	public Page<T> findAll(Pageable page) {
 		StringBuilder query = new StringBuilder(this.selectAll);
-		applySortingIfRequired(page, query);
+		query.append(sortingClauseIfRequired(page.getSort()));
 
 		query.
 				append(" LIMIT ").
@@ -233,20 +226,23 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 		return new PageImpl<T>(jdbcOperations.query(query.toString(), this.rowMapper), page, count());
 	}
 
-	private void applySortingIfRequired(Pageable page, StringBuilder query) {
-		if (page.getSort() != null) {
-			query.append(" ORDER BY ");
-			for(Iterator<Order> iterator = page.getSort().iterator(); iterator.hasNext();) {
-				final Order order = iterator.next();
-				query.
-						append(order.getProperty()).
-						append(" ").
-						append(order.getDirection().toString());
-				if (iterator.hasNext()) {
-					query.append(", ");
-				}
+	private String sortingClauseIfRequired(Sort sort) {
+		if (sort == null) {
+			return "";
+		}
+		StringBuilder orderByClause = new StringBuilder();
+		orderByClause.append(" ORDER BY ");
+		for(Iterator<Order> iterator = sort.iterator(); iterator.hasNext();) {
+			final Order order = iterator.next();
+			orderByClause.
+					append(order.getProperty()).
+					append(" ").
+					append(order.getDirection().toString());
+			if (iterator.hasNext()) {
+				orderByClause.append(", ");
 			}
 		}
+		return orderByClause.toString();
 	}
 
 }
