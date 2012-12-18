@@ -468,7 +468,7 @@ public class AbstractJdbcRepositoryTest {
 		User john = user("john");
 		User alice = user("alice");
 		repository.save(ImmutableList.of(john, alice));
-		
+
 		//when
 		repository.delete(ImmutableList.of(john, alice));
 
