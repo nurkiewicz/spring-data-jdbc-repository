@@ -28,7 +28,11 @@ public class SqlGenerator {
 	}
 
 	public String deleteById(TableDescription table) {
-		return "DELETE FROM " + table.getName() + " WHERE " + table.getIdColumn() + " = ?";
+		return "DELETE FROM " + table.getName() + whereByIdClause(table);
+	}
+
+	private String whereByIdClause(TableDescription table) {
+		return " WHERE " + table.getIdColumn() + " = ?";
 	}
 
 	public String selectAll(TableDescription table) {
@@ -51,7 +55,7 @@ public class SqlGenerator {
 	}
 
 	public String selectById(TableDescription table) {
-		return selectAll(table) + " WHERE " + table.getIdColumn() + " = ?";
+		return selectAll(table) + whereByIdClause(table);
 	}
 
 	protected String sortingClauseIfRequired(Sort sort) {
@@ -82,7 +86,7 @@ public class SqlGenerator {
 				updateQuery.append(", ");
 			}
 		}
-		updateQuery.append(" WHERE ").append(table.getIdColumn()).append(" = ?");
+		updateQuery.append(whereByIdClause(table));
 		return updateQuery.toString();
 	}
 
@@ -114,4 +118,11 @@ public class SqlGenerator {
 	}
 
 
+	public String deleteAll(TableDescription table) {
+		return "DELETE FROM " + table.getName();
+	}
+
+	public String countById(TableDescription table) {
+		return count(table) + whereByIdClause(table);
+	}
 }

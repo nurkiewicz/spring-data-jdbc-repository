@@ -90,14 +90,12 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 
 	@Override
 	public void deleteAll() {
-		//TODO [tnurkiewicz] Very inefficient
-		delete(findAll());
+		jdbcOperations.update(sqlGenerator.deleteAll(table));
 	}
 
 	@Override
 	public boolean exists(ID id) {
-		//TODO [tnurkiewicz] Consider COUNT(id) == 0
-		return findOne(id) != null;
+		return jdbcOperations.queryForInt(sqlGenerator.countById(table), id) > 0;
 	}
 
 	@Override
