@@ -6,7 +6,6 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.data.domain.*;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,7 +13,10 @@ import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of {@link PagingAndSortingRepository} using {@link JdbcTemplate}
@@ -22,27 +24,24 @@ import java.util.*;
 public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extends Serializable> implements PagingAndSortingRepository<T,ID>, InitializingBean, BeanFactoryAware {
 
 	private JdbcOperations jdbcOperations;
+	private SqlGenerator sqlGenerator;
 	private String tableName;
 	private String idColumn;
-
-	private final String deleteQuery;
-	private final String selectAll;
-	private final String selectById;
-	private final String countQuery;
 
 	private RowMapper<T> rowMapper;
 	private RowUnmapper<T> rowUnmapper;
 	private BeanFactory beanFactory;
 
-	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName, String idColumn) {
+	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, SqlGenerator sqlGenerator, String tableName, String idColumn) {
 		this.rowUnmapper = rowUnmapper;
 		this.rowMapper = rowMapper;
+		this.sqlGenerator = sqlGenerator;
 		this.tableName = tableName;
 		this.idColumn = idColumn;
-		this.deleteQuery = "DELETE FROM " + tableName + " WHERE " + idColumn + " = ?";
-		this.selectAll = "SELECT * FROM " + tableName;
-		this.selectById = "SELECT * FROM " + tableName + " WHERE " + idColumn + " = ?";
-		this.countQuery = "SELECT COUNT(" + idColumn + ") FROM " + tableName;
+	}
+
+	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName, String idColumn) {
+		this(rowMapper, rowUnmapper, new SqlGenerator(), tableName, idColumn);
 	}
 
 	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName) {
@@ -66,23 +65,22 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	@Override
 	public long count() {
-		return jdbcOperations.queryForLong(this.countQuery);
+		return jdbcOperations.queryForLong(sqlGenerator.count(tableName, idColumn));
 	}
 
 	@Override
 	public void delete(ID id) {
-		this.jdbcOperations.update(this.deleteQuery, id);
+		jdbcOperations.update(sqlGenerator.deleteById(tableName, idColumn), id);
 	}
 
 	@Override
 	public void delete(T entity) {
-		this.jdbcOperations.update(this.deleteQuery, entity.getId());
+		jdbcOperations.update(sqlGenerator.deleteById(tableName, idColumn), entity.getId());
 	}
 
 	@Override
 	public void delete(Iterable<? extends T> entities) {
-		for(T t : entities)
-		{
+		for (T t : entities) {
 			delete(t);
 		}
 	}
@@ -101,12 +99,12 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	@Override
 	public Iterable<T> findAll() {
-		return jdbcOperations.query(this.selectAll,this.rowMapper);
+		return jdbcOperations.query(sqlGenerator.selectAll(tableName), rowMapper);
 	}
 
 	@Override
 	public T findOne(ID id) {
-		List<T> entityOrEmpty = jdbcOperations.query(selectById, new Object[]{id}, rowMapper);
+		List<T> entityOrEmpty = jdbcOperations.query(sqlGenerator.selectById(tableName, idColumn), new Object[]{id}, rowMapper);
 		return entityOrEmpty.isEmpty()? null : entityOrEmpty.get(0);
 	}
 
@@ -122,7 +120,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	private T update(T entity) {
 		final Map<String, Object> columns = columns(entity);
 		final Object idValue = columns.remove(idColumn);
-		final String updateQuery = buildUpdateQuery(columns);
+		final String updateQuery = sqlGenerator.update(tableName, idColumn, columns);
 		columns.put(idColumn, idValue);
 		final Object[] queryParams = columns.values().toArray();
 		jdbcOperations.update(updateQuery, queryParams);
@@ -131,7 +129,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	private T create(T entity) {
 		final Map<String, Object> columns = columns(entity);
-		final String createQuery = buildCreateQuery(columns);
+		final String createQuery = sqlGenerator.create(tableName, columns);
 		final Object[] queryParams = columns.values().toArray();
 		jdbcOperations.update(createQuery, queryParams);
 		return postCreate(entity);
@@ -156,46 +154,6 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 		return entity;
 	}
 
-	private String buildUpdateQuery(Map<String, Object> columns) {
-		final StringBuilder updateQuery = new StringBuilder("UPDATE " + this.tableName + " SET ");
-		for(Iterator<Map.Entry<String,Object>> iterator = columns.entrySet().iterator(); iterator.hasNext();) {
-			Map.Entry<String, Object> column = iterator.next();
-			updateQuery.append(column.getKey()).append(" = ?");
-			if (iterator.hasNext()) {
-				updateQuery.append(", ");
-			}
-		}
-		updateQuery.append(" WHERE ").append(this.idColumn).append(" = ?");
-		return updateQuery.toString();
-	}
-
-	private String buildCreateQuery(Map<String, Object> columns) {
-		final StringBuilder createQuery = new StringBuilder("INSERT INTO " + this.tableName + " (");
-		appendColumnNames(createQuery, columns.keySet());
-		createQuery.append(")").append(" VALUES (");
-		createQuery.append(repeat("?", ", ", columns.size()));
-		return createQuery.append(")").toString();
-	}
-
-	private void appendColumnNames(StringBuilder createQuery, Set<String> columnNames) {
-		for(Iterator<String> iterator = columnNames.iterator(); iterator.hasNext();) {
-			final String column = iterator.next();
-			createQuery.append(column);
-			if (iterator.hasNext()) {
-				createQuery.append(", ");
-			}
-		}
-	}
-
-	// Unfortunately {@link org.apache.commons.lang3.StringUtils} not available
-	private static String repeat(String s, String separator, int count) {
-		StringBuilder string = new StringBuilder((s.length() + separator.length()) * count);
-		while (--count > 0) {
-			string.append(s).append(separator);
-		}
-		return string.append(s).toString();
-	}
-
 	@Override
 	public Iterable<T> save(Iterable<? extends T> entities) {
 		List<T> ret = new ArrayList<T>();
@@ -208,41 +166,13 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	@Override
 	public Iterable<T> findAll(Sort sort) {
-		String qu = this.selectAll + sortingClauseIfRequired(sort);
-		return jdbcOperations.query(qu,this.rowMapper);
+		return jdbcOperations.query(sqlGenerator.selectAll(tableName, sort), rowMapper);
 	}
 
 	@Override
 	public Page<T> findAll(Pageable page) {
-		StringBuilder query = new StringBuilder(this.selectAll);
-		query.append(sortingClauseIfRequired(page.getSort()));
-
-		query.
-				append(" LIMIT ").
-				append(page.getPageNumber() * page.getPageSize()).
-				append(", ").
-				append(page.getPageSize()).
-				append(" ");
-		return new PageImpl<T>(jdbcOperations.query(query.toString(), this.rowMapper), page, count());
-	}
-
-	private String sortingClauseIfRequired(Sort sort) {
-		if (sort == null) {
-			return "";
-		}
-		StringBuilder orderByClause = new StringBuilder();
-		orderByClause.append(" ORDER BY ");
-		for(Iterator<Order> iterator = sort.iterator(); iterator.hasNext();) {
-			final Order order = iterator.next();
-			orderByClause.
-					append(order.getProperty()).
-					append(" ").
-					append(order.getDirection().toString());
-			if (iterator.hasNext()) {
-				orderByClause.append(", ");
-			}
-		}
-		return orderByClause.toString();
+		String query = sqlGenerator.selectAll(tableName, page);
+		return new PageImpl<T>(jdbcOperations.query(query, rowMapper), page, count());
 	}
 
 }
