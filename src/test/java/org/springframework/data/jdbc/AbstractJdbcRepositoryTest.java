@@ -285,6 +285,19 @@ public class AbstractJdbcRepositoryTest {
 	}
 
 	@Test
+	public void shouldDeleteByEntity() throws Exception {
+		//given
+		final String SOME_ID = "john12";
+		final User user = repository.save(new User(SOME_ID, someDateOfBirth, SOME_REPUTATION, true));
+
+		//when
+		repository.delete(user);
+
+		//then
+		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USER WHERE user_name = ?", SOME_ID)).isZero();
+	}
+
+	@Test
 	public void shouldReturnZeroForCountWhenEmptyTable() throws Exception {
 		//given
 
