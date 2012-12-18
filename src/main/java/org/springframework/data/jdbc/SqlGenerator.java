@@ -40,9 +40,7 @@ public class SqlGenerator {
 	}
 
 	public String selectAll(TableDescription table, Pageable page) {
-		return selectAll(table) +
-				sortingClauseIfRequired(page.getSort()) +
-				limitClause(page);
+		return selectAll(table, page.getSort()) + limitClause(page);
 	}
 
 	public String selectAll(TableDescription table, Sort sort) {
