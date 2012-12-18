@@ -284,5 +284,42 @@ public class AbstractJdbcRepositoryTest {
 		assertThat(jdbc.queryForList("SELECT user_name FROM USER WHERE user_name = ?", String.class, SOME_ID)).containsExactly(SOME_ID);
 	}
 
+	@Test
+	public void shouldReturnZeroForCountWhenEmptyTable() throws Exception {
+		//given
+
+		//when
+		final long count = repository.count();
+
+		//then
+		assertThat(count).isZero();
+	}
+
+	@Test
+	public void shouldReturnOneWhenSingleElementInTable() throws Exception {
+		//given
+		final String SOME_ID = "john12";
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", SOME_ID, someDateOfBirth, SOME_REPUTATION, true);
+
+		//when
+		final long count = repository.count();
+
+		//then
+		assertThat(count).isEqualTo(1);
+	}
+
+	@Test
+	public void shouldReturnCountOfRecordsInTable() throws Exception {
+		//given
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "1", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "2", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "3", someDateOfBirth, SOME_REPUTATION, true);
+
+		//when
+		final long count = repository.count();
+
+		//then
+		assertThat(count).isEqualTo(3);
+	}
 
 }
