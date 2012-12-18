@@ -397,4 +397,29 @@ public class AbstractJdbcRepositoryTest {
 		assertThat(jdbc.queryForList("SELECT user_name FROM USER", String.class)).containsExactly("bobby");
 	}
 
+	@Test
+	public void shouldDoNothingWhenDeletingAllButEmptyTable() throws Exception {
+		//given
+
+		//when
+		repository.deleteAll();
+
+		//then
+		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USER")).isZero();
+	}
+
+	@Test
+	public void shouldDeleteAllRecordsInTable() throws Exception {
+		//given
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "1", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "2", someDateOfBirth, SOME_REPUTATION, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "3", someDateOfBirth, SOME_REPUTATION, true);
+
+		//when
+		repository.deleteAll();
+
+		//then
+		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USER")).isZero();
+	}
+
 }
