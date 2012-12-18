@@ -34,10 +34,6 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 	private Updater<T> updater;
 	private BeanFactory beanFactory;
 
-	public interface Updater<T> {
-		void mapColumns(T t,Map<String,Object> mapping);
-	}
-
 	public AbstractJdbcRepository(RowMapper<T> rowMapper, Updater<T> updater, String tableName, String idColumn) {
 		this.updater = updater;
 		this.rowMapper = rowMapper;
@@ -114,17 +110,15 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 
 	@Override
 	public T save(T entity) {
-
-		Map<String,Object> columns = new LinkedHashMap<String, Object>();
-		updater.mapColumns(entity, columns);
 		if(entity.isNew()) {
-			return create(entity, columns);
+			return create(entity);
 		} else {
-			return update(entity, columns);
+			return update(entity);
 		}
 	}
 
-	private T update(T entity, Map<String, Object> columns) {
+	private T update(T entity) {
+		final Map<String, Object> columns = columns(entity);
 		final Object idValue = columns.remove(idColumn);
 		final String updateQuery = buildUpdateQuery(columns);
 		columns.put(idColumn, idValue);
@@ -133,11 +127,16 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>,ID extend
 		return postUpdate(entity);
 	}
 
-	private T create(T entity, Map<String, Object> columns) {
+	private T create(T entity) {
+		final Map<String, Object> columns = columns(entity);
 		final String createQuery = buildCreateQuery(columns);
 		final Object[] queryParams = columns.values().toArray();
 		jdbcOperations.update(createQuery, queryParams);
 		return postCreate(entity);
+	}
+
+	private LinkedHashMap<String, Object> columns(T entity) {
+		return new LinkedHashMap<String, Object>(updater.mapColumns(entity));
 	}
 
 	protected T postUpdate(T entity) {

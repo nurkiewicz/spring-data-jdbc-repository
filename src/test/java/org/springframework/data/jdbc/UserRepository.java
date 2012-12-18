@@ -1,11 +1,12 @@
 package org.springframework.data.jdbc;
 
+import com.google.common.collect.ImmutableMap;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
-
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class UserRepository extends AbstractJdbcRepository<User, String> {
@@ -28,11 +29,12 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 
 	private static final Updater<User> UPDATER = new Updater<User>() {
 		@Override
-		public void mapColumns(User t, Map<String, Object> mapping) {
-			mapping.put("user_name", t.getUserName());
-			mapping.put("date_of_birth", t.getDateOfBirth());
-			mapping.put("reputation", t.getReputation());
-			mapping.put("enabled", t.isEnabled());
+		public Map<String, Object> mapColumns(User t) {
+			return ImmutableMap.<String, Object>of(
+					"user_name", t.getUserName(),
+					"date_of_birth", t.getDateOfBirth(),
+					"reputation", t.getReputation(),
+					"enabled", t.isEnabled());
 		}
 	};
 

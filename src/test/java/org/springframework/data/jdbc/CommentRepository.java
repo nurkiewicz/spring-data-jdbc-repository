@@ -1,8 +1,6 @@
 package org.springframework.data.jdbc;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.jdbc.core.JdbcTemplate;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -37,12 +35,14 @@ public class CommentRepository extends AbstractJdbcRepository<Comment, Integer> 
 
 	private static final Updater<Comment> UPDATER = new Updater<Comment>() {
 		@Override
-		public void mapColumns(Comment comment, Map<String, Object> mapping) {
-			mapping.put("id", comment.getId());
-			mapping.put("user_name", comment.getUserName());
-			mapping.put("contents", comment.getContents());
-			mapping.put("created_time", comment.getCreatedTime());
-			mapping.put("favourite_count", comment.getFavouriteCount());
+		public Map<String, Object> mapColumns(Comment comment) {
+			return ImmutableMap.<String, Object>builder()
+					.put("id", comment.getId())
+					.put("user_name", comment.getUserName())
+					.put("contents", comment.getContents())
+					.put("created_time", comment.getCreatedTime())
+					.put("favourite_count", comment.getFavouriteCount())
+					.build();
 		}
 	};
 }
