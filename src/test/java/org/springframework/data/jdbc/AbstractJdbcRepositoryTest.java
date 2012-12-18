@@ -1,10 +1,12 @@
 package org.springframework.data.jdbc;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -12,7 +14,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
+import javax.sql.DataSource;
 import java.util.Date;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -24,13 +26,22 @@ import static org.springframework.data.domain.Sort.Order;
 @Transactional
 public class AbstractJdbcRepositoryTest {
 
+	public static final int SOME_REPUTATION = 42;
 	@Resource
 	private UserRepository repository;
 
 	@Resource
-	private JdbcTemplate jdbcTemplate;
+	private DataSource dataSource;
+
+	private JdbcOperations jdbc;
 
 	private static final Date someDateOfBirth = new Date();
+
+	@Before
+	public void setup() {
+		jdbc = new JdbcTemplate(dataSource);
+	}
+
 
 	@Test
 	public void shouldReturnNullWhenDatabaseEmptyAndSearchingById() {
@@ -102,7 +113,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnOneRecordById() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "james", someDateOfBirth, 43, false);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "james", someDateOfBirth, 43, false);
 
 		//when
 		User user = repository.findOne("james");
@@ -114,7 +125,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnNullWhenEntityForGivenIdDoesNotExist() throws Exception {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "james", someDateOfBirth, 43, false);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "james", someDateOfBirth, 43, false);
 
 		//when
 		User user = repository.findOne("john");
@@ -126,7 +137,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnListWithOneItemWhenOneRecordInDatabase() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john2", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john2", someDateOfBirth, 42, true);
 
 		//when
 		Iterable<User> all = repository.findAll();
@@ -140,7 +151,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnPageWithOneItemWhenOneRecordInDatabase() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john4", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john4", someDateOfBirth, 42, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(0, 5));
@@ -156,7 +167,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnNothingWhenOnlyOneRecordInDatabaseButSecondPageRequested() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john5", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john5", someDateOfBirth, 42, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(1, 5));
@@ -171,7 +182,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnPageWithOneItemWithSortingApplied() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, 42, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(0, 5, Direction.ASC, "user_name"));
@@ -187,7 +198,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnPageWithOneItemWithSortingAppliedOnTwoProperties() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john6", someDateOfBirth, 42, true);
 
 		//when
 		Page<User> page = repository.findAll(new PageRequest(0, 5, new Sort(new Order(Direction.DESC, "reputation"), new Order(Direction.ASC, "user_name"))));
@@ -214,7 +225,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnFalseWhenEntityWithSuchIdDoesNotExist() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john7", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john7", someDateOfBirth, 42, true);
 
 		//when
 		boolean exists = repository.exists("john6");
@@ -226,7 +237,7 @@ public class AbstractJdbcRepositoryTest {
 	@Test
 	public void shouldReturnTrueWhenEntityForGivenIdExists() {
 		//given
-		jdbcTemplate.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john8", someDateOfBirth, 42, true);
+		jdbc.update("INSERT INTO USER VALUES (?, ?, ?, ?)", "john8", someDateOfBirth, 42, true);
 
 		//when
 		boolean exists = repository.exists("john8");
