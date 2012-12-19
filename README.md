@@ -17,6 +17,8 @@ Compatible with Spring Data [`PagingAndSortingRepository`](http://static.springs
 		Page<T> findAll(Pageable pageable);
 	}
 
+`Pageable` and `Sort` parameters are also fully supported, which means you get paging and sorting by arbitrary properties for free.
+
 ## Design objectives
 
 * Lightweight, fast and low-overhead. Only a handful of classes, **no XML, annotations, reflection**
