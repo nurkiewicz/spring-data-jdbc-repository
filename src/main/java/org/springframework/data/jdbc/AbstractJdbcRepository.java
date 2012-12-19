@@ -10,6 +10,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
 import java.io.Serializable;
@@ -33,6 +34,10 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 	private JdbcOperations jdbcOperations;
 
 	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, SqlGenerator sqlGenerator, TableDescription table) {
+		Assert.notNull(rowMapper);
+		Assert.notNull(rowUnmapper);
+		Assert.notNull(table);
+
 		this.rowUnmapper = rowUnmapper;
 		this.rowMapper = rowMapper;
 		this.sqlGenerator = sqlGenerator;
@@ -49,6 +54,18 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 
 	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName) {
 		this(rowMapper, rowUnmapper, new TableDescription(tableName, "id"));
+	}
+
+	public AbstractJdbcRepository(RowMapper<T> rowMapper, TableDescription table) {
+		this(rowMapper, new MissingRowUnmapper<T>(), null, table);
+	}
+
+	public AbstractJdbcRepository(RowMapper<T> rowMapper, String tableName, String idColumn) {
+		this(rowMapper, new MissingRowUnmapper<T>(), null, new TableDescription(tableName, idColumn));
+	}
+
+	public AbstractJdbcRepository(RowMapper<T> rowMapper, String tableName) {
+		this(rowMapper, new MissingRowUnmapper<T>(), new TableDescription(tableName, "id"));
 	}
 
 	@Override
