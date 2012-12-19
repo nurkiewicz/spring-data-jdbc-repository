@@ -18,7 +18,7 @@ public class AbstractJdbcRepositoryTestConfig {
 	@Bean
 	public DataSource dataSource() {
 		JdbcDataSource ds = new JdbcDataSource();
-		ds.setURL("jdbc:h2:mem:MODE=MYSQL;INIT=RUNSCRIPT FROM 'classpath:schema.sql';DB_CLOSE_DELAY=-1");
+		ds.setURL("jdbc:h2:mem:MODE=MYSQL;INIT=RUNSCRIPT FROM 'classpath:schema_h2.sql';DB_CLOSE_DELAY=-1");
 		return ds;
 	}
 
