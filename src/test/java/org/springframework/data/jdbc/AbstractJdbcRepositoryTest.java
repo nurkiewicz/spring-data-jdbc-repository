@@ -531,4 +531,22 @@ public class AbstractJdbcRepositoryTest {
 		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USER")).isZero();
 	}
 
+	@Resource
+	private CommentRepository commentRepository;
+
+	@Test
+	public void smoke() throws Exception {
+		//given
+		repository.save(user("foo"));
+
+		//when
+		commentRepository.save(new Comment("foo", "contents", new Date(), 10));
+		commentRepository.save(new Comment("foo", "contents", new Date(), 10));
+		commentRepository.save(new Comment("foo", "contents", new Date(), 10));
+		commentRepository.save(new Comment("foo", "contents", new Date(), 10));
+
+		//then
+	}
+
+
 }

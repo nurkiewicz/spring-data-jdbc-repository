@@ -9,11 +9,16 @@ import org.springframework.data.domain.*;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -162,8 +167,19 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 		final Map<String, Object> columns = columns(entity);
 		final String createQuery = sqlGenerator.create(table, columns);
 		final Object[] queryParams = columns.values().toArray();
-		jdbcOperations.update(createQuery, queryParams);
-		return postCreate(entity);
+		final GeneratedKeyHolder key = new GeneratedKeyHolder();
+		jdbcOperations.update(new PreparedStatementCreator() {
+			@Override
+			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+				final PreparedStatement ps = con.prepareStatement(createQuery, new String[]{table.getIdColumn()});
+				for (int i = 0; i < queryParams.length; ++i) {
+					ps.setObject(i + 1, queryParams[i]);
+				}
+				return ps;
+			}
+		}, key);
+		//jdbcOperations.update(createQuery, queryParams);
+		return postCreate(entity, (ID)key.getKey());
 	}
 
 	private LinkedHashMap<String, Object> columns(T entity) {
@@ -179,10 +195,13 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 	 * <p/>
 	 * OVerride this method e.g. if you want to fetch auto-generated key from database
 	 *
+	 *
 	 * @param entity Entity that was passed to {@link #create}
+	 * @param generatedId
 	 * @return Either the same object as an argument or completely different one
 	 */
-	protected T postCreate(T entity) {
+	protected T postCreate(T entity, ID generatedId) {
+		System.out.println(generatedId);
 		return entity;
 	}
 

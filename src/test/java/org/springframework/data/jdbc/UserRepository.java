@@ -44,7 +44,7 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 	}
 
 	@Override
-	protected User postCreate(User entity) {
+	protected User postCreate(User entity, String generatedId) {
 		return entity.withPersisted(true);
 	}
 }
