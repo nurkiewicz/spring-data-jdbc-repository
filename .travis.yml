@@ -4,4 +4,4 @@ jdk:
   - oraclejdk7
 before_script:
   - mysql -e 'create database spring_data_jdbc_repository_test;'
-  - mysql < src/test/resources/schema_mysql.sql
+  - mysql spring_data_jdbc_repository_test < src/test/resources/schema_mysql.sql
