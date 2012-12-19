@@ -3,18 +3,18 @@
 Compatible with Spring Data [`PagingAndSortingRepository`](http://static.springsource.org/spring-data/data-commons/docs/1.1.0.RELEASE/api/org/springframework/data/repository/PagingAndSortingRepository.html) abstraction, all these methods are implemented for you:
 
 	public interface PagingAndSortingRepository<T, ID extends Serializable> extends CrudRepository<T, ID> {
-		T save(T entity);
+		         T  save(T entity);
 		Iterable<T> save(Iterable<? extends T> entities);
-		T findOne(ID id);
-		boolean exists(ID id);
+		         T  findOne(ID id);
+		    boolean exists(ID id);
 		Iterable<T> findAll();
-		long count();
-		void delete(ID id);
-		void delete(T entity);
-		void delete(Iterable<? extends T> entities);
-		void deleteAll();
+		       long count();
+		       void delete(ID id);
+		       void delete(T entity);
+		       void delete(Iterable<? extends T> entities);
+		       void deleteAll();
 		Iterable<T> findAll(Sort sort);
-		Page<T> findAll(Pageable pageable);
+		    Page<T> findAll(Pageable pageable);
 	}
 
 `Pageable` and `Sort` parameters are also fully supported, which means you get paging and sorting by arbitrary properties for free.
