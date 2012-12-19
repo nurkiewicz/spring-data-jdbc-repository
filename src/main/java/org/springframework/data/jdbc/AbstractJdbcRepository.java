@@ -28,7 +28,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 	private final RowMapper<T> rowMapper;
 	private final RowUnmapper<T> rowUnmapper;
 
-	private final SqlGenerator sqlGenerator;
+	private SqlGenerator sqlGenerator;
 	private BeanFactory beanFactory;
 	private JdbcOperations jdbcOperations;
 
@@ -40,11 +40,11 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 	}
 
 	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, TableDescription table) {
-		this(rowMapper, rowUnmapper, new SqlGenerator(), table);
+		this(rowMapper, rowUnmapper, null, table);
 	}
 
 	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName, String idColumn) {
-		this(rowMapper, rowUnmapper, new SqlGenerator(), new TableDescription(tableName, idColumn));
+		this(rowMapper, rowUnmapper, null, new TableDescription(tableName, idColumn));
 	}
 
 	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName) {
@@ -53,6 +53,19 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		obtainJdbcTemplate();
+		obtainSqlGenerator();
+	}
+
+	private void obtainSqlGenerator() {
+		try {
+			sqlGenerator = beanFactory.getBean(SqlGenerator.class);
+		} catch (NoSuchBeanDefinitionException e) {
+			sqlGenerator = new SqlGenerator();
+		}
+	}
+
+	private void obtainJdbcTemplate() {
 		try {
 			jdbcOperations = beanFactory.getBean(JdbcOperations.class);
 		} catch (NoSuchBeanDefinitionException e) {
