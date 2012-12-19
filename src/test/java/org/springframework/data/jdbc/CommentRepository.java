@@ -1,11 +1,11 @@
 package org.springframework.data.jdbc;
 
-import com.google.common.collect.ImmutableMap;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -36,13 +36,13 @@ public class CommentRepository extends AbstractJdbcRepository<Comment, Integer> 
 	private static final RowUnmapper<Comment> ROW_UNMAPPER = new RowUnmapper<Comment>() {
 		@Override
 		public Map<String, Object> mapColumns(Comment comment) {
-			return ImmutableMap.<String, Object>builder()
-					.put("id", comment.getId())
-					.put("user_name", comment.getUserName())
-					.put("contents", comment.getContents())
-					.put("created_time", comment.getCreatedTime())
-					.put("favourite_count", comment.getFavouriteCount())
-					.build();
+			final Map<String, Object> map = new LinkedHashMap<String, Object>();
+			map.put("id", comment.getId());
+			map.put("user_name", comment.getUserName());
+			map.put("contents", comment.getContents());
+			map.put("created_time", comment.getCreatedTime());
+			map.put("favourite_count", comment.getFavouriteCount());
+			return map;
 		}
 	};
 }
