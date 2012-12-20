@@ -1,11 +1,11 @@
 package org.springframework.data.jdbc;
 
-import com.google.common.collect.ImmutableMap;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Repository
@@ -30,11 +30,12 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 	private static final RowUnmapper<User> ROW_UNMAPPER = new RowUnmapper<User>() {
 		@Override
 		public Map<String, Object> mapColumns(User t) {
-			return ImmutableMap.<String, Object>of(
-					"user_name", t.getUserName(),
-					"date_of_birth", t.getDateOfBirth(),
-					"reputation", t.getReputation(),
-					"enabled", t.isEnabled());
+			final LinkedHashMap<String, Object> columns = new LinkedHashMap<String, Object>();
+			columns.put("user_name", t.getUserName());
+			columns.put("date_of_birth", t.getDateOfBirth());
+			columns.put("reputation", t.getReputation());
+			columns.put("enabled", t.isEnabled());
+			return columns;
 		}
 	};
 
@@ -44,7 +45,7 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 	}
 
 	@Override
-	protected User postCreate(User entity, String generatedId) {
+	protected User postCreate(User entity, Number generatedId) {
 		return entity.withPersisted(true);
 	}
 }

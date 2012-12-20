@@ -4,16 +4,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -25,10 +20,7 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.data.domain.Sort.Order;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = AbstractJdbcRepositoryTestConfig.class)
-@Transactional
-public class AbstractJdbcRepositoryTest {
+public class AbstractJdbcRepositoryManualKeyTest extends AbstractIntegrationTest {
 
 	public static final int SOME_REPUTATION = 42;
 	@Resource
@@ -533,20 +525,5 @@ public class AbstractJdbcRepositoryTest {
 
 	@Resource
 	private CommentRepository commentRepository;
-
-	@Test
-	public void smoke() throws Exception {
-		//given
-		repository.save(user("foo"));
-
-		//when
-		commentRepository.save(new Comment("foo", "contents", new Date(), 10));
-		commentRepository.save(new Comment("foo", "contents", new Date(), 10));
-		commentRepository.save(new Comment("foo", "contents", new Date(), 10));
-		commentRepository.save(new Comment("foo", "contents", new Date(), 10));
-
-		//then
-	}
-
 
 }

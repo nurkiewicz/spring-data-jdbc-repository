@@ -186,8 +186,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 				return ps;
 			}
 		}, key);
-		//jdbcOperations.update(createQuery, queryParams);
-		return postCreate(entity, (ID)key.getKey());
+		return postCreate(entity, key.getKey());
 	}
 
 	protected Map<String, Object> preCreate(Map<String, Object> columns, T entity) {
@@ -209,11 +208,11 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 	 *
 	 *
 	 * @param entity Entity that was passed to {@link #create}
-	 * @param generatedId
+	 * @param generatedId ID generated during INSERT or NULL if not available/not generated.
+	 * todo: Type should be ID, not Number
 	 * @return Either the same object as an argument or completely different one
 	 */
-	protected T postCreate(T entity, ID generatedId) {
-		System.out.println(generatedId);
+	protected T postCreate(T entity, Number generatedId) {
 		return entity;
 	}
 
