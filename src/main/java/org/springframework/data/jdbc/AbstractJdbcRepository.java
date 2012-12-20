@@ -79,6 +79,10 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 		obtainSqlGenerator();
 	}
 
+	protected JdbcOperations getJdbcOperations() {
+		return jdbcOperations;
+	}
+
 	private void obtainSqlGenerator() {
 		try {
 			sqlGenerator = beanFactory.getBean(SqlGenerator.class);
@@ -154,7 +158,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 	}
 
 	private T update(T entity) {
-		final Map<String, Object> columns = columns(entity);
+		final Map<String, Object> columns = preUpdate(entity, columns(entity));
 		final Object idValue = columns.remove(table.getIdColumn());
 		final String updateQuery = sqlGenerator.update(table, columns);
 		columns.put(table.getIdColumn(), idValue);
@@ -163,8 +167,12 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 		return postUpdate(entity);
 	}
 
+	protected Map<String,Object> preUpdate(T entity, Map<String, Object> columns) {
+		return columns;
+	}
+
 	private T create(T entity) {
-		final Map<String, Object> columns = columns(entity);
+		final Map<String, Object> columns = preCreate(columns(entity), entity);
 		final String createQuery = sqlGenerator.create(table, columns);
 		final Object[] queryParams = columns.values().toArray();
 		final GeneratedKeyHolder key = new GeneratedKeyHolder();
@@ -180,6 +188,10 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 		}, key);
 		//jdbcOperations.update(createQuery, queryParams);
 		return postCreate(entity, (ID)key.getKey());
+	}
+
+	protected Map<String, Object> preCreate(Map<String, Object> columns, T entity) {
+		return columns;
 	}
 
 	private LinkedHashMap<String, Object> columns(T entity) {
