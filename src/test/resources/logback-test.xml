@@ -2,6 +2,7 @@
 <configuration>
 
 	<logger name="org" level="INFO" />
+	<logger name="org.springframework.test" level="WARN" />
 
 	<root level="ALL">
 		<appender class="ch.qos.logback.core.ConsoleAppender">
