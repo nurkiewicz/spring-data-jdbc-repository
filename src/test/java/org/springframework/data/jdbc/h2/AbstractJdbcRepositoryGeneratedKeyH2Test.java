@@ -10,4 +10,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
  */
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = AbstractJdbcRepositoryTestH2Config.class)
 public class AbstractJdbcRepositoryGeneratedKeyH2Test extends AbstractJdbcRepositoryGeneratedKeyTest {
+	public AbstractJdbcRepositoryGeneratedKeyH2Test() {
+		super(-1);
+	}
 }

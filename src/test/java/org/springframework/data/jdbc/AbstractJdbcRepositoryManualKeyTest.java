@@ -36,6 +36,10 @@ public abstract class AbstractJdbcRepositoryManualKeyTest extends AbstractIntegr
 
 	private static final Date SOME_DATE_OF_BIRTH = new Date();
 
+	public AbstractJdbcRepositoryManualKeyTest(int databasePort) {
+		super(databasePort);
+	}
+
 	@Before
 	public void setup() {
 		jdbc = new JdbcTemplate(dataSource);

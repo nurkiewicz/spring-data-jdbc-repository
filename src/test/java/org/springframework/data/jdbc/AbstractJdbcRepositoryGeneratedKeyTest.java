@@ -25,6 +25,10 @@ public abstract class AbstractJdbcRepositoryGeneratedKeyTest extends AbstractInt
 	private UserRepository userRepository;
 	private String someUser = "some_user";
 
+	public AbstractJdbcRepositoryGeneratedKeyTest(int databasePort) {
+		super(databasePort);
+	}
+
 	@Before
 	public void setup() {
 		userRepository.save(new User(someUser, new Date(), -1, false));
