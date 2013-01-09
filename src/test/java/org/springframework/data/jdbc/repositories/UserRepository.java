@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 		public Map<String, Object> mapColumns(User t) {
 			final LinkedHashMap<String, Object> columns = new LinkedHashMap<String, Object>();
 			columns.put("user_name", t.getUserName());
-			columns.put("date_of_birth", t.getDateOfBirth());
+			columns.put("date_of_birth", new Date(t.getDateOfBirth().getTime()));
 			columns.put("reputation", t.getReputation());
 			columns.put("enabled", t.isEnabled());
 			return columns;
