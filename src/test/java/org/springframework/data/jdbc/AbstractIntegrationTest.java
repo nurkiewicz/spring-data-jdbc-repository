@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 12/20/12, 10:56 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = AbstractJdbcRepositoryTestConfig.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = AbstractJdbcRepositoryTestH2Config.class)
 @Transactional
 public abstract class AbstractIntegrationTest {
 }

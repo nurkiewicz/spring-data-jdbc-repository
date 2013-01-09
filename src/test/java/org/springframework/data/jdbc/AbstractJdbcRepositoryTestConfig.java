@@ -1,26 +1,17 @@
 package org.springframework.data.jdbc;
 
-import org.h2.jdbcx.JdbcDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-@Configuration
 @ComponentScan("org.springframework.data.jdbc")
-@EnableTransactionManagement
-public class AbstractJdbcRepositoryTestConfig {
+public abstract class AbstractJdbcRepositoryTestConfig {
 
 	@Bean
-	public DataSource dataSource() {
-		JdbcDataSource ds = new JdbcDataSource();
-		ds.setURL("jdbc:h2:mem:MODE=MYSQL;INIT=RUNSCRIPT FROM 'classpath:schema_h2.sql';DB_CLOSE_DELAY=-1");
-		return ds;
-	}
+	public abstract DataSource dataSource();
 
 	@Bean
 	public PlatformTransactionManager transactionManager() {
