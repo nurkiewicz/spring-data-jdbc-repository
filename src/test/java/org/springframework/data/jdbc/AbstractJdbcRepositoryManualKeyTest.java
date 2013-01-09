@@ -15,7 +15,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -34,7 +36,7 @@ public abstract class AbstractJdbcRepositoryManualKeyTest extends AbstractIntegr
 
 	private JdbcOperations jdbc;
 
-	private static final Date SOME_DATE_OF_BIRTH = new Date();
+	private static final Date SOME_DATE_OF_BIRTH = new GregorianCalendar(2013, Calendar.JANUARY, 9, 23, 6, 15).getTime();
 
 	public AbstractJdbcRepositoryManualKeyTest(int databasePort) {
 		super(databasePort);
