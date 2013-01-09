@@ -64,15 +64,17 @@ public abstract class AbstractJdbcRepositoryGeneratedKeyTest extends AbstractInt
 	@Test
 	public void shouldUpdateCommentByGeneratedId() throws Exception {
 		//given
-		final Comment comment = repository.save(new Comment(someUser, "Some content", new Date(0), 0));
+		final Date oldDate = new Date(100000000);
+		final Date newDate = new Date(200000000);
+		final Comment comment = repository.save(new Comment(someUser, "Some content", oldDate, 0));
 		final int id = comment.getId();
 
 		//when
-		final Comment updatedComment = repository.save(new Comment(id, someUser, "New content", new Date(1), 1));
+		final Comment updatedComment = repository.save(new Comment(id, someUser, "New content", newDate, 1));
 
 		//then
 		assertThat(repository.count()).isEqualTo(1);
-		assertThat(updatedComment).isEqualTo(new Comment(id, someUser, "New content", new Date(1), 1));
+		assertThat(updatedComment).isEqualTo(new Comment(id, someUser, "New content", newDate, 1));
 	}
 
 }
