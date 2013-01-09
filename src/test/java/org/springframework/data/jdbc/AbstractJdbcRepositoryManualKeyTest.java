@@ -7,6 +7,9 @@ import org.junit.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jdbc.repositories.CommentRepository;
+import org.springframework.data.jdbc.repositories.User;
+import org.springframework.data.jdbc.repositories.UserRepository;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 

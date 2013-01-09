@@ -2,6 +2,10 @@ package org.springframework.data.jdbc;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.data.jdbc.repositories.Comment;
+import org.springframework.data.jdbc.repositories.CommentRepository;
+import org.springframework.data.jdbc.repositories.User;
+import org.springframework.data.jdbc.repositories.UserRepository;
 
 import javax.annotation.Resource;
 import java.util.Date;

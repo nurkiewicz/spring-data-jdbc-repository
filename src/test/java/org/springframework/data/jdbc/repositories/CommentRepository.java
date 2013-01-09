@@ -1,5 +1,7 @@
-package org.springframework.data.jdbc;
+package org.springframework.data.jdbc.repositories;
 
+import org.springframework.data.jdbc.AbstractJdbcRepository;
+import org.springframework.data.jdbc.RowUnmapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 

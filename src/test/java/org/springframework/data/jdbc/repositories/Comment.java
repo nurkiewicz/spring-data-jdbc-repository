@@ -1,4 +1,4 @@
-package org.springframework.data.jdbc;
+package org.springframework.data.jdbc.repositories;
 
 import org.springframework.data.domain.Persistable;
 
