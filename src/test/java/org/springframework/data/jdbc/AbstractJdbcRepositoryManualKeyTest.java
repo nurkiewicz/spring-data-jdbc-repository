@@ -20,7 +20,7 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.data.domain.Sort.Order;
 
-public class AbstractJdbcRepositoryManualKeyTest extends AbstractIntegrationTest {
+public abstract class AbstractJdbcRepositoryManualKeyTest extends AbstractIntegrationTest {
 
 	public static final int SOME_REPUTATION = 42;
 	@Resource

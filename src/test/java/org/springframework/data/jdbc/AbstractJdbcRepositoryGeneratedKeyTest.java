@@ -12,7 +12,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  * @author Tomasz Nurkiewicz
  * @since 12/20/12, 10:55 PM
  */
-public class AbstractJdbcRepositoryGeneratedKeyTest extends AbstractIntegrationTest {
+public abstract class AbstractJdbcRepositoryGeneratedKeyTest extends AbstractIntegrationTest {
 
 	@Resource
 	private CommentRepository repository;

@@ -1,9 +1,7 @@
 package org.springframework.data.jdbc;
 
 import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -11,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @since 12/20/12, 10:56 PM
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = AbstractJdbcRepositoryTestH2Config.class)
 @Transactional
 public abstract class AbstractIntegrationTest {
 }
