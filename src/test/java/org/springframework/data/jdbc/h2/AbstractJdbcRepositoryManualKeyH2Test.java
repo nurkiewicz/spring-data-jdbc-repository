@@ -1,7 +1,6 @@
 package org.springframework.data.jdbc.h2;
 
 import org.springframework.data.jdbc.AbstractJdbcRepositoryManualKeyTest;
-import org.springframework.data.jdbc.AbstractJdbcRepositoryTestH2Config;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 

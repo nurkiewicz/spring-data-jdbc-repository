@@ -1,8 +1,9 @@
-package org.springframework.data.jdbc;
+package org.springframework.data.jdbc.h2;
 
 import org.h2.jdbcx.JdbcDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jdbc.AbstractJdbcRepositoryTestConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
