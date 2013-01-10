@@ -17,7 +17,7 @@ import java.util.Map;
 public class CommentRepository extends AbstractJdbcRepository<Comment, Integer> {
 
 	public CommentRepository() {
-		super(MAPPER, ROW_UNMAPPER, "COMMENT");
+		super(MAPPER, ROW_UNMAPPER, "COMMENTS");
 	}
 
 	private static final RowMapper<Comment> MAPPER = new RowMapper<Comment>() {

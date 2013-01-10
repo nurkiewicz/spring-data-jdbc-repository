@@ -1,4 +1,4 @@
-CREATE TABLE USER (
+CREATE TABLE USERS (
 	user_name varchar(255),
 	date_of_birth TIMESTAMP NOT NULL,
 	reputation INT NOT NULL,
@@ -6,7 +6,7 @@ CREATE TABLE USER (
 	PRIMARY KEY (user_name)
 );
 
-CREATE TABLE IF NOT EXISTS COMMENT (
+CREATE TABLE IF NOT EXISTS COMMENTS (
   id INT AUTO_INCREMENT,
   user_name varchar(256),
   contents varchar(1000),

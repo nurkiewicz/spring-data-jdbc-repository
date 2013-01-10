@@ -1,6 +1,6 @@
 CREATE SEQUENCE user_seq;
 
-CREATE TABLE USER (
+CREATE TABLE USERS (
 	user_name varchar(255) PRIMARY KEY DEFAULT nextval(user_seq),
 	date_of_birth TIMESTAMP NOT NULL,
 	reputation INT NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE USER (
 
 CREATE SEQUENCE comment_seq;
 
-CREATE TABLE IF NOT EXISTS COMMENT (
+CREATE TABLE IF NOT EXISTS COMMENTS (
   id INT PRIMARY KEY PRIMARY KEY DEFAULT nextval(comment_seq),
   user_name varchar(256),
   contents varchar(1000),
