@@ -1,11 +1,11 @@
-CREATE TABLE USER (
+CREATE TABLE USERS (
 	user_name varchar(256) PRIMARY KEY,
 	date_of_birth TIMESTAMP NOT NULL,
 	reputation INT NOT NULL,
 	enabled BOOLEAN NOT NULL
 );
 
-CREATE TABLE COMMENT (
+CREATE TABLE COMMENTS (
 	id INT IDENTITY PRIMARY KEY,
 	user_name varchar(256),
 	contents varchar(1000),
