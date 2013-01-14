@@ -1,17 +1,27 @@
 package org.springframework.data.jdbc;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jdbc.repositories.CommentRepository;
+import org.springframework.data.jdbc.repositories.UserRepository;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
-@ComponentScan("org.springframework.data.jdbc")
 public abstract class AbstractJdbcRepositoryTestConfig {
 
 	@Bean
 	public abstract DataSource dataSource();
+
+	@Bean
+	public CommentRepository commentRepository() {
+		return new CommentRepository("COMMENTS");
+	}
+
+	@Bean
+	public UserRepository userRepository() {
+		return new UserRepository("USERS");
+	}
 
 	@Bean
 	public PlatformTransactionManager transactionManager() {

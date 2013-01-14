@@ -14,8 +14,8 @@ import java.util.Map;
 @Repository
 public class UserRepository extends AbstractJdbcRepository<User, String> {
 
-	public UserRepository() {
-		super(MAPPER, ROW_UNMAPPER, "USERS", "user_name");
+	public UserRepository(String tableName) {
+		super(MAPPER, ROW_UNMAPPER, tableName, "user_name");
 	}
 
 	private static final RowMapper<User> MAPPER = new RowMapper<User>() {
