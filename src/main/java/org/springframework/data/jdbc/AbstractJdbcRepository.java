@@ -157,7 +157,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 		}
 	}
 
-	private T update(T entity) {
+	protected T update(T entity) {
 		final Map<String, Object> columns = preUpdate(entity, columns(entity));
 		final Object idValue = columns.remove(table.getIdColumn());
 		final String updateQuery = sqlGenerator.update(table, columns);
@@ -171,7 +171,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 		return columns;
 	}
 
-	private T create(T entity) {
+	protected T create(T entity) {
 		final Map<String, Object> columns = preCreate(columns(entity), entity);
 		final String createQuery = sqlGenerator.create(table, columns);
 		final Object[] queryParams = columns.values().toArray();
