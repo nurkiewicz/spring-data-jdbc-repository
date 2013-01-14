@@ -85,7 +85,7 @@ public class Comment implements Persistable<Integer> {
 		mapping.put("id", getId());
 		mapping.put("user_name", getUserName());
 		mapping.put("contents", getContents());
-		mapping.put("created_time", getCreatedTime());
+		mapping.put("created_time", new java.sql.Timestamp(getCreatedTime().getTime()));
 		mapping.put("favourite_count", getFavouriteCount());
 		return mapping;
 	}
