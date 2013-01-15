@@ -5,9 +5,9 @@ import org.springframework.data.jdbc.RowUnmapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

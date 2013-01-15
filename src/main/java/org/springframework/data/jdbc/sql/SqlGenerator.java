@@ -1,7 +1,8 @@
-package org.springframework.data.jdbc;
+package org.springframework.data.jdbc.sql;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jdbc.TableDescription;
 
 import java.util.Iterator;
 import java.util.Map;

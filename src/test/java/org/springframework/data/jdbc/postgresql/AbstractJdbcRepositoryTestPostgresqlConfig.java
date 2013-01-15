@@ -6,6 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.AbstractJdbcRepositoryTestConfig;
 import org.springframework.data.jdbc.repositories.CommentRepository;
 import org.springframework.data.jdbc.repositories.UserRepository;
+import org.springframework.data.jdbc.sql.PostgreSqlGenerator;
+import org.springframework.data.jdbc.sql.SqlGenerator;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -17,13 +19,18 @@ public class AbstractJdbcRepositoryTestPostgresqlConfig extends AbstractJdbcRepo
 	@Bean
 	@Override
 	public CommentRepository commentRepository() {
-		return new CommentRepository("users");
+		return new CommentRepository("comments");
 	}
 
 	@Bean
 	@Override
 	public UserRepository userRepository() {
 		return new UserRepository("users");
+	}
+
+	@Bean
+	public SqlGenerator sqlGenerator() {
+		return new PostgreSqlGenerator();
 	}
 
 	@Bean

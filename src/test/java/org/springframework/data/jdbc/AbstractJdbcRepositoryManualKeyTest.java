@@ -15,8 +15,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import java.sql.Date;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -36,7 +36,7 @@ public abstract class AbstractJdbcRepositoryManualKeyTest extends AbstractIntegr
 
 	private JdbcOperations jdbc;
 
-	private static final Date SOME_DATE_OF_BIRTH = new GregorianCalendar(2013, Calendar.JANUARY, 9, 23, 6, 15).getTime();
+	private static final Date SOME_DATE_OF_BIRTH = new Date(new GregorianCalendar(2013, Calendar.JANUARY, 9).getTimeInMillis());
 
 	public AbstractJdbcRepositoryManualKeyTest(int databasePort) {
 		super(databasePort);

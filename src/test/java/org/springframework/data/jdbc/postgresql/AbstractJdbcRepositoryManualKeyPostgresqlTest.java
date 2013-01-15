@@ -12,7 +12,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 public class AbstractJdbcRepositoryManualKeyPostgresqlTest extends AbstractJdbcRepositoryManualKeyTest {
 
 	public AbstractJdbcRepositoryManualKeyPostgresqlTest() {
-		super(5432 + 1);
+		super(5432);
 	}
 
 }
