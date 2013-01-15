@@ -6,4 +6,4 @@ before_script:
   - mysql -e 'create database spring_data_jdbc_repository_test;'
   - mysql spring_data_jdbc_repository_test < src/test/resources/schema_mysql.sql
   - psql -c 'create database spring_data_jdbc_repository_test;' -U postgres
-  - psql -U postgres < src/test/resources/schema_postgresql.sql
+  - psql spring_data_jdbc_repository_test < src/test/resources/schema_postgresql.sql
