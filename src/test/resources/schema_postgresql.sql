@@ -11,7 +11,7 @@ CREATE SEQUENCE comment_seq;
 
 CREATE TABLE IF NOT EXISTS COMMENTS (
   id INT PRIMARY KEY DEFAULT nextval('comment_seq'),
-  user_name varchar(256),
+  user_name varchar(256) REFERENCES USERS,
   contents varchar(1000),
   created_time TIMESTAMP NOT NULL,
   favourite_count INT NOT NULL
