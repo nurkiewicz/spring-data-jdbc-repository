@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -18,6 +19,10 @@ public class CommentRepository extends AbstractJdbcRepository<Comment, Integer> 
 
 	public CommentRepository(String tableName) {
 		super(MAPPER, ROW_UNMAPPER, tableName);
+	}
+
+	public CommentRepository(RowMapper<Comment> rowMapper, RowUnmapper<Comment> rowUnmapper, String tableName, String idColumn) {
+		super(rowMapper, rowUnmapper, tableName, idColumn);
 	}
 
 	private static final RowMapper<Comment> MAPPER = new RowMapper<Comment>() {
@@ -37,7 +42,13 @@ public class CommentRepository extends AbstractJdbcRepository<Comment, Integer> 
 	private static final RowUnmapper<Comment> ROW_UNMAPPER = new RowUnmapper<Comment>() {
 		@Override
 		public Map<String, Object> mapColumns(Comment comment) {
-			return comment.toMap();
+			Map<String, Object> mapping = new LinkedHashMap<String, Object>();
+			mapping.put("id", comment.getId());
+			mapping.put("user_name", comment.getUserName());
+			mapping.put("contents", comment.getContents());
+			mapping.put("created_time", new java.sql.Timestamp(comment.getCreatedTime().getTime()));
+			mapping.put("favourite_count", comment.getFavouriteCount());
+			return mapping;
 		}
 	};
 

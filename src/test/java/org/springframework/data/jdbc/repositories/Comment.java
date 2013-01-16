@@ -3,14 +3,12 @@ package org.springframework.data.jdbc.repositories;
 import org.springframework.data.domain.Persistable;
 
 import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * @author Tomasz Nurkiewicz
  * @since 12/17/12, 11:12 PM
  */
-public class Comment implements Persistable<Integer> {
+	public class Comment implements Persistable<Integer> {
 
 	private Integer id;
 
@@ -78,16 +76,6 @@ public class Comment implements Persistable<Integer> {
 
 	public void setFavouriteCount(int favouriteCount) {
 		this.favouriteCount = favouriteCount;
-	}
-
-	public Map<String, Object> toMap() {
-		Map<String, Object> mapping = new LinkedHashMap<String, Object>();
-		mapping.put("id", getId());
-		mapping.put("user_name", getUserName());
-		mapping.put("contents", getContents());
-		mapping.put("created_time", new java.sql.Timestamp(getCreatedTime().getTime()));
-		mapping.put("favourite_count", getFavouriteCount());
-		return mapping;
 	}
 
 	@Override

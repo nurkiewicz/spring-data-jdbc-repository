@@ -84,6 +84,10 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 		return jdbcOperations;
 	}
 
+	protected TableDescription getTable() {
+		return table;
+	}
+
 	private void obtainSqlGenerator() {
 		try {
 			sqlGenerator = beanFactory.getBean(SqlGenerator.class);

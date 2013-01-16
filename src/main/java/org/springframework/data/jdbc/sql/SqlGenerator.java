@@ -124,4 +124,8 @@ public class SqlGenerator {
 	public String countById(TableDescription table) {
 		return count(table) + whereByIdClause(table);
 	}
+
+	public String getAllColumnsClause() {
+		return allColumnsClause;
+	}
 }
