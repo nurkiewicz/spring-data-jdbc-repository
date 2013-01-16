@@ -10,5 +10,6 @@ CREATE TABLE IF NOT EXISTS COMMENTS (
 	user_name varchar(256),
 	contents varchar(1000),
 	created_time TIMESTAMP NOT NULL,
-	favourite_count INT NOT NULL
+	favourite_count INT NOT NULL,
+  FOREIGN KEY (user_name) REFERENCES USERS(user_name)
 );
