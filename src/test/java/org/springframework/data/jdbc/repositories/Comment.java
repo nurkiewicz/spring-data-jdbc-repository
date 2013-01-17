@@ -8,7 +8,7 @@ import java.util.Date;
  * @author Tomasz Nurkiewicz
  * @since 12/17/12, 11:12 PM
  */
-	public class Comment implements Persistable<Integer> {
+public class Comment implements Persistable<Integer> {
 
 	private Integer id;
 
