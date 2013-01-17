@@ -18,7 +18,7 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 		super(MAPPER, ROW_UNMAPPER, tableName, "user_name");
 	}
 
-	private static final RowMapper<User> MAPPER = new RowMapper<User>() {
+	public static final RowMapper<User> MAPPER = new RowMapper<User>() {
 		@Override
 		public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 			return new User(
@@ -30,7 +30,7 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 		}
 	};
 
-	private static final RowUnmapper<User> ROW_UNMAPPER = new RowUnmapper<User>() {
+	public static final RowUnmapper<User> ROW_UNMAPPER = new RowUnmapper<User>() {
 		@Override
 		public Map<String, Object> mapColumns(User t) {
 			final LinkedHashMap<String, Object> columns = new LinkedHashMap<String, Object>();
