@@ -2,6 +2,7 @@ package org.springframework.data.jdbc;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jdbc.repositories.CommentRepository;
+import org.springframework.data.jdbc.repositories.CommentWithUserRepository;
 import org.springframework.data.jdbc.repositories.UserRepository;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -21,6 +22,11 @@ public abstract class AbstractJdbcRepositoryTestConfig {
 	@Bean
 	public UserRepository userRepository() {
 		return new UserRepository("USERS");
+	}
+
+	@Bean
+	public CommentWithUserRepository commentWithUserRepository() {
+		return new CommentWithUserRepository("COMMENTS");
 	}
 
 	@Bean

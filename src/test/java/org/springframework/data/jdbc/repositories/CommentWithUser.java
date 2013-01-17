@@ -8,42 +8,18 @@ import java.util.Date;
  * @author Tomasz Nurkiewicz
  * @since 1/16/13, 10:51 PM
  */
-public class CommentWithUser implements Persistable<Integer> {
-
-	private Integer id;
+public class CommentWithUser extends Comment implements Persistable<Integer> {
 
 	private User user;
 
-	private String contents;
-
-	private Date createdTime;
-
-	private int favouriteCount;
-
 	public CommentWithUser(User user, String contents, Date createdTime, int favouriteCount) {
+		super(user.getUserName(), contents, createdTime, favouriteCount);
 		this.user = user;
-		this.contents = contents;
-		this.createdTime = createdTime;
-		this.favouriteCount = favouriteCount;
 	}
 
 	public CommentWithUser(Integer id, User user, String contents, Date createdTime, int favouriteCount) {
-		this(user, contents, createdTime, favouriteCount);
-		this.id = id;
-	}
-
-
-	@Override
-	public boolean isNew() {
-		return id == null;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
+		super(id, user.getUserName(), contents, createdTime, favouriteCount);
+		this.user = user;
 	}
 
 	public User getUser() {
@@ -54,27 +30,26 @@ public class CommentWithUser implements Persistable<Integer> {
 		this.user = user;
 	}
 
-	public String getContents() {
-		return contents;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof CommentWithUser)) return false;
+		if (!super.equals(o)) return false;
+
+		CommentWithUser that = (CommentWithUser) o;
+		return user.equals(that.user);
 	}
 
-	public void setContents(String contents) {
-		this.contents = contents;
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + user.hashCode();
+		return result;
 	}
 
-	public Date getCreatedTime() {
-		return createdTime;
+	@Override
+	public String toString() {
+		return "Comment(id=" + getId() + ", user=" + user +  ", contents='" + getContents() + '\'' + ", createdTime=" + getCreatedTime() + ", favouriteCount=" + getFavouriteCount() + ')';
 	}
 
-	public void setCreatedTime(Date createdTime) {
-		this.createdTime = createdTime;
-	}
-
-	public int getFavouriteCount() {
-		return favouriteCount;
-	}
-
-	public void setFavouriteCount(int favouriteCount) {
-		this.favouriteCount = favouriteCount;
-	}
 }

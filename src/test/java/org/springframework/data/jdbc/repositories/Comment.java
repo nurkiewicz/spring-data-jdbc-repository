@@ -86,7 +86,7 @@ public class Comment implements Persistable<Integer> {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (!(o instanceof Comment)) return false;
 
 		Comment comment = (Comment) o;
 
