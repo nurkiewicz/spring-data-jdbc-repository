@@ -77,7 +77,9 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		obtainJdbcTemplate();
-		obtainSqlGenerator();
+		if (sqlGenerator == null) {
+			obtainSqlGenerator();
+		}
 	}
 
 	protected JdbcOperations getJdbcOperations() {
