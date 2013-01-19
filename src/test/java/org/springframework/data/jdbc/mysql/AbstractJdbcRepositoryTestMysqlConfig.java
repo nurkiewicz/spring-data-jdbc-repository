@@ -19,7 +19,7 @@ public class AbstractJdbcRepositoryTestMysqlConfig extends AbstractJdbcRepositor
 	public DataSource dataSource() {
 		MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
 		ds.setUser("root");
-		ds.setPassword("");
+		ds.setPassword(System.getProperty("mysql.password", ""));
 		ds.setDatabaseName("spring_data_jdbc_repository_test");
 		return ds;
 	}

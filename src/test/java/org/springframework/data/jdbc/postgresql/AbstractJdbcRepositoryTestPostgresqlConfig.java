@@ -40,6 +40,7 @@ public class AbstractJdbcRepositoryTestPostgresqlConfig extends AbstractJdbcRepo
 	public DataSource dataSource() {
 		PoolingDataSource ds = new PoolingDataSource();
 		ds.setUser("postgres");
+		ds.setPassword(System.getProperty("postgresql.password"));
 		ds.setDatabaseName("spring_data_jdbc_repository_test");
 		return ds;
 	}
