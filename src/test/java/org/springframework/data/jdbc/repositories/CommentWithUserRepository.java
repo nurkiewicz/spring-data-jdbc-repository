@@ -3,6 +3,7 @@ package org.springframework.data.jdbc.repositories;
 import org.springframework.data.jdbc.AbstractJdbcRepository;
 import org.springframework.data.jdbc.RowUnmapper;
 import org.springframework.data.jdbc.TableDescription;
+import org.springframework.data.jdbc.sql.SqlGenerator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -19,11 +20,15 @@ import java.util.Map;
 public class CommentWithUserRepository extends AbstractJdbcRepository<CommentWithUser, Integer> {
 
 	public CommentWithUserRepository(TableDescription table) {
-		super(MAPPER, ROW_UNMAPPER, table);
+		this(MAPPER, ROW_UNMAPPER, table);
 	}
 
 	public CommentWithUserRepository(RowMapper<CommentWithUser> rowMapper, RowUnmapper<CommentWithUser> rowUnmapper, TableDescription table) {
-		super(rowMapper, rowUnmapper, table);
+		this(rowMapper, rowUnmapper, null, table);
+	}
+
+	public CommentWithUserRepository(RowMapper<CommentWithUser> rowMapper, RowUnmapper<CommentWithUser> rowUnmapper, SqlGenerator sqlGenerator, TableDescription table) {
+		super(rowMapper, rowUnmapper, sqlGenerator, table);
 	}
 
 	private static final RowMapper<CommentWithUser> MAPPER = new RowMapper<CommentWithUser>() {

@@ -10,14 +10,14 @@ import org.springframework.data.jdbc.TableDescription;
 public class DerbySqlGenerator extends SqlGenerator {
 
 	public static final String ROW_NUM_COLUMN = "ROW_NUM";
-	public static final String ROW_NUM_COLUMN_CLAUSE = "ROW_NUMBER() OVER () AS " + ROW_NUM_COLUMN;
+	public static final String ROW_NUM_COLUMN_CLAUSE = "ROW_NUMBER() OVER () AS " + ROW_NUM_COLUMN + ", ";
 
 	public DerbySqlGenerator(String allColumnsClause) {
-		super(ROW_NUM_COLUMN_CLAUSE +", " + allColumnsClause);
+		super(ROW_NUM_COLUMN_CLAUSE + allColumnsClause);
 	}
 
 	public DerbySqlGenerator() {
-		super(ROW_NUM_COLUMN_CLAUSE + ", e.*");
+		super(ROW_NUM_COLUMN_CLAUSE + "e.*");
 	}
 
 	@Override
