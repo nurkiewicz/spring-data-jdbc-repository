@@ -31,7 +31,7 @@ public class CommentWithUserRepository extends AbstractJdbcRepository<CommentWit
 		super(rowMapper, rowUnmapper, sqlGenerator, table);
 	}
 
-	private static final RowMapper<CommentWithUser> MAPPER = new RowMapper<CommentWithUser>() {
+	public static final RowMapper<CommentWithUser> MAPPER = new RowMapper<CommentWithUser>() {
 
 		@Override
 		public CommentWithUser mapRow(ResultSet rs, int rowNum) throws SQLException {

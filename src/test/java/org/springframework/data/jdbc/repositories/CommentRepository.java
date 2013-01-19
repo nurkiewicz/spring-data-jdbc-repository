@@ -25,7 +25,7 @@ public class CommentRepository extends AbstractJdbcRepository<Comment, Integer> 
 		super(rowMapper, rowUnmapper, tableName, idColumn);
 	}
 
-	private static final RowMapper<Comment> MAPPER = new RowMapper<Comment>() {
+	public static final RowMapper<Comment> MAPPER = new RowMapper<Comment>() {
 
 		@Override
 		public Comment mapRow(ResultSet rs, int rowNum) throws SQLException {
