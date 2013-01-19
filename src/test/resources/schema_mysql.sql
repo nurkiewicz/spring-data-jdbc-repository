@@ -13,5 +13,5 @@ CREATE TABLE IF NOT EXISTS COMMENTS (
   created_time TIMESTAMP NOT NULL,
   favourite_count INT NOT NULL,
   PRIMARY KEY (id),
-  FOREIGN KEY (user_name) REFERENCES users(user_name)
+  FOREIGN KEY (user_name) REFERENCES USERS(user_name)
 );
