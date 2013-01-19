@@ -12,6 +12,8 @@ import javax.sql.DataSource;
 @Configuration
 public class AbstractJdbcRepositoryTestMysqlConfig extends AbstractJdbcRepositoryTestConfig {
 
+	public static final int MYSQL_PORT = 3306;
+
 	@Bean
 	@Override
 	public DataSource dataSource() {

@@ -4,6 +4,8 @@ import org.springframework.data.jdbc.AbstractJdbcRepositoryManualKeyTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
+import static org.springframework.data.jdbc.mysql.AbstractJdbcRepositoryTestMysqlConfig.MYSQL_PORT;
+
 /**
  * @author Tomasz Nurkiewicz
  * @since 1/9/13, 10:19 PM
@@ -12,7 +14,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 public class AbstractJdbcRepositoryManualKeyMysqlTest extends AbstractJdbcRepositoryManualKeyTest {
 
 	public AbstractJdbcRepositoryManualKeyMysqlTest() {
-		super(3306);
+		super(MYSQL_PORT);
 	}
 
 }
