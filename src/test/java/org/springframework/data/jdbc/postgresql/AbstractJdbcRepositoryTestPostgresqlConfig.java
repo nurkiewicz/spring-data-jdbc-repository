@@ -16,6 +16,8 @@ import javax.sql.DataSource;
 @Configuration
 public class AbstractJdbcRepositoryTestPostgresqlConfig extends AbstractJdbcRepositoryTestConfig {
 
+	public static final int POSTGRESQL_PORT = 5432;
+
 	@Bean
 	@Override
 	public CommentRepository commentRepository() {
