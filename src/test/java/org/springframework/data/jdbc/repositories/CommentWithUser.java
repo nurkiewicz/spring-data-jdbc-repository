@@ -49,7 +49,7 @@ public class CommentWithUser extends Comment implements Persistable<Integer> {
 
 	@Override
 	public String toString() {
-		return "Comment(id=" + getId() + ", user=" + user +  ", contents='" + getContents() + '\'' + ", createdTime=" + getCreatedTime() + ", favouriteCount=" + getFavouriteCount() + ')';
+		return "CommentWithUser(id=" + getId() + ", user=" + user +  ", contents='" + getContents() + '\'' + ", createdTime=" + getCreatedTime() + ", favouriteCount=" + getFavouriteCount() + ')';
 	}
 
 }
