@@ -26,7 +26,7 @@ public abstract class AbstractJdbcRepositoryTestConfig {
 
 	@Bean
 	public CommentWithUserRepository commentWithUserRepository() {
-		return new CommentWithUserRepository("COMMENTS");
+		return new CommentWithUserRepository(new TableDescription("COMMENTS", "COMMENTS JOIN USERS ON COMMENTS.user_name = USERS.user_name", "id"));
 	}
 
 	@Bean

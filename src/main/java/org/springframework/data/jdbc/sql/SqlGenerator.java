@@ -25,7 +25,7 @@ public class SqlGenerator {
 	}
 
 	public String count(TableDescription table) {
-		return "SELECT COUNT(" + table.getIdColumn() + ") FROM " + table.getName();
+		return "SELECT COUNT(" + table.getIdColumn() + ") FROM " + table.getFromClause();
 	}
 
 	public String deleteById(TableDescription table) {
@@ -37,7 +37,7 @@ public class SqlGenerator {
 	}
 
 	public String selectAll(TableDescription table) {
-		return "SELECT " + allColumnsClause + " FROM " + table.getName();
+		return "SELECT " + allColumnsClause + " FROM " + table.getFromClause();
 	}
 
 	public String selectAll(TableDescription table, Pageable page) {

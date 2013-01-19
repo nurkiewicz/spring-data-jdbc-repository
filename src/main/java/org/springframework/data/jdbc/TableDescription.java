@@ -1,6 +1,7 @@
 package org.springframework.data.jdbc;
 
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 /**
  * @author Tomasz Nurkiewicz
@@ -10,13 +11,23 @@ public class TableDescription {
 
 	private final String name;
 	private final String idColumn;
+	private final String fromClause;
 
-	public TableDescription(String name, String idColumn) {
+	public TableDescription(String name, String fromClause, String idColumn) {
 		Assert.notNull(name);
 		Assert.notNull(idColumn);
 
 		this.name = name;
 		this.idColumn = idColumn;
+		if (StringUtils.hasText(fromClause)) {
+			this.fromClause = fromClause;
+		} else {
+			this.fromClause = name;
+		}
+	}
+
+	public TableDescription(String name, String idColumn) {
+		this(name, null, idColumn);
 	}
 
 	public String getName() {
@@ -25,5 +36,9 @@ public class TableDescription {
 
 	public String getIdColumn() {
 		return idColumn;
+	}
+
+	public String getFromClause() {
+		return fromClause;
 	}
 }

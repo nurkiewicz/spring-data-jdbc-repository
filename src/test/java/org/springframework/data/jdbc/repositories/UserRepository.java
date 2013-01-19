@@ -23,7 +23,7 @@ public class UserRepository extends AbstractJdbcRepository<User, String> {
 		public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 			return new User(
 					rs.getString("user_name"),
-					rs.getTimestamp("date_of_birth"),
+					rs.getDate("date_of_birth"),
 					rs.getInt("reputation"),
 					rs.getBoolean("enabled")
 			).withPersisted(true);
