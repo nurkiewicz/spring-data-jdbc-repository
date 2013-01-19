@@ -3,6 +3,7 @@ package org.springframework.data.jdbc.sql;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jdbc.TableDescription;
+import org.springframework.util.StringUtils;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class SqlGenerator {
 	}
 
 	public String count(TableDescription table) {
-		return "SELECT COUNT(" + table.getIdColumn() + ") FROM " + table.getFromClause();
+		return "SELECT COUNT(*) FROM " + table.getFromClause();
 	}
 
 	public String deleteById(TableDescription table) {
@@ -33,7 +34,8 @@ public class SqlGenerator {
 	}
 
 	private String whereByIdClause(TableDescription table) {
-		return " WHERE " + table.getIdColumn() + " = ?";
+		final String idColumnNames = StringUtils.collectionToCommaDelimitedString(table.getIdColumns());
+		return " WHERE " + idColumnNames + " = ?";
 	}
 
 	public String selectAll(TableDescription table) {

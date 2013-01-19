@@ -3,6 +3,10 @@ package org.springframework.data.jdbc;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author Tomasz Nurkiewicz
  * @since 12/18/12, 10:06 PM
@@ -10,15 +14,16 @@ import org.springframework.util.StringUtils;
 public class TableDescription {
 
 	private final String name;
-	private final String idColumn;
+	private final List<String> idColumns;
 	private final String fromClause;
 
-	public TableDescription(String name, String fromClause, String idColumn) {
+	public TableDescription(String name, String fromClause, String... idColumns) {
 		Assert.notNull(name);
-		Assert.notNull(idColumn);
+		Assert.notNull(idColumns);
+		Assert.isTrue(idColumns.length > 0, "At least one primary key column must be provided");
 
 		this.name = name;
-		this.idColumn = idColumn;
+		this.idColumns = Collections.unmodifiableList(Arrays.asList(idColumns));
 		if (StringUtils.hasText(fromClause)) {
 			this.fromClause = fromClause;
 		} else {
@@ -34,8 +39,8 @@ public class TableDescription {
 		return name;
 	}
 
-	public String getIdColumn() {
-		return idColumn;
+	public List<String> getIdColumns() {
+		return idColumns;
 	}
 
 	public String getFromClause() {
