@@ -143,7 +143,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 	}
 
 	@Override
-	public Iterable<T> findAll() {
+	public List<T> findAll() {
 		return jdbcOperations.query(sqlGenerator.selectAll(table), rowMapper);
 	}
 
@@ -247,7 +247,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 	}
 
 	@Override
-	public Iterable<T> findAll(Sort sort) {
+	public List<T> findAll(Sort sort) {
 		return jdbcOperations.query(sqlGenerator.selectAll(table, sort), rowMapper);
 	}
 
