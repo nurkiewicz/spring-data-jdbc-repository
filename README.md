@@ -1,4 +1,4 @@
-# Generic DAO implementation based on `JdbcTemplate`
+# Spring Data JDBC `PagingAndSortingRepository` DAO implementation
 
 The purpose of this project is to provide generic, lightweight and easy to use DAO implementation for relational databases based on [`JdbcTemplate`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/jdbc/core/JdbcTemplate.html) from [Spring framework](http://www.springsource.org/spring-framework).
 
@@ -13,7 +13,7 @@ The purpose of this project is to provide generic, lightweight and easy to use D
 
 ## Features
 
-Each DAO provides built-in support for
+Each DAO provides built-in support for:
 
 * Mapping to/from domain objects through [`RowMapper`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/jdbc/core/RowMapper.html) abstraction
 * Generated and user-defined primary keys
@@ -30,6 +30,7 @@ Each DAO provides built-in support for
 	* HSQLDB
 	* Derby
 * Easily extendable to other database dialects via [`SqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/org/springframework/data/jdbc/sql/SqlGenerator.java) class.
+* Easy retrieval of records by ID and total count
 
 ## API
 
@@ -50,7 +51,38 @@ Compatible with Spring Data [`PagingAndSortingRepository`](http://static.springs
 		    Page<T> findAll(Pageable pageable);
 	}
 
-`Pageable` and `Sort` parameters are also fully supported, which means you get paging and sorting by arbitrary properties for free.
+`Pageable` and `Sort` parameters are also fully supported, which means you get paging and sorting by arbitrary properties for free. For example say you have `userRepository` extending `PagingAndSortingRepository<User, String>` interface (implemented for you by the library) and you request 5th page of `USERS` table, 10 per page:
+
+	Page<User> page = userRepository.findAll(
+		new PageRequest(
+			5, 10, 
+			new Sort(
+				new Order(DESC, "reputation"), 
+				new Order(ASC, "user_name")
+			)
+		)
+	);
+
+Spring Data JDBC repository library will translate this call into (PostgreSQL syntax):
+
+	SELECT *
+	FROM USERS
+	ORDER BY reputation DESC, user_name ASC
+	LIMIT 50 OFFSET 10
+
+...or even (Derby):
+
+	SELECT * FROM (
+		SELECT ROW_NUMBER() OVER () AS ROW_NUM, t.*
+		FROM (
+			SELECT * 
+			FROM USERS 
+			ORDER BY reputation DESC, user_name ASC
+			) AS t
+		) AS a 
+	WHERE ROW_NUM BETWEEN 51 AND 60
+
+No matter which database you use, you'll get `Page<User>` object in return (you still ave to provide `RowMapper<User>` yourself to translate from `ResultSet` to domain object. If you don't know Spring Data project yet, [`Page<T>`](http://static.springsource.org/spring-data/commons/docs/current/api/org/springframework/data/domain/Page.html) is a wonderful abstraction, not only encapsulating `List<User>`, but also providing metadata such as total number of records, on which page we currently are, etc.
 
 ## Reasons to use
 
@@ -69,6 +101,16 @@ Compatible with Spring Data [`PagingAndSortingRepository`](http://static.springs
 * You are already using Spring or maybe even `JdbcTemplate`, but still feel like there is too much manual work
 
 * You have very few database tables
+
+## Quick start
+
+### Prerequisites
+
+### Entity with auto-generated key
+
+### Entity with manually assigned key
+
+### Compound primary key
 
 ## Contributions
 
