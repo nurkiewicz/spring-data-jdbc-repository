@@ -1,6 +1,7 @@
 package org.springframework.data.jdbc;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jdbc.repositories.BoardingPassRepository;
 import org.springframework.data.jdbc.repositories.CommentRepository;
 import org.springframework.data.jdbc.repositories.CommentWithUserRepository;
 import org.springframework.data.jdbc.repositories.UserRepository;
@@ -22,6 +23,11 @@ public abstract class AbstractJdbcRepositoryTestConfig {
 	@Bean
 	public UserRepository userRepository() {
 		return new UserRepository("USERS");
+	}
+
+	@Bean
+	public BoardingPassRepository boardingPassRepository() {
+		return new BoardingPassRepository();
 	}
 
 	@Bean

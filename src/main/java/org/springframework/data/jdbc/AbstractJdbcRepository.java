@@ -30,6 +30,10 @@ import java.util.Map;
  */
 public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID extends Serializable> implements PagingAndSortingRepository<T, ID>, InitializingBean, BeanFactoryAware {
 
+	public static Object[] pk(Object... idValues) {
+		return idValues;
+	}
+
 	private final TableDescription table;
 
 	private final RowMapper<T> rowMapper;
@@ -119,7 +123,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 
 	@Override
 	public void delete(ID id) {
-		jdbcOperations.update(sqlGenerator.deleteById(table), id);
+		jdbcOperations.update(sqlGenerator.deleteById(table), idToObjectArray(id));
 	}
 
 	@Override
@@ -141,7 +145,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 
 	@Override
 	public boolean exists(ID id) {
-		return jdbcOperations.queryForInt(sqlGenerator.countById(table), id) > 0;
+		return jdbcOperations.queryForInt(sqlGenerator.countById(table), idToObjectArray(id)) > 0;
 	}
 
 	@Override
@@ -151,8 +155,16 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 
 	@Override
 	public T findOne(ID id) {
-		List<T> entityOrEmpty = jdbcOperations.query(sqlGenerator.selectById(table), new Object[]{id}, rowMapper);
+		final Object[] idColumns = idToObjectArray(id);
+		final List<T> entityOrEmpty = jdbcOperations.query(sqlGenerator.selectById(table), idColumns, rowMapper);
 		return entityOrEmpty.isEmpty() ? null : entityOrEmpty.get(0);
+	}
+
+	private Object[] idToObjectArray(ID id) {
+		if (id instanceof Object[])
+			return (Object[]) id;
+		else
+			return new Object[]{id};
 	}
 
 	@Override

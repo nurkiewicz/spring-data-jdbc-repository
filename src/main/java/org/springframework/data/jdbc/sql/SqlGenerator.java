@@ -3,7 +3,6 @@ package org.springframework.data.jdbc.sql;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jdbc.TableDescription;
-import org.springframework.util.StringUtils;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -34,8 +33,14 @@ public class SqlGenerator {
 	}
 
 	private String whereByIdClause(TableDescription table) {
-		final String idColumnNames = StringUtils.collectionToCommaDelimitedString(table.getIdColumns());
-		return " WHERE " + idColumnNames + " = ?";
+		final StringBuilder whereClause = new StringBuilder(" WHERE ");
+		for (Iterator<String> idColIterator = table.getIdColumns().iterator(); idColIterator.hasNext(); ) {
+			whereClause.append(idColIterator.next()).append(" = ?");
+			if (idColIterator.hasNext()) {
+				whereClause.append(" AND ");
+			}
+		}
+		return whereClause.toString();
 	}
 
 	public String selectAll(TableDescription table) {
