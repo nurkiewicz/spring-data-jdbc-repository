@@ -3,8 +3,6 @@ package com.blogspot.nurkiewicz.jdbcrepository;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.CommentRepository;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.User;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.UserRepository;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
@@ -16,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -315,7 +314,7 @@ public abstract class AbstractJdbcRepositoryManualKeyTest extends AbstractIntegr
 		final Sort sort = new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"));
 
 		//when
-		final List<User> all = Lists.newArrayList(repository.findAll(sort));
+		final List<User> all = repository.findAll(sort);
 
 		//then
 		assertThat(all).containsExactly(
@@ -457,7 +456,7 @@ public abstract class AbstractJdbcRepositoryManualKeyTest extends AbstractIntegr
 		User alice = user("alice");
 
 		//when
-		repository.save(ImmutableList.of(john, alice));
+		repository.save(Arrays.asList(john, alice));
 
 		//then
 		assertThat(jdbc.queryForList("SELECT user_name FROM USERS ORDER BY user_name", String.class)).containsExactly("alice", "john");
@@ -468,10 +467,10 @@ public abstract class AbstractJdbcRepositoryManualKeyTest extends AbstractIntegr
 		//given
 		User john = user("john");
 		User alice = user("alice");
-		repository.save(ImmutableList.of(john, alice));
+		repository.save(Arrays.asList(john, alice));
 
 		//when
-		repository.delete(ImmutableList.of(john, alice));
+		repository.delete(Arrays.asList(john, alice));
 
 		//then
 		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USERS")).isZero();
@@ -483,10 +482,10 @@ public abstract class AbstractJdbcRepositoryManualKeyTest extends AbstractIntegr
 		User john = user("john");
 		User alice = user("alice");
 		final User bobby = user("bobby");
-		repository.save(ImmutableList.of(john, alice, bobby));
+		repository.save(Arrays.asList(john, alice, bobby));
 
 		//when
-		repository.delete(ImmutableList.of(john, alice));
+		repository.delete(Arrays.asList(john, alice));
 
 		//then
 		assertThat(jdbc.queryForList("SELECT user_name FROM USERS", String.class)).containsExactly("bobby");
@@ -498,10 +497,10 @@ public abstract class AbstractJdbcRepositoryManualKeyTest extends AbstractIntegr
 		User john = user("john");
 		User alice = user("alice");
 		final User bobby = user("bobby");
-		repository.save(ImmutableList.of(john, alice, bobby));
+		repository.save(Arrays.asList(john, alice, bobby));
 
 		//when
-		repository.delete(ImmutableList.of(john, alice, user("bogus")));
+		repository.delete(Arrays.asList(john, alice, user("bogus")));
 
 		//then
 		assertThat(jdbc.queryForList("SELECT user_name FROM USERS", String.class)).containsExactly("bobby");
