@@ -102,7 +102,9 @@ No matter which database you use, you'll get `Page<User>` object in return (you 
 
 * You have very few database tables
 
-## Quick start
+## Getting started
+
+For more examples and working code don't forget to examine [project tests](https://github.com/nurkiewicz/spring-data-jdbc-repository/tree/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository).
 
 ### Prerequisites
 
@@ -345,7 +347,7 @@ I would like you to notice the type of primary key in `Peristable<T>`:
 		public boolean isNew() {
 			return !persisted;
 		}
-		
+
 		//getters/setters/constructors/...
 
 	}
@@ -403,7 +405,13 @@ When filling [bug reports](https://github.com/nurkiewicz/spring-data-jdbc-reposi
 
 ## Design
 
-TODO
+Library consists of only a handful of classes, highlighted in the diagram below:
+
+![UML diagram](classes.png)
+
+[`JdbcRepository`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/JdbcRepository.java) is the most important class that implements all [`PagingAndSortingRepository`](http://static.springsource.org/spring-data/data-commons/docs/current/api/org/springframework/data/repository/PagingAndSortingRepository.html) methods. Each user repository has to extend this class. Also each such repository must at least implement [`RowMapper`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/jdbc/core/RowMapper.html) and [`RowUnmapper`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/RowUnmapper.java) (only if you want to modify table data).
+
+SQL generation is delegated to [`SqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/SqlGenerator.java). [`PostgreSqlGenerator.`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/PostgreSqlGenerator.java) and [`DerbySqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/DerbySqlGenerator.java) are provided for databases that don't work with standard generator.
 
 ## License
 This project is released under version 2.0 of the [Apache License](http://www.apache.org/licenses/LICENSE-2.0) (same as [Spring framework](https://github.com/SpringSource/spring-framework)).
