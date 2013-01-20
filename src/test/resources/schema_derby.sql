@@ -13,3 +13,11 @@ CREATE TABLE COMMENTS (
 	favourite_count INT NOT NULL,
 	FOREIGN KEY (user_name) REFERENCES USERS(user_name)
 );
+
+CREATE TABLE BOARDING_PASS (
+  flight_no varchar(8) NOT NULL,
+  seq_no INT NOT NULL,
+  passenger VARCHAR(1000),
+  seat CHAR(3),
+  PRIMARY KEY (flight_no, seq_no)
+);

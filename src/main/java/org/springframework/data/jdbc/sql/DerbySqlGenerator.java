@@ -10,14 +10,13 @@ import org.springframework.data.jdbc.TableDescription;
 public class DerbySqlGenerator extends SqlGenerator {
 
 	public static final String ROW_NUM_COLUMN = "ROW_NUM";
-	public static final String ROW_NUM_COLUMN_CLAUSE = "ROW_NUMBER() OVER () AS " + ROW_NUM_COLUMN + ", ";
+	public static final String ROW_NUM_COLUMN_CLAUSE = "SELECT * FROM (SELECT ROW_NUMBER() OVER () AS " + ROW_NUM_COLUMN + ", t.* FROM (";
 
 	public DerbySqlGenerator(String allColumnsClause) {
-		super(ROW_NUM_COLUMN_CLAUSE + allColumnsClause);
+		super(allColumnsClause);
 	}
 
 	public DerbySqlGenerator() {
-		super(ROW_NUM_COLUMN_CLAUSE + "e.*");
 	}
 
 	@Override
@@ -28,7 +27,7 @@ public class DerbySqlGenerator extends SqlGenerator {
 	@Override
 	public String selectAll(TableDescription table, Pageable page) {
 		final int offset = page.getPageNumber() * page.getPageSize() + 1;
-		return "SELECT * FROM (" + super.selectAll(table, page) + ") AS t WHERE " + ROW_NUM_COLUMN + " BETWEEN " + offset + " AND " + (offset + page.getPageSize() - 1);
+		return ROW_NUM_COLUMN_CLAUSE + super.selectAll(table, page) + ") AS t) AS a WHERE " + ROW_NUM_COLUMN + " BETWEEN " + offset + " AND " + (offset + page.getPageSize() - 1);
 	}
 
 	@Override
