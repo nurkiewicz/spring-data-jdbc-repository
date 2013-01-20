@@ -1,4 +1,4 @@
-# Spring Data JDBC `PagingAndSortingRepository` DAO implementation
+# Spring Data generic JDBC DAO implementation
 
 The purpose of this project is to provide generic, lightweight and easy to use DAO implementation for relational databases based on [`JdbcTemplate`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/jdbc/core/JdbcTemplate.html) from [Spring framework](http://www.springsource.org/spring-framework).
 
@@ -106,11 +106,110 @@ No matter which database you use, you'll get `Page<User>` object in return (you 
 
 ### Prerequisites
 
+Maven coordinates:
+
+	<dependency>
+		<groupId>com.blogspot.nurkiewicz</groupId>
+		<artifactId>jdbcrepository</artifactId>
+		<version>0.0.1</version>
+	</dependency>
+
+Unfortunately the project **is not yet in maven central repository**. For the time being you can install the library in your local repository by cloning it:
+
+	$ git clone git://github.com/nurkiewicz/spring-data-jdbc-repository.git
+	$ git checkout 0.0.1
+	$ mvn clean install
+
+In order to start your project must have `DataSource` bean present and transaction management enabled. Here is a minimal MySQL configuration:
+
+	@EnableTransactionManagement
+	@Configuration
+	public class MinimalConfig {
+
+		@Bean
+		public PlatformTransactionManager transactionManager() {
+			return new DataSourceTransactionManager(dataSource());
+		}
+
+		@Bean
+		public DataSource dataSource() {
+			MysqlConnectionPoolDataSource ds = new MysqlConnectionPoolDataSource();
+			ds.setUser("user");
+			ds.setPassword("secret");
+			ds.setDatabaseName("db_name");
+			return ds;
+		}
+
+	}
+
+
 ### Entity with auto-generated key
+
+Say you have a following database table with auto-generated key (MySQL syntax):
+
+	CREATE TABLE COMMENTS (
+		id INT AUTO_INCREMENT,
+		user_name varchar(256),
+		contents varchar(1000),
+		created_time TIMESTAMP NOT NULL,
+		PRIMARY KEY (id)
+	);
+
+First you need to create domain object mapping to that table (just like in any other ORM):
+
+	public class Comment implements Persistable<Integer> {
+
+		private Integer id;
+		private String userName;
+		private String contents;
+		private Date createdTime;
+
+		@Override
+		public Integer getId() {
+			return id;
+		}
+
+		@Override
+		public boolean isNew() {
+			return id == null;
+		}
+		
+		//getters/setters/constructors/...
+	}
+
+Apart from standard Java boilerplate you should notice implementing [`Persistable<Integer>`](http://static.springsource.org/spring-data/commons/docs/current/api/org/springframework/data/domain/Persistable.html) where `Integer` is the type of primary key. `Persistable<T>` is an interface coming from Spring Data project and it's the only requirement we place on your domain object.
+
+Finally we are ready to create our DAO:
+
+	@Repository
+	public class CommentRepository extends JdbcRepository<Comment, Integer> {
+
+		public CommentRepository() {
+			super(ROW_MAPPER, ROW_UNMAPPER, "COMMENTS");
+		}
+
+		public static final RowMapper<Comment> ROW_MAPPER = //...
+
+		private static final RowUnmapper<Comment> ROW_UNMAPPER = //...
+
+		@Override
+		protected Comment postCreate(Comment entity, Number generatedId) {
+			entity.setId(generatedId.intValue());
+			return entity;
+		}
+	}
+
+It's quite a lot of code, so let's go step by step. First of all I use [`@Repository`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/stereotype/Repository.html) annotation to mark DAO bean. It enables persistence exception translation. Also such annotated classes are discovered by CLASSPATH scanning.
+
+As you can see we extend `JdbcRepository<Comment, Integer>` which is the central class of this library, providing implementations of all `PagingAndSortingRepository` methods. Its constructor has three required dependencies: `RowMapper`, `RowUnmapper` and table name. You may also provide ID column name, otherwise default `"id"` is used.
 
 ### Entity with manually assigned key
 
 ### Compound primary key
+
+### Transactions
+
+This library is completely orthogonal to transaction management. Every method of each repository requires running transaction and it's up to you to set it up. Typically you would place `@Transactional` on service layer (calling DAO beans). I don't recommend [placing `@Transactional` over every DAO](http://stackoverflow.com/questions/8993318/what-is-the-right-way-to-use-spring-mvc-with-hibernate-in-dao-sevice-layer-arch).
 
 ## Contributions
 
