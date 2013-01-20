@@ -408,7 +408,7 @@ When filling [bug reports](https://github.com/nurkiewicz/spring-data-jdbc-reposi
 
 Library consists of only a handful of classes, highlighted in the diagram below:
 
-![UML diagram](classes.png)
+![UML diagram](https://raw.github.com/nurkiewicz/spring-data-jdbc-repository/master/src/main/docs/classes.png)
 
 [`JdbcRepository`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/JdbcRepository.java) is the most important class that implements all [`PagingAndSortingRepository`](http://static.springsource.org/spring-data/data-commons/docs/current/api/org/springframework/data/repository/PagingAndSortingRepository.html) methods. Each user repository has to extend this class. Also each such repository must at least implement [`RowMapper`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/jdbc/core/RowMapper.html) and [`RowUnmapper`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/RowUnmapper.java) (only if you want to modify table data).
 
