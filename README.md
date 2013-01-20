@@ -121,7 +121,7 @@ Unfortunately the project **is not yet in maven central repository**. For the ti
 
 	$ git clone git://github.com/nurkiewicz/spring-data-jdbc-repository.git
 	$ git checkout 0.1
-	$ mvn clean install
+	$ mvn javadoc:jar source:jar install
 
 ---
 
