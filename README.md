@@ -404,6 +404,20 @@ This library is continuously tested using Travis ([![Build Status](https://secur
 
 When filling [bug reports](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues) or submitting new features please try including supporting test cases. Each [pull request](https://github.com/nurkiewicz/spring-data-jdbc-repository/pulls) is automatically tested on a separate branch.
 
+### Building
+
+After forking the [official repository](https://github.com/nurkiewicz/spring-data-jdbc-repository) building is as simple as running:
+
+    $ mvn install
+
+You'll notice plenty of exceptions during JUnit test execution. This is normal. Some of the tests run against MySQL and PostgreSQL available only on Travis CI server. When these database servers are unavailable, whole test is simply *skipped*:
+
+	Results :
+
+	Tests run: 265, Failures: 0, Errors: 0, Skipped: 106
+
+Exception stack traces come from root [`AbstractIntegrationTest`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/AbstractIntegrationTest.java).
+
 ## Design
 
 Library consists of only a handful of classes, highlighted in the diagram below:
