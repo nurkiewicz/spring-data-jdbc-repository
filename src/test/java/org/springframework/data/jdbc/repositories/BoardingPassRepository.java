@@ -16,7 +16,11 @@ import java.util.Map;
  */
 public class BoardingPassRepository extends AbstractJdbcRepository<BoardingPass, Object[]> {
 	public BoardingPassRepository() {
-		super(MAPPER, UNMAPPER, new TableDescription("BOARDING_PASS", null, "flight_no", "seq_no")
+		this("BOARDING_PASS");
+	}
+
+	public BoardingPassRepository(String tableName) {
+		super(MAPPER, UNMAPPER, new TableDescription(tableName, null, "flight_no", "seq_no")
 		);
 	}
 

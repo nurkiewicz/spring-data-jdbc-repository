@@ -4,6 +4,7 @@ import org.postgresql.jdbc2.optional.PoolingDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jdbc.AbstractJdbcRepositoryTestConfig;
+import org.springframework.data.jdbc.repositories.BoardingPassRepository;
 import org.springframework.data.jdbc.repositories.CommentRepository;
 import org.springframework.data.jdbc.repositories.UserRepository;
 import org.springframework.data.jdbc.sql.PostgreSqlGenerator;
@@ -28,6 +29,11 @@ public class AbstractJdbcRepositoryTestPostgresqlConfig extends AbstractJdbcRepo
 	@Override
 	public UserRepository userRepository() {
 		return new UserRepository("users");
+	}
+
+	@Override
+	public BoardingPassRepository boardingPassRepository() {
+		return new BoardingPassRepository("boarding_pass");
 	}
 
 	@Bean
