@@ -10,7 +10,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
-public abstract class AbstractJdbcRepositoryTestConfig {
+public abstract class JdbcRepositoryTestConfig {
 
 	@Bean
 	public abstract DataSource dataSource();

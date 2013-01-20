@@ -1,6 +1,6 @@
 package com.blogspot.nurkiewicz.jdbcrepository.repositories;
 
-import com.blogspot.nurkiewicz.jdbcrepository.AbstractJdbcRepository;
+import com.blogspot.nurkiewicz.jdbcrepository.JdbcRepository;
 import com.blogspot.nurkiewicz.jdbcrepository.RowUnmapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Repository
-public class UserRepository extends AbstractJdbcRepository<User, String> {
+public class UserRepository extends JdbcRepository<User, String> {
 
 	public UserRepository(String tableName) {
 		super(MAPPER, ROW_UNMAPPER, tableName, "user_name");

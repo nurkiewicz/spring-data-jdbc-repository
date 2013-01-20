@@ -10,15 +10,15 @@ import org.springframework.data.domain.Sort;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.blogspot.nurkiewicz.jdbcrepository.AbstractJdbcRepository.pk;
+import static com.blogspot.nurkiewicz.jdbcrepository.JdbcRepository.pk;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.data.domain.Sort.Order;
 
-public abstract class AbstractJdbcRepositoryCompoundPkTest extends AbstractIntegrationTest {
+public abstract class JdbcRepositoryCompoundPkTest extends AbstractIntegrationTest {
 
-	public AbstractJdbcRepositoryCompoundPkTest(int databasePort) {
+	public JdbcRepositoryCompoundPkTest(int databasePort) {
 		super(databasePort);
 	}
 

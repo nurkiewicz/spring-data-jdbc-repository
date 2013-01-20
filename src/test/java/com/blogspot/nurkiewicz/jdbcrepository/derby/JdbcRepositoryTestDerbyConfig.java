@@ -1,6 +1,6 @@
 package com.blogspot.nurkiewicz.jdbcrepository.derby;
 
-import com.blogspot.nurkiewicz.jdbcrepository.AbstractJdbcRepositoryTestConfig;
+import com.blogspot.nurkiewicz.jdbcrepository.JdbcRepositoryTestConfig;
 import com.blogspot.nurkiewicz.jdbcrepository.RowUnmapper;
 import com.blogspot.nurkiewicz.jdbcrepository.TableDescription;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.Comment;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 @EnableTransactionManagement
 @Configuration
-public class AbstractJdbcRepositoryTestDerbyConfig extends AbstractJdbcRepositoryTestConfig {
+public class JdbcRepositoryTestDerbyConfig extends JdbcRepositoryTestConfig {
 
 	@Override
 	public CommentRepository commentRepository() {

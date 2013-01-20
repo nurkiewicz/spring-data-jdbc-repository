@@ -1,6 +1,6 @@
 package com.blogspot.nurkiewicz.jdbcrepository.mysql;
 
-import com.blogspot.nurkiewicz.jdbcrepository.AbstractJdbcRepositoryTestConfig;
+import com.blogspot.nurkiewicz.jdbcrepository.JdbcRepositoryTestConfig;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 
 @EnableTransactionManagement
 @Configuration
-public class AbstractJdbcRepositoryTestMysqlConfig extends AbstractJdbcRepositoryTestConfig {
+public class JdbcRepositoryTestMysqlConfig extends JdbcRepositoryTestConfig {
 
 	public static final int MYSQL_PORT = 3306;
 

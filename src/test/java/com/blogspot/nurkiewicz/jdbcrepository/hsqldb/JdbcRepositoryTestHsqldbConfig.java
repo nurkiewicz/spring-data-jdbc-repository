@@ -1,6 +1,6 @@
 package com.blogspot.nurkiewicz.jdbcrepository.hsqldb;
 
-import com.blogspot.nurkiewicz.jdbcrepository.AbstractJdbcRepositoryTestConfig;
+import com.blogspot.nurkiewicz.jdbcrepository.JdbcRepositoryTestConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 
 @EnableTransactionManagement
 @Configuration
-public class AbstractJdbcRepositoryTestHsqldbConfig extends AbstractJdbcRepositoryTestConfig {
+public class JdbcRepositoryTestHsqldbConfig extends JdbcRepositoryTestConfig {
 
 	@Bean
 	@Override

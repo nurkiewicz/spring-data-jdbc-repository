@@ -16,7 +16,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
  * @author Tomasz Nurkiewicz
  * @since 12/20/12, 10:55 PM
  */
-public abstract class AbstractJdbcRepositoryGeneratedKeyTest extends AbstractIntegrationTest {
+public abstract class JdbcRepositoryGeneratedKeyTest extends AbstractIntegrationTest {
 
 	@Resource
 	private CommentRepository repository;
@@ -25,7 +25,7 @@ public abstract class AbstractJdbcRepositoryGeneratedKeyTest extends AbstractInt
 	private UserRepository userRepository;
 	private String someUser = "some_user";
 
-	public AbstractJdbcRepositoryGeneratedKeyTest(int databasePort) {
+	public JdbcRepositoryGeneratedKeyTest(int databasePort) {
 		super(databasePort);
 	}
 

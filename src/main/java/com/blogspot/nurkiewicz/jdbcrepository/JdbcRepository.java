@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Implementation of {@link PagingAndSortingRepository} using {@link JdbcTemplate}
  */
-public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID extends Serializable> implements PagingAndSortingRepository<T, ID>, InitializingBean, BeanFactoryAware {
+public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Serializable> implements PagingAndSortingRepository<T, ID>, InitializingBean, BeanFactoryAware {
 
 	public static Object[] pk(Object... idValues) {
 		return idValues;
@@ -43,7 +43,7 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 	private BeanFactory beanFactory;
 	private JdbcOperations jdbcOperations;
 
-	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, SqlGenerator sqlGenerator, TableDescription table) {
+	public JdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, SqlGenerator sqlGenerator, TableDescription table) {
 		Assert.notNull(rowMapper);
 		Assert.notNull(rowUnmapper);
 		Assert.notNull(table);
@@ -54,27 +54,27 @@ public abstract class AbstractJdbcRepository<T extends Persistable<ID>, ID exten
 		this.table = table;
 	}
 
-	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, TableDescription table) {
+	public JdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, TableDescription table) {
 		this(rowMapper, rowUnmapper, null, table);
 	}
 
-	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName, String idColumn) {
+	public JdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName, String idColumn) {
 		this(rowMapper, rowUnmapper, null, new TableDescription(tableName, idColumn));
 	}
 
-	public AbstractJdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName) {
+	public JdbcRepository(RowMapper<T> rowMapper, RowUnmapper<T> rowUnmapper, String tableName) {
 		this(rowMapper, rowUnmapper, new TableDescription(tableName, "id"));
 	}
 
-	public AbstractJdbcRepository(RowMapper<T> rowMapper, TableDescription table) {
+	public JdbcRepository(RowMapper<T> rowMapper, TableDescription table) {
 		this(rowMapper, new MissingRowUnmapper<T>(), null, table);
 	}
 
-	public AbstractJdbcRepository(RowMapper<T> rowMapper, String tableName, String idColumn) {
+	public JdbcRepository(RowMapper<T> rowMapper, String tableName, String idColumn) {
 		this(rowMapper, new MissingRowUnmapper<T>(), null, new TableDescription(tableName, idColumn));
 	}
 
-	public AbstractJdbcRepository(RowMapper<T> rowMapper, String tableName) {
+	public JdbcRepository(RowMapper<T> rowMapper, String tableName) {
 		this(rowMapper, new MissingRowUnmapper<T>(), new TableDescription(tableName, "id"));
 	}
 

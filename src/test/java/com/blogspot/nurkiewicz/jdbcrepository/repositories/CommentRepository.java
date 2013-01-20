@@ -1,6 +1,6 @@
 package com.blogspot.nurkiewicz.jdbcrepository.repositories;
 
-import com.blogspot.nurkiewicz.jdbcrepository.AbstractJdbcRepository;
+import com.blogspot.nurkiewicz.jdbcrepository.JdbcRepository;
 import com.blogspot.nurkiewicz.jdbcrepository.RowUnmapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -15,7 +15,7 @@ import java.util.Map;
  * @since 12/17/12, 11:15 PM
  */
 @Repository
-public class CommentRepository extends AbstractJdbcRepository<Comment, Integer> {
+public class CommentRepository extends JdbcRepository<Comment, Integer> {
 
 	public CommentRepository(String tableName) {
 		super(MAPPER, ROW_UNMAPPER, tableName);

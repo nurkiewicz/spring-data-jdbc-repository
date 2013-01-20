@@ -2,7 +2,7 @@ package com.blogspot.nurkiewicz.jdbcrepository.repositories;
 
 import org.springframework.data.domain.Persistable;
 
-import static com.blogspot.nurkiewicz.jdbcrepository.AbstractJdbcRepository.pk;
+import static com.blogspot.nurkiewicz.jdbcrepository.JdbcRepository.pk;
 
 /**
  * @author Tomasz Nurkiewicz

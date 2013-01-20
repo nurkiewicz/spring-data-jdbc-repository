@@ -1,6 +1,6 @@
 package com.blogspot.nurkiewicz.jdbcrepository.repositories;
 
-import com.blogspot.nurkiewicz.jdbcrepository.AbstractJdbcRepository;
+import com.blogspot.nurkiewicz.jdbcrepository.JdbcRepository;
 import com.blogspot.nurkiewicz.jdbcrepository.RowUnmapper;
 import com.blogspot.nurkiewicz.jdbcrepository.TableDescription;
 import com.blogspot.nurkiewicz.jdbcrepository.sql.SqlGenerator;
@@ -17,7 +17,7 @@ import java.util.Map;
  * @since 1/16/13, 10:52 PM
  */
 @Repository
-public class CommentWithUserRepository extends AbstractJdbcRepository<CommentWithUser, Integer> {
+public class CommentWithUserRepository extends JdbcRepository<CommentWithUser, Integer> {
 
 	public CommentWithUserRepository(TableDescription table) {
 		this(MAPPER, ROW_UNMAPPER, table);

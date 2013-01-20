@@ -1,6 +1,6 @@
 package com.blogspot.nurkiewicz.jdbcrepository.h2;
 
-import com.blogspot.nurkiewicz.jdbcrepository.AbstractJdbcRepositoryTestConfig;
+import com.blogspot.nurkiewicz.jdbcrepository.JdbcRepositoryTestConfig;
 import org.h2.jdbcx.JdbcDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import javax.sql.DataSource;
 
 @EnableTransactionManagement
 @Configuration
-public class AbstractJdbcRepositoryTestH2Config extends AbstractJdbcRepositoryTestConfig {
+public class JdbcRepositoryTestH2Config extends JdbcRepositoryTestConfig {
 
 	@Bean
 	@Override

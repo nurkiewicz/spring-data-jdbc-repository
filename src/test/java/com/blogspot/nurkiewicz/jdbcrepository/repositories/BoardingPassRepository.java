@@ -1,6 +1,6 @@
 package com.blogspot.nurkiewicz.jdbcrepository.repositories;
 
-import com.blogspot.nurkiewicz.jdbcrepository.AbstractJdbcRepository;
+import com.blogspot.nurkiewicz.jdbcrepository.JdbcRepository;
 import com.blogspot.nurkiewicz.jdbcrepository.RowUnmapper;
 import com.blogspot.nurkiewicz.jdbcrepository.TableDescription;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,7 +14,7 @@ import java.util.Map;
  * @author Tomasz Nurkiewicz
  * @since 1/20/13, 10:09 AM
  */
-public class BoardingPassRepository extends AbstractJdbcRepository<BoardingPass, Object[]> {
+public class BoardingPassRepository extends JdbcRepository<BoardingPass, Object[]> {
 	public BoardingPassRepository() {
 		this("BOARDING_PASS");
 	}

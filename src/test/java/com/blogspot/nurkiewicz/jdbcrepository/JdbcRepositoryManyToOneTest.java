@@ -20,7 +20,7 @@ import static org.fest.assertions.api.Assertions.assertThat;
 import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.data.domain.Sort.Direction.DESC;
 
-public abstract class AbstractJdbcRepositoryManyToOneTest extends AbstractIntegrationTest {
+public abstract class JdbcRepositoryManyToOneTest extends AbstractIntegrationTest {
 
 	public static final String SOME_USER = "some_user";
 	@Resource
@@ -33,7 +33,7 @@ public abstract class AbstractJdbcRepositoryManyToOneTest extends AbstractIntegr
 	private static final Timestamp SOME_TIMESTAMP = new Timestamp(new GregorianCalendar(2013, JANUARY, 20).getTimeInMillis());
 
 
-	protected AbstractJdbcRepositoryManyToOneTest(int databasePort) {
+	protected JdbcRepositoryManyToOneTest(int databasePort) {
 		super(databasePort);
 	}
 

@@ -1,6 +1,6 @@
 package com.blogspot.nurkiewicz.jdbcrepository.postgresql;
 
-import com.blogspot.nurkiewicz.jdbcrepository.AbstractJdbcRepositoryTestConfig;
+import com.blogspot.nurkiewicz.jdbcrepository.JdbcRepositoryTestConfig;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.BoardingPassRepository;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.CommentRepository;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.UserRepository;
@@ -15,7 +15,7 @@ import javax.sql.DataSource;
 
 @EnableTransactionManagement
 @Configuration
-public class AbstractJdbcRepositoryTestPostgresqlConfig extends AbstractJdbcRepositoryTestConfig {
+public class JdbcRepositoryTestPostgresqlConfig extends JdbcRepositoryTestConfig {
 
 	public static final int POSTGRESQL_PORT = 5432;
 
