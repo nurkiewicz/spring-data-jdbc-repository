@@ -1,6 +1,5 @@
 package org.springframework.data.jdbc.derby;
 
-import org.springframework.data.jdbc.TableDescription;
 import org.springframework.data.jdbc.sql.DerbySqlGenerator;
 
 /**
@@ -11,10 +10,6 @@ public class CommentWithUserDerbySqlGenerator extends DerbySqlGenerator {
 
 	public CommentWithUserDerbySqlGenerator() {
 		super("c.*, u.date_of_birth, u.reputation, u.enabled");
-	}
-
-	public String selectAll(TableDescription table) {
-		return "SELECT " + getAllColumnsClause() + " FROM " + table.getFromClause();
 	}
 
 }
