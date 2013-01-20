@@ -10,7 +10,4 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
  */
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = JdbcRepositoryTestH2Config.class)
 public class JdbcRepositoryManualKeyH2Test extends JdbcRepositoryManualKeyTest {
-	public JdbcRepositoryManualKeyH2Test() {
-		super(-1);
-	}
 }

@@ -10,7 +10,4 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
  */
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = JdbcRepositoryTestH2Config.class)
 public class JdbcRepositoryCompoundPkH2Test extends JdbcRepositoryCompoundPkTest {
-	public JdbcRepositoryCompoundPkH2Test() {
-		super(-1);
-	}
 }

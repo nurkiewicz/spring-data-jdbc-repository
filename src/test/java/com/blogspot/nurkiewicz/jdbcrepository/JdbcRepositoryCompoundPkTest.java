@@ -18,10 +18,12 @@ import static org.springframework.data.domain.Sort.Order;
 
 public abstract class JdbcRepositoryCompoundPkTest extends AbstractIntegrationTest {
 
+	public JdbcRepositoryCompoundPkTest() {
+	}
+
 	public JdbcRepositoryCompoundPkTest(int databasePort) {
 		super(databasePort);
 	}
-
 
 	@Resource
 	private BoardingPassRepository repository;

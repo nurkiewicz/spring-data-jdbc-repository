@@ -10,7 +10,4 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
  */
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = JdbcRepositoryTestDerbyConfig.class)
 public class JdbcRepositoryGeneratedKeyDerbyTest extends JdbcRepositoryGeneratedKeyTest {
-	public JdbcRepositoryGeneratedKeyDerbyTest() {
-		super(-1);
-	}
 }

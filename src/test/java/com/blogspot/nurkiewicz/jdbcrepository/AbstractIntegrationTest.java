@@ -20,6 +20,10 @@ public abstract class AbstractIntegrationTest {
 
 	private final int databasePort;
 
+	protected AbstractIntegrationTest() {
+		this.databasePort = -1;
+	}
+
 	protected AbstractIntegrationTest(int databasePort) {
 		this.databasePort = databasePort;
 	}

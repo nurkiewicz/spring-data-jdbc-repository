@@ -32,6 +32,8 @@ public abstract class JdbcRepositoryManyToOneTest extends AbstractIntegrationTes
 	private static final java.sql.Date SOME_DATE = new java.sql.Date(new GregorianCalendar(2013, JANUARY, 19).getTimeInMillis());
 	private static final Timestamp SOME_TIMESTAMP = new Timestamp(new GregorianCalendar(2013, JANUARY, 20).getTimeInMillis());
 
+	protected JdbcRepositoryManyToOneTest() {
+	}
 
 	protected JdbcRepositoryManyToOneTest(int databasePort) {
 		super(databasePort);

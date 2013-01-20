@@ -37,6 +37,9 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 
 	private static final Date SOME_DATE_OF_BIRTH = new Date(new GregorianCalendar(2013, Calendar.JANUARY, 9).getTimeInMillis());
 
+	public JdbcRepositoryManualKeyTest() {
+	}
+
 	public JdbcRepositoryManualKeyTest(int databasePort) {
 		super(databasePort);
 	}

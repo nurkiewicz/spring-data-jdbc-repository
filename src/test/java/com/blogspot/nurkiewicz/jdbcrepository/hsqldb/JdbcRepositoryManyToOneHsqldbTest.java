@@ -10,7 +10,4 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
  */
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = JdbcRepositoryTestHsqldbConfig.class)
 public class JdbcRepositoryManyToOneHsqldbTest extends JdbcRepositoryManyToOneTest {
-	public JdbcRepositoryManyToOneHsqldbTest() {
-		super(-1);
-	}
 }

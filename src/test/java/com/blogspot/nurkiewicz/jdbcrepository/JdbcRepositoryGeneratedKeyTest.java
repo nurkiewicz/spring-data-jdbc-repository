@@ -25,6 +25,9 @@ public abstract class JdbcRepositoryGeneratedKeyTest extends AbstractIntegration
 	private UserRepository userRepository;
 	private String someUser = "some_user";
 
+	public JdbcRepositoryGeneratedKeyTest() {
+	}
+
 	public JdbcRepositoryGeneratedKeyTest(int databasePort) {
 		super(databasePort);
 	}
