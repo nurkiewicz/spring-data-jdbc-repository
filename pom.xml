@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.springframework.data</groupId>
-	<artifactId>spring-data-jdbc-repository</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<groupId>com.blogspot.nurkiewicz</groupId>
+	<artifactId>jdbcrepository</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>Spring Data JDBC repository</name>
 	<developers>
 		<developer>
@@ -30,34 +30,34 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.9.1</version>
-                <configuration>
-                    <configLocation>checkstyle.xml</configLocation>
-                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <consoleOutput>true</consoleOutput>
-                    <failsOnError>true</failsOnError>
-                    <useFile/>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>check-style</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>checkstyle</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-check-style</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>checkstyle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<configLocation>checkstyle.xml</configLocation>
+					<includeTestSourceDirectory>true</includeTestSourceDirectory>
+					<consoleOutput>true</consoleOutput>
+					<failsOnError>true</failsOnError>
+					<useFile/>
+				</configuration>
+				<executions>
+					<execution>
+						<id>check-style</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>checkstyle</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>test-check-style</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>checkstyle</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -66,7 +66,7 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons-core</artifactId>
 			<version>1.1.0.RELEASE</version>
-		</dependency> 
+		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
@@ -115,12 +115,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.9.5</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.easytesting</groupId>
 			<artifactId>fest-assert-core</artifactId>
 			<version>2.0M7</version>
@@ -147,7 +141,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Data persistence -->
+		<!-- JDBC drivers -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
