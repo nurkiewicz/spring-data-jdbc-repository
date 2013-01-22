@@ -22,7 +22,6 @@ public class MssqlSqlGenerator extends AbstractMssqlSqlGenerator {
 		final int offset = page.getPageNumber() * page.getPageSize() + 1;
 		String orderByPart = page.getSort() != null ? page.getSort().toString().replace(":", "") : table.getIdColumns().get(0);
 		String selectAll = super.selectAll(table);
-		String sql = String.format(ROW_NUM_WRAPPER, orderByPart, selectAll, offset, (offset + page.getPageSize() - 1));
-		return sql;
+		return String.format(ROW_NUM_WRAPPER, orderByPart, selectAll, offset, (offset + page.getPageSize() - 1));
 	}
 }
