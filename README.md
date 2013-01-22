@@ -29,6 +29,7 @@ Each DAO provides built-in support for:
 	* H2
 	* HSQLDB
 	* Derby
+	* MS SQL Server (2012)
 	* ...and most likely most of the others
 * Easily extendable to other database dialects via [`SqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/SqlGenerator.java) class.
 * Easy retrieval of records by ID
