@@ -1,6 +1,5 @@
 language: java
 jdk:
-  - openjdk6
   - oraclejdk7
 before_script:
   - mysql -e 'create database spring_data_jdbc_repository_test;'
