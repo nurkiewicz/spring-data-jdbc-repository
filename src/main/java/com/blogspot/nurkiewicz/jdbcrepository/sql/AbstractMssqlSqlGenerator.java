@@ -5,7 +5,14 @@ import org.springframework.data.domain.Pageable;
 /**
  * Author: tom
  */
-public abstract class AbstractMssqlSqlGenerator extends SqlGenerator {
+abstract class AbstractMssqlSqlGenerator extends SqlGenerator {
+    public AbstractMssqlSqlGenerator() {
+    }
+
+    public AbstractMssqlSqlGenerator(String allColumnsClause) {
+        super(allColumnsClause);
+    }
+
     @Override
     protected String limitClause(Pageable page) {
         return "";
