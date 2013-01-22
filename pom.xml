@@ -22,8 +22,8 @@
 		<connection>scm:git:git@github.com:nurkiewicz/spring-data-jdbc-repository.git</connection>
 		<url>scm:git:git@github.com:nurkiewicz/spring-data-jdbc-repository.git</url>
 		<developerConnection>scm:git:git@github.com:nurkiewicz/spring-data-jdbc-repository.git</developerConnection>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<build>
 		<plugins>
@@ -181,6 +181,12 @@
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
 			<version>10.9.1.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.jtds</groupId>
+			<artifactId>jtds</artifactId>
+			<version>1.3.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
