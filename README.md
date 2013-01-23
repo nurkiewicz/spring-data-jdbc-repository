@@ -133,7 +133,7 @@ Unfortunately the project **is not yet in maven central repository**. For the ti
 ```bash
 $ git clone git://github.com/nurkiewicz/spring-data-jdbc-repository.git
 $ cd spring-data-jdbc-repository
-$ git checkout 0.1
+$ git checkout 0.2
 $ mvn javadoc:jar source:jar install
 ```
 
@@ -474,7 +474,7 @@ SQL generation is delegated to [`SqlGenerator`](https://github.com/nurkiewicz/sp
 
 ## Changelog
 
-### 0.1.1
+### 0.2
 
 * MS SQL Server 2008/2012 support (see [pull request](https://github.com/nurkiewicz/spring-data-jdbc-repository/pull/2))
 
