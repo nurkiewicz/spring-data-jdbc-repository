@@ -1,10 +1,11 @@
-package com.blogspot.nurkiewicz.jdbcrepository.mssql;
+package com.blogspot.nurkiewicz.jdbcrepository.mssql2012;
 
 import com.blogspot.nurkiewicz.jdbcrepository.JdbcRepositoryTestConfig;
 import com.blogspot.nurkiewicz.jdbcrepository.RowUnmapper;
 import com.blogspot.nurkiewicz.jdbcrepository.TableDescription;
+import com.blogspot.nurkiewicz.jdbcrepository.mssql.CommentWithUserMssqlGenerator;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.*;
-import com.blogspot.nurkiewicz.jdbcrepository.sql.MssqlSqlGenerator;
+import com.blogspot.nurkiewicz.jdbcrepository.sql.Mssql2012SqlGenerator;
 import com.blogspot.nurkiewicz.jdbcrepository.sql.SqlGenerator;
 import net.sourceforge.jtds.jdbcx.JtdsDataSource;
 import org.springframework.context.annotation.Bean;
@@ -18,9 +19,9 @@ import java.util.Map;
 
 @EnableTransactionManagement
 @Configuration
-public class JdbcRepositoryTestMssqlConfig extends JdbcRepositoryTestConfig {
+public class JdbcRepositoryTestMssql2012Config extends JdbcRepositoryTestConfig {
 
-    public static final int MSSQL_PORT = Integer.parseInt(System.getProperty("mssql.port", "1433"));
+    public static final int MSSQL_PORT = Integer.parseInt(System.getProperty("mssql2012.port", "1433"));
 
     @Bean
     @Override
@@ -41,7 +42,7 @@ public class JdbcRepositoryTestMssqlConfig extends JdbcRepositoryTestConfig {
 
     @Bean
     public SqlGenerator sqlGenerator() {
-        return new MssqlSqlGenerator();
+        return new Mssql2012SqlGenerator();
     }
 
     @Override
@@ -68,10 +69,10 @@ public class JdbcRepositoryTestMssqlConfig extends JdbcRepositoryTestConfig {
     @Override
     public DataSource dataSource() {
         JtdsDataSource ds = new JtdsDataSource();
-        ds.setUser(System.getProperty("mssql.user", "unittest"));
-        ds.setPassword(System.getProperty("mssql.password"));
-        ds.setInstance(System.getProperty("mssql.instance"));
-        ds.setServerName(System.getProperty("mssql.hostname", "localhost"));
+        ds.setUser(System.getProperty("mssql2012.user", "unittest"));
+        ds.setPassword(System.getProperty("mssql2012.password"));
+        ds.setInstance(System.getProperty("mssql2012.instance"));
+        ds.setServerName(System.getProperty("mssql2012.hostname", "localhost"));
         ds.setDatabaseName("spring_data_jdbc_repository_test");
         return ds;
     }
