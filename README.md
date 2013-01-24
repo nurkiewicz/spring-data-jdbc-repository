@@ -464,7 +464,7 @@ Exception stack traces come from root [`AbstractIntegrationTest`](https://github
 
 ## Design
 
-Library consists of only a handful of classes, highlighted in the diagram below:
+Library consists of only a handful of classes, highlighted in the diagram below ([source](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/docs/yuml.txt)):
 
 ![UML diagram](https://raw.github.com/nurkiewicz/spring-data-jdbc-repository/master/src/main/docs/classes.png)
 
