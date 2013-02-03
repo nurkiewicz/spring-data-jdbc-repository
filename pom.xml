@@ -6,10 +6,14 @@
 	<name>Spring Data JDBC repository</name>
 	<developers>
 		<developer>
+			<name>Tomasz Nurkiewicz</name>
+			<url>http://nurkiewicz.blogspot.com</url>
+		</developer>
+		<developer>
 			<name>Sheena Artrip</name>
 		</developer>
 		<developer>
-			<name>Tomasz Nurkiewicz</name>
+			<name>Thomas Darimont</name>
 		</developer>
 	</developers>
 
