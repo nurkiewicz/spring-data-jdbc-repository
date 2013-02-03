@@ -189,6 +189,21 @@
 			<version>1.2.7</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!--
+		 Oracle JDBC Driver has to be installed manually in your maven repo...
+
+		 For windows:
+		 1) cd into %ORACLE_HOME%\product\11.2.0\dbhome_1\jdbc\lib
+		 2) After that import the ojdbc6.jar into your maven home:
+		 mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.3 -Dpackaging=jar -Dfile=ojdbc6.jar -DgeneratePom=true
+		 -->
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 </project>
