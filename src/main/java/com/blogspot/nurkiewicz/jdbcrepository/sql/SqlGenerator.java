@@ -43,6 +43,24 @@ public class SqlGenerator {
 		return whereClause.toString();
 	}
 
+	private String whereByIdsClause(TableDescription table, Iterable<?> ids) {
+		final StringBuilder whereClause = new StringBuilder(" WHERE ");
+		if (table.getIdColumns().size() > 1) {
+			throw new UnsupportedOperationException("Not yet implemented");
+		}
+		final String idColumn = table.getIdColumns().get(0);
+		whereClause.append(idColumn).append(" IN (");
+		final Iterator<?> idIterator = ids.iterator();
+		while (idIterator.hasNext()) {
+			whereClause.append(idIterator.next());
+			if (idIterator.hasNext()) {
+				whereClause.append((", "));
+			}
+		}
+		whereClause.append(")");
+		return whereClause.toString();
+	}
+
 	public String selectAll(TableDescription table) {
 		return "SELECT " + allColumnsClause + " FROM " + table.getFromClause();
 	}
@@ -62,6 +80,10 @@ public class SqlGenerator {
 
 	public String selectById(TableDescription table) {
 		return selectAll(table) + whereByIdClause(table);
+	}
+
+	public String selectByIds(TableDescription table, Iterable<?> ids) {
+		return selectAll(table) + whereByIdsClause(table, ids);
 	}
 
 	protected String sortingClauseIfRequired(Sort sort) {

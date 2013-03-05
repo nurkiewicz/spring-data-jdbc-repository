@@ -273,7 +273,7 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 
 	@Override
 	public Iterable<T> findAll(Iterable<ID> ids) {
-		throw new UnsupportedOperationException("Not yet implemented: findAll");
+		return jdbcOperations.query(sqlGenerator.selectByIds(table, ids), rowMapper);
 	}
 
 	@Override

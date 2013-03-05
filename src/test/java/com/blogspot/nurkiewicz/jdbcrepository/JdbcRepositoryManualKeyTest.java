@@ -3,6 +3,7 @@ package com.blogspot.nurkiewicz.jdbcrepository;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.CommentRepository;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.User;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.UserRepository;
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.data.domain.Page;
@@ -14,10 +15,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.Date;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.springframework.data.domain.Sort.Direction.ASC;
@@ -27,8 +25,12 @@ import static org.springframework.data.domain.Sort.Order;
 public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTest {
 
 	public static final int SOME_REPUTATION = 42;
+
 	@Resource
 	private UserRepository repository;
+
+	@Resource
+	private CommentRepository commentRepository;
 
 	@Resource
 	private DataSource dataSource;
@@ -441,9 +443,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 	@Test
 	public void shouldReturnCountOfRecordsInTable() throws Exception {
 		//given
-		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "1", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
-		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "2", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
-		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "3", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
+		insertRecordsForIds("1", "2", "3");
 
 		//when
 		final long count = repository.count();
@@ -523,9 +523,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 	@Test
 	public void shouldDeleteAllRecordsInTable() throws Exception {
 		//given
-		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "1", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
-		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "2", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
-		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "3", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
+		insertRecordsForIds("1", "2", "3");
 
 		//when
 		repository.deleteAll();
@@ -534,7 +532,55 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USERS")).isZero();
 	}
 
-	@Resource
-	private CommentRepository commentRepository;
+	private void insertRecordsForIds(String... ids) {
+		for(String id: ids) {
+			jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", id, SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
+		}
+	}
+
+	@Test
+	public void shouldReturnNothingWhenFindingByListOfIdsButListEmpty() throws Exception {
+		//given
+		insertRecordsForIds("1", "2", "3");
+
+		//when
+		final Iterable<User> none = repository.findAll(Collections.<String>emptyList());
+
+		//then
+		assertThat(none).isEmpty();
+	}
+
+	@Test
+	public void shouldSelectOneRecordById() throws Exception {
+		//given
+		insertRecordsForIds("1", "2", "3");
+
+		//when
+		final List<User> oneRecord = Lists.newArrayList(repository.findAll(Arrays.asList("2")));
+
+		//then
+		assertThat(oneRecord).hasSize(1);
+		assertThat(oneRecord.get(0).getId()).isEqualTo("2");
+	}
+
+	@Test
+	public void shouldSelectMultipleRecordsById() throws Exception {
+		//given
+		insertRecordsForIds("1", "2", "3");
+
+		//when
+		final List<User> users = Lists.newArrayList(repository.findAll(Arrays.asList("1", "3")));
+
+		//then
+		assertThat(users).hasSize(2);
+		Collections.sort(users, new Comparator<User>() {
+			@Override
+			public int compare(User o1, User o2) {
+				return o1.getId().compareTo(o2.getId());
+			}
+		});
+		assertThat(users.get(0).getId()).isEqualTo("1");
+		assertThat(users.get(1).getId()).isEqualTo("3");
+	}
 
 }
