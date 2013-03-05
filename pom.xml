@@ -136,6 +136,12 @@
 			<version>2.0M7</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>13.0.1</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Logging -->
 		<dependency>
