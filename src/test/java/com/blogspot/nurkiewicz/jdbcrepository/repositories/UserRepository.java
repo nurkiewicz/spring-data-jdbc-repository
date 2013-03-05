@@ -43,12 +43,14 @@ public class UserRepository extends JdbcRepository<User, String> {
 	};
 
 	@Override
-	protected User postUpdate(User entity) {
-		return entity.withPersisted(true);
+	protected <S extends User> S postUpdate(S entity) {
+		entity.withPersisted(true);
+		return entity;
 	}
 
 	@Override
-	protected User postCreate(User entity, Number generatedId) {
-		return entity.withPersisted(true);
+	protected <S extends User> S postCreate(S entity, Number generatedId) {
+		entity.withPersisted(true);
+		return entity;
 	}
 }

@@ -25,8 +25,9 @@ public class BoardingPassRepository extends JdbcRepository<BoardingPass, Object[
 	}
 
 	@Override
-	protected BoardingPass postCreate(BoardingPass entity, Number generatedId) {
-		return entity.withPersisted(true);
+	protected <S extends BoardingPass> S postCreate(S entity, Number generatedId) {
+		entity.withPersisted(true);
+		return entity;
 	}
 
 	public static final RowMapper<BoardingPass> MAPPER = new RowMapper<BoardingPass>() {
