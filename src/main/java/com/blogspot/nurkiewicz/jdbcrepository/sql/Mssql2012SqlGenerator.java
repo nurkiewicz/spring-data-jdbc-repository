@@ -8,9 +8,9 @@ import org.springframework.util.StringUtils;
  * SQLServer Pagination feature for SQLServer 2012+ -> extension of order by clause
  *
  * @see http://msdn.microsoft.com/en-us/library/ms188385.aspx
- * Author: tom
+ *      Author: tom
  */
-public class MssqlSql2012Generator extends AbstractMssqlSqlGenerator {
+public class Mssql2012SqlGenerator extends AbstractMssqlSqlGenerator {
 
 	/**
 	 * Sort by first column
@@ -27,7 +27,7 @@ public class MssqlSql2012Generator extends AbstractMssqlSqlGenerator {
 			sortingClause = MSSQL_DEFAULT_SORT_CLAUSE;
 		}
 
-		final String pagination = " OFFSET " + (offset - 1) + " ROWS FETCH NEXT " + page.getPageSize() + " ROW ONLY";
-		return super.selectAll(table) + sortingClause + pagination;
+		final String paginationClause = " OFFSET " + (offset - 1) + " ROWS FETCH NEXT " + page.getPageSize() + " ROW ONLY";
+		return super.selectAll(table) + sortingClause + paginationClause;
 	}
 }

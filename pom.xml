@@ -6,10 +6,14 @@
 	<name>Spring Data JDBC repository</name>
 	<developers>
 		<developer>
+			<name>Tomasz Nurkiewicz</name>
+			<url>http://nurkiewicz.blogspot.com</url>
+		</developer>
+		<developer>
 			<name>Sheena Artrip</name>
 		</developer>
 		<developer>
-			<name>Tomasz Nurkiewicz</name>
+			<name>Thomas Darimont</name>
 		</developer>
 	</developers>
 
@@ -71,6 +75,28 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>oracle</id>
+			<!--
+			 Oracle JDBC Driver has to be installed manually in your maven repo...
+
+			 For windows:
+			 1) cd into %ORACLE_HOME%\product\11.2.0\dbhome_1\jdbc\lib
+			 2) After that import the ojdbc6.jar into your maven home:
+			 mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0.3 -Dpackaging=jar -Dfile=ojdbc6.jar -DgeneratePom=true
+			 -->
+			<dependencies>
+				<dependency>
+					<groupId>com.oracle</groupId>
+					<artifactId>ojdbc6</artifactId>
+					<version>11.2.0.3</version>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
@@ -198,6 +224,12 @@
 			<groupId>net.sourceforge.jtds</groupId>
 			<artifactId>jtds</artifactId>
 			<version>1.2.7</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.jolbox</groupId>
+			<artifactId>bonecp</artifactId>
+			<version>0.7.1.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

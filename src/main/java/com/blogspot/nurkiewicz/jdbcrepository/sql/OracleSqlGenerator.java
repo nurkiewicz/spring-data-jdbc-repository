@@ -6,14 +6,18 @@ import org.springframework.data.domain.Pageable;
 /**
  * Author: tom
  */
-public class MssqlSqlGenerator extends AbstractMssqlSqlGenerator {
-	public MssqlSqlGenerator() {
+public class OracleSqlGenerator extends SqlGenerator {
+	public OracleSqlGenerator() {
 	}
 
-	public MssqlSqlGenerator(String allColumnsClause) {
+	public OracleSqlGenerator(String allColumnsClause) {
 		super(allColumnsClause);
 	}
 
+	@Override
+	protected String limitClause(Pageable page) {
+		return "";
+	}
 
 	@Override
 	public String selectAll(TableDescription table, Pageable page) {

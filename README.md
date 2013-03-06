@@ -30,7 +30,8 @@ Each DAO provides built-in support for:
 	* HSQLDB
 	* Derby
 	* MS SQL Server (2008, 2012)
-	* ...and most likely most of the others
+	* Oracle 10g / 11g (9i should work too)
+	* ...and most likely many others
 * Easily extendable to other database dialects via [`SqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/SqlGenerator.java) class.
 * Easy retrieval of records by ID
 
@@ -438,11 +439,11 @@ Spring Data JDBC repository library is not providing any caching abstraction or 
 
 ## Contributions
 
-..are always welcome. Don't hesitate to [submit bug reports](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues) and [pull requests](https://github.com/nurkiewicz/spring-data-jdbc-repository/pulls). Biggest missing feature now is support for Oracle database. It would be terrific if someone could have a look at it.
+..are always welcome. Don't hesitate to [submit bug reports](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues) and [pull requests](https://github.com/nurkiewicz/spring-data-jdbc-repository/pulls).
 
 ### Testing
 
-This library is continuously tested using Travis ([![Build Status](https://secure.travis-ci.org/nurkiewicz/spring-data-jdbc-repository.png?branch=master)](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository)). Test suite consists of 60+ tests each run against 6 different databases: MySQL, PostgreSQL, H2, HSQLDB and Derby + MS SQL Server tests not run as part of CI.
+This library is continuously tested using Travis ([![Build Status](https://secure.travis-ci.org/nurkiewicz/spring-data-jdbc-repository.png?branch=master)](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository)). Test suite consists of 60+ distinct tests each run against 8 different databases: MySQL, PostgreSQL, H2, HSQLDB and Derby + MS SQL Server and Oracle tests not run as part of CI.
 
 When filling [bug reports](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues) or submitting new features please try including supporting test cases. Each [pull request](https://github.com/nurkiewicz/spring-data-jdbc-repository/pulls) is automatically tested on a separate branch.
 
@@ -459,7 +460,7 @@ You'll notice plenty of exceptions during JUnit test execution. This is normal. 
 ```
 Results :
 
-Tests run: 366, Failures: 0, Errors: 0, Skipped: 177
+Tests run: 484, Failures: 0, Errors: 0, Skipped: 295
 ```
 
 Exception stack traces come from root [`AbstractIntegrationTest`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/AbstractIntegrationTest.java).
@@ -478,6 +479,7 @@ SQL generation is delegated to [`SqlGenerator`](https://github.com/nurkiewicz/sp
 
 ### 0.3
 
+* Oracle 10g / 11g support (see [pull request](https://github.com/nurkiewicz/spring-data-jdbc-repository/pull/3))
 * Upgrading Spring dependency to 3.2.1.RELEASE and [Spring Data Commons](http://www.springsource.org/spring-data/commons) to 1.5.0.RELEASE (see [#4](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues/4)).
 
 ### 0.2
