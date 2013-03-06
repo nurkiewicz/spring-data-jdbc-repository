@@ -52,6 +52,7 @@ public interface PagingAndSortingRepository<T, ID extends Serializable> extends 
 		   void deleteAll();
 	Iterable<T> findAll(Sort sort);
 		Page<T> findAll(Pageable pageable);
+	Iterable<T> findAll(Iterable<ID> ids);
 }
 ```
 
@@ -220,7 +221,7 @@ public class CommentRepository extends JdbcRepository<Comment, Integer> {
 	private static final RowUnmapper<Comment> ROW_UNMAPPER = //see below
 
 	@Override
-	protected Comment postCreate(Comment entity, Number generatedId) {
+	protected <S extends Comment> S postCreate(S entity, Number generatedId) {
 		entity.setId(generatedId.intValue());
 		return entity;
 	}
@@ -307,9 +308,8 @@ public class User implements Persistable<String> {
 		return !persisted;
 	}
 
-	public User withPersisted(boolean persisted) {
+	public void setPersisted(boolean persisted) {
 		this.persisted = persisted;
-		return this;
 	}
 
 	//getters/setters/constructors/...
@@ -334,13 +334,15 @@ public class UserRepository extends JdbcRepository<User, String> {
 	public static final RowUnmapper<User> ROW_UNMAPPER = //...
 
 	@Override
-	protected User postUpdate(User entity) {
-		return entity.withPersisted(true);
+	protected <S extends User> S postUpdate(S entity) {
+		entity.setPersisted(true);
+		return entity;
 	}
 
 	@Override
-	protected User postCreate(User entity, Number generatedId) {
-		return entity.withPersisted(true);
+	protected <S extends User> S postCreate(S entity, Number generatedId) {
+		entity.setPersisted(true);
+		return entity;
 	}
 }
 ```
@@ -363,7 +365,7 @@ CREATE TABLE BOARDING_PASS (
 );
 ```
 
-I would like you to notice the type of primary key in `Peristable<T>`:
+I would like you to notice the type of primary key in `Persistable<T>`:
 
 ```java
 public class BoardingPass implements Persistable<Object[]> {
@@ -390,7 +392,7 @@ public class BoardingPass implements Persistable<Object[]> {
 }
 ```
 
-Unfortunately we don't support small value classes encapsulating all ID values in one object (like JPA does with [`@IdClass`](http://docs.oracle.com/javaee/6/api/javax/persistence/IdClass.html)), so you have to live with `Object[]` array. Defining DAO class is similar to what we've already seen:
+Unfortunately library does not support small, immutable value classes encapsulating all ID values in one object (like JPA does with [`@IdClass`](http://docs.oracle.com/javaee/6/api/javax/persistence/IdClass.html)), so you have to live with `Object[]` array. Defining DAO class is similar to what we've already seen:
 
 ```java
 public class BoardingPassRepository extends JdbcRepository<BoardingPass, Object[]> {
@@ -440,7 +442,7 @@ Spring Data JDBC repository library is not providing any caching abstraction or 
 
 ### Testing
 
-This library is continuously tested using Travis ([![Build Status](https://secure.travis-ci.org/nurkiewicz/spring-data-jdbc-repository.png?branch=master)](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository)). Test suite consists of **318 tests** (53 distinct tests each run against 6 different databases: MySQL, PostgreSQL, H2, HSQLDB and Derby + MS SQL Server tests not run as part of CI.
+This library is continuously tested using Travis ([![Build Status](https://secure.travis-ci.org/nurkiewicz/spring-data-jdbc-repository.png?branch=master)](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository)). Test suite consists of 60+ tests each run against 6 different databases: MySQL, PostgreSQL, H2, HSQLDB and Derby + MS SQL Server tests not run as part of CI.
 
 When filling [bug reports](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues) or submitting new features please try including supporting test cases. Each [pull request](https://github.com/nurkiewicz/spring-data-jdbc-repository/pulls) is automatically tested on a separate branch.
 
@@ -457,7 +459,7 @@ You'll notice plenty of exceptions during JUnit test execution. This is normal. 
 ```
 Results :
 
-Tests run: 265, Failures: 0, Errors: 0, Skipped: 106
+Tests run: 366, Failures: 0, Errors: 0, Skipped: 177
 ```
 
 Exception stack traces come from root [`AbstractIntegrationTest`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/AbstractIntegrationTest.java).
@@ -473,6 +475,10 @@ Library consists of only a handful of classes, highlighted in the diagram below 
 SQL generation is delegated to [`SqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/SqlGenerator.java). [`PostgreSqlGenerator.`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/PostgreSqlGenerator.java) and [`DerbySqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/DerbySqlGenerator.java) are provided for databases that don't work with standard generator.
 
 ## Changelog
+
+### 0.3
+
+* Upgrading Spring dependency to 3.2.1.RELEASE and [Spring Data Commons](http://www.springsource.org/spring-data/commons) to 1.5.0.RELEASE (see [#4](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues/4).
 
 ### 0.2
 
