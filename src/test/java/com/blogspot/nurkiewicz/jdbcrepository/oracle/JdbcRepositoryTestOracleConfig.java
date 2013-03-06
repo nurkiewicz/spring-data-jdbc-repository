@@ -6,13 +6,12 @@ import com.blogspot.nurkiewicz.jdbcrepository.repositories.CommentRepository;
 import com.blogspot.nurkiewicz.jdbcrepository.repositories.UserRepository;
 import com.blogspot.nurkiewicz.jdbcrepository.sql.OracleSqlGenerator;
 import com.blogspot.nurkiewicz.jdbcrepository.sql.SqlGenerator;
-import oracle.jdbc.pool.OracleDataSource;
+import com.jolbox.bonecp.BoneCPDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 
 @EnableTransactionManagement
 @Configuration
@@ -45,18 +44,14 @@ public class JdbcRepositoryTestOracleConfig extends JdbcRepositoryTestConfig {
 	@Bean
 	@Override
 	public DataSource dataSource() {
-		OracleDataSource ds = null;
-		try {
-			ds = new OracleDataSource();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		ds.setUser(System.getProperty("oracle.username"));
-		ds.setPortNumber(ORACLE_PORT);
+		BoneCPDataSource ds = new BoneCPDataSource();
+		ds.setDriverClass("oracle.jdbc.OracleDriver");
+		final String host = System.getProperty("oracle.hostname", "localhost");
+		final String service = System.getProperty("oracle.sid", "orcl");
+		final String url = " jdbc:oracle:thin:@//" + host + ":" + ORACLE_PORT + "/" + service;
+		ds.setJdbcUrl(url);
+		ds.setUsername(System.getProperty("oracle.username"));
 		ds.setPassword(System.getProperty("oracle.password"));
-		ds.setServerName(System.getProperty("oracle.hostname", "localhost"));
-		ds.setDatabaseName(System.getProperty("oracle.sid", "orcl"));
-		ds.setDriverType(System.getProperty("oracle.driver_type", "thin"));
 		return ds;
 	}
 
