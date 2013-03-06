@@ -478,7 +478,7 @@ SQL generation is delegated to [`SqlGenerator`](https://github.com/nurkiewicz/sp
 
 ### 0.3
 
-* Upgrading Spring dependency to 3.2.1.RELEASE and [Spring Data Commons](http://www.springsource.org/spring-data/commons) to 1.5.0.RELEASE (see [#4](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues/4).
+* Upgrading Spring dependency to 3.2.1.RELEASE and [Spring Data Commons](http://www.springsource.org/spring-data/commons) to 1.5.0.RELEASE (see [#4](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues/4)).
 
 ### 0.2
 
