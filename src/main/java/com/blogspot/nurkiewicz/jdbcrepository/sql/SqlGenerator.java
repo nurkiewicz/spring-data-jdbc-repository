@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,6 +15,14 @@ import java.util.Set;
  */
 public class SqlGenerator {
 
+	public static final String WHERE = " WHERE ";
+	public static final String AND = " AND ";
+	public static final String OR = " OR ";
+	public static final String SELECT = "SELECT ";
+	public static final String FROM = "FROM ";
+	public static final String DELETE = "DELETE ";
+	public static final String COMMA = ", ";
+	public static final String PARAM = " = ?";
 	private String allColumnsClause;
 
 	public SqlGenerator(String allColumnsClause) {
@@ -25,44 +34,65 @@ public class SqlGenerator {
 	}
 
 	public String count(TableDescription table) {
-		return "SELECT COUNT(*) FROM " + table.getFromClause();
+		return SELECT + "COUNT(*) " + FROM + table.getFromClause();
 	}
 
 	public String deleteById(TableDescription table) {
-		return "DELETE FROM " + table.getName() + whereByIdClause(table);
+		return DELETE + FROM + table.getName() + whereByIdClause(table);
 	}
 
 	private String whereByIdClause(TableDescription table) {
-		final StringBuilder whereClause = new StringBuilder(" WHERE ");
+		final StringBuilder whereClause = new StringBuilder(WHERE);
 		for (Iterator<String> idColIterator = table.getIdColumns().iterator(); idColIterator.hasNext(); ) {
-			whereClause.append(idColIterator.next()).append(" = ?");
+			whereClause.append(idColIterator.next()).append(PARAM);
 			if (idColIterator.hasNext()) {
-				whereClause.append(" AND ");
+				whereClause.append(AND);
 			}
 		}
 		return whereClause.toString();
 	}
 
-	private String whereByIdsClause(TableDescription table, Iterable<?> ids) {
-		final StringBuilder whereClause = new StringBuilder(" WHERE ");
-		if (table.getIdColumns().size() > 1) {
-			throw new UnsupportedOperationException("Not yet implemented");
+	private String whereByIdsClause(TableDescription table, int idsCount) {
+		final List<String> idColumnNames = table.getIdColumns();
+		if (idColumnNames.size() > 1) {
+			return whereByIdsWithMultipleIdColumns(idsCount, idColumnNames);
+		} else {
+			return whereByIdsWithSingleIdColumn(idsCount, idColumnNames.get(0));
 		}
-		final String idColumn = table.getIdColumns().get(0);
-		whereClause.append(idColumn).append(" IN (");
-		final Iterator<?> idIterator = ids.iterator();
-		while (idIterator.hasNext()) {
-			whereClause.append(idIterator.next());
-			if (idIterator.hasNext()) {
-				whereClause.append((", "));
+	}
+
+	private String whereByIdsWithMultipleIdColumns(int idsCount, List<String> idColumnNames) {
+		int idColumnsCount = idColumnNames.size();
+		final StringBuilder whereClause = new StringBuilder(WHERE);
+		final int totalParams = idsCount * idColumnsCount;
+		for (int idColumnIdx = 0; idColumnIdx < totalParams; idColumnIdx += idColumnsCount) {
+			if (idColumnIdx > 0) {
+				whereClause.append(OR);
 			}
+			whereClause.append("(");
+			for (int i = 0; i < idColumnsCount; ++i) {
+				if (i > 0) {
+					whereClause.append(AND);
+				}
+				whereClause.append(idColumnNames.get(i)).append(" = ?");
+			}
+			whereClause.append(")");
 		}
-		whereClause.append(")");
 		return whereClause.toString();
+	}
+
+	private String whereByIdsWithSingleIdColumn(int idsCount, String idColumn) {
+		final StringBuilder whereClause = new StringBuilder(WHERE);
+		return whereClause.
+				append(idColumn).
+				append(" IN (").
+				append(repeat("?", COMMA, idsCount)).
+				append(")").
+				toString();
 	}
 
 	public String selectAll(TableDescription table) {
-		return "SELECT " + allColumnsClause + " FROM " + table.getFromClause();
+		return SELECT + allColumnsClause + " " + FROM + table.getFromClause();
 	}
 
 	public String selectAll(TableDescription table, Pageable page) {
@@ -75,15 +105,22 @@ public class SqlGenerator {
 
 	protected String limitClause(Pageable page) {
 		final int offset = page.getPageNumber() * page.getPageSize();
-		return " LIMIT " + offset + ", " + page.getPageSize();
+		return " LIMIT " + offset + COMMA + page.getPageSize();
 	}
 
 	public String selectById(TableDescription table) {
 		return selectAll(table) + whereByIdClause(table);
 	}
 
-	public String selectByIds(TableDescription table, Iterable<?> ids) {
-		return selectAll(table) + whereByIdsClause(table, ids);
+	public String selectByIds(TableDescription table, int idsCount) {
+		switch (idsCount) {
+			case 0:
+				return selectAll(table);
+			case 1:
+				return selectById(table);
+			default:
+				return selectAll(table) + whereByIdsClause(table, idsCount);
+		}
 	}
 
 	protected String sortingClauseIfRequired(Sort sort) {
@@ -99,7 +136,7 @@ public class SqlGenerator {
 					append(" ").
 					append(order.getDirection().toString());
 			if (iterator.hasNext()) {
-				orderByClause.append(", ");
+				orderByClause.append(COMMA);
 			}
 		}
 		return orderByClause.toString();
@@ -111,7 +148,7 @@ public class SqlGenerator {
 			Map.Entry<String, Object> column = iterator.next();
 			updateQuery.append(column.getKey()).append(" = ?");
 			if (iterator.hasNext()) {
-				updateQuery.append(", ");
+				updateQuery.append(COMMA);
 			}
 		}
 		updateQuery.append(whereByIdClause(table));
@@ -122,7 +159,7 @@ public class SqlGenerator {
 		final StringBuilder createQuery = new StringBuilder("INSERT INTO " + table.getName() + " (");
 		appendColumnNames(createQuery, columns.keySet());
 		createQuery.append(")").append(" VALUES (");
-		createQuery.append(repeat("?", ", ", columns.size()));
+		createQuery.append(repeat("?", COMMA, columns.size()));
 		return createQuery.append(")").toString();
 	}
 
@@ -131,7 +168,7 @@ public class SqlGenerator {
 			final String column = iterator.next();
 			createQuery.append(column);
 			if (iterator.hasNext()) {
-				createQuery.append(", ");
+				createQuery.append(COMMA);
 			}
 		}
 	}
@@ -147,7 +184,7 @@ public class SqlGenerator {
 
 
 	public String deleteAll(TableDescription table) {
-		return "DELETE FROM " + table.getName();
+		return DELETE + FROM + table.getName();
 	}
 
 	public String countById(TableDescription table) {

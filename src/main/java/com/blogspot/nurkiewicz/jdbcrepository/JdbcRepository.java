@@ -20,10 +20,7 @@ import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementation of {@link PagingAndSortingRepository} using {@link JdbcTemplate}
@@ -160,11 +157,18 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 		return entityOrEmpty.isEmpty() ? null : entityOrEmpty.get(0);
 	}
 
-	private Object[] idToObjectArray(ID id) {
+	private static <ID> Object[] idToObjectArray(ID id) {
 		if (id instanceof Object[])
 			return (Object[]) id;
 		else
 			return new Object[]{id};
+	}
+
+	private static <ID> List<Object> idToObjectList(ID id) {
+		if (id instanceof Object[])
+			return Arrays.asList((Object[]) id);
+		else
+			return Collections.<Object>singletonList(id);
 	}
 
 	@Override
@@ -273,7 +277,28 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 
 	@Override
 	public Iterable<T> findAll(Iterable<ID> ids) {
-		return jdbcOperations.query(sqlGenerator.selectByIds(table, ids), rowMapper);
+		final List<ID> idsList = toList(ids);
+		if (idsList.isEmpty()) {
+			return Collections.emptyList();
+		}
+		final Object[] idColumnValues = flatten(idsList);
+		return jdbcOperations.query(sqlGenerator.selectByIds(table, idsList.size()), rowMapper, idColumnValues);
+	}
+
+	private static <T> List<T> toList(Iterable<T> iterable) {
+		final List<T> result = new ArrayList<T>();
+		for (T item : iterable) {
+			result.add(item);
+		}
+		return result;
+	}
+
+	private static <ID> Object[] flatten(List<ID> ids) {
+		final List<Object> result = new ArrayList<Object>();
+		for (ID id : ids) {
+			result.addAll(idToObjectList(id));
+		}
+		return result.toArray();
 	}
 
 	@Override
