@@ -126,7 +126,7 @@ Maven coordinates:
 <dependency>
 	<groupId>com.blogspot.nurkiewicz</groupId>
 	<artifactId>jdbcrepository</artifactId>
-	<version>0.2</version>
+	<version>0.3</version>
 </dependency>
 ```
 
@@ -135,7 +135,7 @@ Unfortunately the project **is not yet in maven central repository**. For the ti
 ```bash
 $ git clone git://github.com/nurkiewicz/spring-data-jdbc-repository.git
 $ cd spring-data-jdbc-repository
-$ git checkout 0.2
+$ git checkout 0.3
 $ mvn javadoc:jar source:jar install
 ```
 
