@@ -94,7 +94,7 @@ SELECT * FROM (
 WHERE ROW_NUM BETWEEN 51 AND 60
 ```
 
-No matter which database you use, you'll get `Page<User>` object in return (you still have to provide `RowMapper<User>` yourself to translate from [`ResultSet`](http://docs.oracle.com/javase/7/docs/api/java/sql/ResultSet.html) to domain object). If you don't know Spring Data project yet, [`Page<T>`](http://static.springsource.org/spring-data/commons/docs/current/api/org/springframework/data/domain/Page.html) is a wonderful abstraction, not only encapsulating `List<User>`, but also providing metadata such as total number of records, on which page we currently are, etc.
+No matter which database you use, you'll get `Page<User>` object in return (you still have to provide `RowMapper<User>` yourself to translate from [`ResultSet`](http://docs.oracle.com/javase/7/docs/api/java/sql/ResultSet.html) to domain object). If you don't know Spring Data project yet, [`Page<T>`](http://static.springsource.org/spring-data/commons/docs/current/api/org/springframework/data/domain/Page.html) is a wonderful abstraction, not only encapsulating `List<T>`, but also providing metadata such as total number of records, on which page we currently are, etc.
 
 ## Reasons to use
 
