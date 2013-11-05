@@ -115,7 +115,7 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 
 	@Override
 	public long count() {
-		return jdbcOperations.queryForLong(sqlGenerator.count(table));
+		return jdbcOperations.queryForObject(sqlGenerator.count(table), Long.class);
 	}
 
 	@Override
@@ -142,7 +142,7 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 
 	@Override
 	public boolean exists(ID id) {
-		return jdbcOperations.queryForInt(sqlGenerator.countById(table), idToObjectArray(id)) > 0;
+		return jdbcOperations.queryForObject(sqlGenerator.countById(table), Integer.class, idToObjectArray(id)) > 0;
 	}
 
 	@Override

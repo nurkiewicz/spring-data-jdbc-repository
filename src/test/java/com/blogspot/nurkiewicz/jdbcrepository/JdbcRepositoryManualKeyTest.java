@@ -375,7 +375,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		repository.delete(someId);
 
 		//then
-		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USERS WHERE user_name = ?", someId)).isZero();
+		assertThat(jdbc.queryForObject("SELECT COUNT(user_name) FROM USERS WHERE user_name = ?",				Integer.class, someId)).isZero();
 	}
 
 	@Test
@@ -413,7 +413,8 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		repository.delete(user);
 
 		//then
-		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USERS WHERE user_name = ?", someId)).isZero();
+		assertThat(jdbc.queryForObject("SELECT COUNT(user_name) FROM USERS WHERE user_name = ?",
+				Integer.class, someId)).isZero();
 	}
 
 	@Test
@@ -476,7 +477,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		repository.delete(Arrays.asList(john, alice));
 
 		//then
-		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USERS")).isZero();
+		assertThat(jdbc.queryForObject("SELECT COUNT(user_name) FROM USERS", Integer.class)).isZero();
 	}
 
 	@Test
@@ -517,7 +518,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		repository.deleteAll();
 
 		//then
-		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USERS")).isZero();
+		assertThat(jdbc.queryForObject("SELECT COUNT(user_name) FROM USERS", Integer.class)).isZero();
 	}
 
 	@Test
@@ -529,7 +530,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		repository.deleteAll();
 
 		//then
-		assertThat(jdbc.queryForInt("SELECT COUNT(user_name) FROM USERS")).isZero();
+		assertThat(jdbc.queryForObject("SELECT COUNT(user_name) FROM USERS", Integer.class)).isZero();
 	}
 
 	private void insertRecordsForIds(String... ids) {
