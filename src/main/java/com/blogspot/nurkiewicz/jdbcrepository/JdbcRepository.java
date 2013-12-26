@@ -36,7 +36,7 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 	private final RowMapper<T> rowMapper;
 	private final RowUnmapper<T> rowUnmapper;
 
-	private SqlGenerator sqlGenerator;
+	private SqlGenerator sqlGenerator = new SqlGenerator();
 	private BeanFactory beanFactory;
 	private JdbcOperations jdbcOperations;
 
@@ -81,6 +81,14 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 		if (sqlGenerator == null) {
 			obtainSqlGenerator();
 		}
+	}
+
+	public void setSqlGenerator(SqlGenerator sqlGenerator) {
+		this.sqlGenerator = sqlGenerator;
+	}
+
+	public void setJdbcOperations(JdbcOperations jdbcOperations) {
+		this.jdbcOperations = jdbcOperations;
 	}
 
 	protected JdbcOperations getJdbcOperations() {
