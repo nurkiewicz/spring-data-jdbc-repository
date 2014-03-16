@@ -126,7 +126,7 @@ Maven coordinates:
 <dependency>
 	<groupId>com.blogspot.nurkiewicz</groupId>
 	<artifactId>jdbcrepository</artifactId>
-	<version>0.3</version>
+	<version>0.3.1</version>
 </dependency>
 ```
 
@@ -135,7 +135,7 @@ Unfortunately the project **is not yet in maven central repository**. For the ti
 ```bash
 $ git clone git://github.com/nurkiewicz/spring-data-jdbc-repository.git
 $ cd spring-data-jdbc-repository
-$ git checkout 0.3
+$ git checkout 0.3.1
 $ mvn javadoc:jar source:jar install
 ```
 
@@ -476,6 +476,11 @@ Library consists of only a handful of classes, highlighted in the diagram below 
 SQL generation is delegated to [`SqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/SqlGenerator.java). [`PostgreSqlGenerator.`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/PostgreSqlGenerator.java) and [`DerbySqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/DerbySqlGenerator.java) are provided for databases that don't work with standard generator.
 
 ## Changelog
+
+### 0.3.1
+
+* Upgraded Spring dependencies: 3.2.1 -> 3.2.4 and 1.5.0 -> 1.6.1
+* Fied [#5 Allow manually injecting JdbcOperations, SqlGenerator and DataSource](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues/5)
 
 ### 0.3
 
