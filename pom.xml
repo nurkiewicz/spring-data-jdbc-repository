@@ -1,13 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.blogspot.nurkiewicz</groupId>
+	<groupId>com.nurkiewicz</groupId>
 	<artifactId>jdbcrepository</artifactId>
 	<version>0.3.2-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>Spring Data JDBC repository</name>
+	<description>A repository implementation compatible with Spring Data abstraction that uses raw repositories</description>
+	<url>https://github.com/nurkiewicz/spring-data-jdbc-repository</url>
 	<developers>
 		<developer>
 			<name>Tomasz Nurkiewicz</name>
-			<url>http://nurkiewicz.blogspot.com</url>
+			<url>http://nurkiewicz.com</url>
 		</developer>
 		<developer>
 			<name>Sheena Artrip</name>
@@ -16,6 +19,12 @@
 			<name>Thomas Darimont</name>
 		</developer>
 	</developers>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
