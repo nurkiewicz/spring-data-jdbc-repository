@@ -32,7 +32,7 @@ Each DAO provides built-in support for:
 	* MS SQL Server (2008, 2012)
 	* Oracle 10g / 11g (9i should work too)
 	* ...and most likely many others
-* Easily extendable to other database dialects via [`SqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/SqlGenerator.java) class.
+* Easily extendable to other database dialects via [`SqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/nurkiewicz/jdbcrepository/sql/SqlGenerator.java) class.
 * Easy retrieval of records by ID
 
 ## API
@@ -100,7 +100,7 @@ No matter which database you use, you'll get `Page<User>` object in return (you 
 
 * You consider migration to JPA or even some NoSQL database in the future.
 
-	Since your code will rely only on methods defined in [`PagingAndSortingRepository`](http://static.springsource.org/spring-data/data-commons/docs/current/api/org/springframework/data/repository/PagingAndSortingRepository.html) and [`CrudRepository`](http://static.springsource.org/spring-data/data-commons/docs/current/api/org/springframework/data/repository/CrudRepository.html) from [Spring Data Commons](http://www.springsource.org/spring-data/commons) umbrella project you are free to switch from [`JdbcRepository`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/JdbcRepository.java) implementation (from this project) to: [`JpaRepository`](http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html), [`MongoRepository`](http://static.springsource.org/spring-data/data-mongodb/docs/current/api/org/springframework/data/mongodb/repository/MongoRepository.html), [`GemfireRepository`](http://static.springsource.org/spring-data-gemfire/docs/current/api/org/springframework/data/gemfire/repository/GemfireRepository.html) or [`GraphRepository`](http://static.springsource.org/spring-data/data-graph/docs/current/api/org/springframework/data/neo4j/repository/GraphRepository.html). They all implement the same common API. Of course don't expect that switching from JDBC to JPA or MongoDB will be as simple as switching imported JAR dependencies - but at least you minimize the impact by using same DAO API.
+	Since your code will rely only on methods defined in [`PagingAndSortingRepository`](http://static.springsource.org/spring-data/data-commons/docs/current/api/org/springframework/data/repository/PagingAndSortingRepository.html) and [`CrudRepository`](http://static.springsource.org/spring-data/data-commons/docs/current/api/org/springframework/data/repository/CrudRepository.html) from [Spring Data Commons](http://www.springsource.org/spring-data/commons) umbrella project you are free to switch from [`JdbcRepository`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/nurkiewicz/jdbcrepository/JdbcRepository.java) implementation (from this project) to: [`JpaRepository`](http://static.springsource.org/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html), [`MongoRepository`](http://static.springsource.org/spring-data/data-mongodb/docs/current/api/org/springframework/data/mongodb/repository/MongoRepository.html), [`GemfireRepository`](http://static.springsource.org/spring-data-gemfire/docs/current/api/org/springframework/data/gemfire/repository/GemfireRepository.html) or [`GraphRepository`](http://static.springsource.org/spring-data/data-graph/docs/current/api/org/springframework/data/neo4j/repository/GraphRepository.html). They all implement the same common API. Of course don't expect that switching from JDBC to JPA or MongoDB will be as simple as switching imported JAR dependencies - but at least you minimize the impact by using same DAO API.
 
 * You need a fast, simple JDBC wrapper library. JPA or even [MyBatis](http://blog.mybatis.org/) is an overkill
 
@@ -116,7 +116,7 @@ No matter which database you use, you'll get `Page<User>` object in return (you 
 
 ## Getting started
 
-For more examples and working code don't forget to examine [project tests](https://github.com/nurkiewicz/spring-data-jdbc-repository/tree/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository).
+For more examples and working code don't forget to examine [project tests](https://github.com/nurkiewicz/spring-data-jdbc-repository/tree/master/src/test/java/com/nurkiewicz/jdbcrepository).
 
 ### Prerequisites
 
@@ -126,7 +126,7 @@ Maven coordinates:
 <dependency>
 	<groupId>com.nurkiewicz.jdbcrepository</groupId>
 	<artifactId>jdbcrepository</artifactId>
-	<version>0.3.2</version>
+	<version>0.4</version>
 </dependency>
 ```
 
@@ -174,7 +174,7 @@ CREATE TABLE COMMENTS (
 );
 ```
 
-First you need to create domain object [`User`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/repositories/User.java) mapping to that table (just like in any other ORM):
+First you need to create domain object [`User`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/nurkiewicz/jdbcrepository/repositories/User.java) mapping to that table (just like in any other ORM):
 
 ```java
 public class Comment implements Persistable<Integer> {
@@ -200,7 +200,7 @@ public class Comment implements Persistable<Integer> {
 
 Apart from standard Java boilerplate you should notice implementing [`Persistable<Integer>`](http://static.springsource.org/spring-data/commons/docs/current/api/org/springframework/data/domain/Persistable.html) where `Integer` is the type of primary key. `Persistable<T>` is an interface coming from Spring Data project and it's the only requirement we place on your domain object.
 
-Finally we are ready to create our [`CommentRepository`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/repositories/CommentRepository.java) DAO:
+Finally we are ready to create our [`CommentRepository`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/nurkiewicz/jdbcrepository/repositories/CommentRepository.java) DAO:
 
 ```java
 @Repository
@@ -224,7 +224,7 @@ public class CommentRepository extends JdbcRepository<Comment, Integer> {
 
 First of all we use [`@Repository`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/stereotype/Repository.html) annotation to mark DAO bean. It enables persistence exception translation. Also such annotated beans are discovered by CLASSPATH scanning.
 
-As you can see we extend `JdbcRepository<Comment, Integer>` which is the central class of this library, providing implementations of all `PagingAndSortingRepository` methods. Its constructor has three required dependencies: `RowMapper`, [`RowUnmapper`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/RowUnmapper.java) and table name. You may also provide ID column name, otherwise default `"id"` is used.
+As you can see we extend `JdbcRepository<Comment, Integer>` which is the central class of this library, providing implementations of all `PagingAndSortingRepository` methods. Its constructor has three required dependencies: `RowMapper`, [`RowUnmapper`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/nurkiewicz/jdbcrepository/RowUnmapper.java) and table name. You may also provide ID column name, otherwise default `"id"` is used.
 
 If you ever used `JdbcTemplate` from Spring, you should be familiar with [`RowMapper`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/jdbc/core/RowMapper.html) interface. We need to somehow extract columns from `ResultSet` into an object. After all we don't want to work with raw JDBC results. It's quite straightforward:
 
@@ -258,11 +258,11 @@ private static final RowUnmapper<Comment> ROW_UNMAPPER = new RowUnmapper<Comment
 };
 ```
 
-If you never update your database table (just reading some reference data inserted elsewhere) you may skip `RowUnmapper` parameter or use [`MissingRowUnmapper`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/MissingRowUnmapper.java).
+If you never update your database table (just reading some reference data inserted elsewhere) you may skip `RowUnmapper` parameter or use [`MissingRowUnmapper`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/nurkiewicz/jdbcrepository/MissingRowUnmapper.java).
 
 Last piece of the puzzle is the `postCreate()` callback method which is called after an object was inserted. You can use it to retrieve generated primary key and update your domain object (or return new one if your domain objects are immutable). If you don't need it, just don't override `postCreate()`.
 
-Check out [`JdbcRepositoryGeneratedKeyTest`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/JdbcRepositoryGeneratedKeyTest.java) for a working code based on this example.
+Check out [`JdbcRepositoryGeneratedKeyTest`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/nurkiewicz/jdbcrepository/JdbcRepositoryGeneratedKeyTest.java) for a working code based on this example.
 
 > By now you might have a feeling that, compared to JPA or Hibernate, there is quite a lot of manual work. However various JPA implementations and other ORM frameworks are notoriously known for introducing significant overhead and manifesting some learning curve. This tiny library intentionally leaves some responsibilities to the user in order to avoid complex mappings, reflection, annotations... all the implicitness that is not always desired.
 
@@ -281,7 +281,7 @@ CREATE TABLE USERS (
 );
 ```
 
-...and [`User`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/repositories/User.java) domain model:
+...and [`User`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/nurkiewicz/jdbcrepository/repositories/User.java) domain model:
 
 ```java
 public class User implements Persistable<String> {
@@ -313,7 +313,7 @@ public class User implements Persistable<String> {
 
 Notice that special `persisted` transient flag was added. Contract of [`CrudRepository.save()`](http://static.springsource.org/spring-data/data-commons/docs/current/api/org/springframework/data/repository/CrudRepository.html#save(S)) from Spring Data project requires that an entity knows whether it was already saved or not (`isNew()`) method - there are no separate `create()` and `update()` methods. Implementing `isNew()` is simple for auto-generated keys (see `Comment` above) but in this case we need an extra transient field. If you hate this workaround and you only insert data and never update, you'll get away with return `true` all the time from `isNew()`.
 
-And finally our DAO, [`UserRepository`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/repositories/UserRepository.java) bean:
+And finally our DAO, [`UserRepository`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/nurkiewicz/jdbcrepository/repositories/UserRepository.java) bean:
 
 ```java
 @Repository
@@ -341,9 +341,9 @@ public class UserRepository extends JdbcRepository<User, String> {
 }
 ```
 
-`"USERS"` and `"user_name"` parameters designate table name and primary key column name. I'll leave the details of mapper and unmapper (see [source code]((https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/repositories/UserRepository.java))). But please notice `postUpdate()` and `postCreate()` methods. They ensure that once object was persisted, `persisted` flag is set so that subsequent calls to `save()` will update existing entity rather than trying to reinsert it.
+`"USERS"` and `"user_name"` parameters designate table name and primary key column name. I'll leave the details of mapper and unmapper (see [source code]((https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/nurkiewicz/jdbcrepository/repositories/UserRepository.java))). But please notice `postUpdate()` and `postCreate()` methods. They ensure that once object was persisted, `persisted` flag is set so that subsequent calls to `save()` will update existing entity rather than trying to reinsert it.
 
-Check out [`JdbcRepositoryManualKeyTest`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/JdbcRepositoryManualKeyTest.java) for a working code based on this example.
+Check out [`JdbcRepositoryManualKeyTest`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/nurkiewicz/jdbcrepository/JdbcRepositoryManualKeyTest.java) for a working code based on this example.
 
 ### Compound primary key
 
@@ -414,13 +414,13 @@ BoardingPass pass = boardingPassRepository.findOne(new Object[] {"FOO-1022", 42}
 No doubts, this is cumbersome in practice, so we provide tiny helper method which you can statically import:
 
 ```java
-import static com.blogspot.nurkiewicz.jdbcrepository.JdbcRepository.pk;
+import static com.nurkiewicz.jdbcrepository.JdbcRepository.pk;
 //...
 
 BoardingPass foundFlight = boardingPassRepository.findOne(pk("FOO-1022", 42));
 ```
 
-Check out [`JdbcRepositoryCompoundPkTest`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/JdbcRepositoryCompoundPkTest.java) for a working code based on this example.
+Check out [`JdbcRepositoryCompoundPkTest`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/nurkiewicz/jdbcrepository/JdbcRepositoryCompoundPkTest.java) for a working code based on this example.
 
 ### Transactions
 
@@ -456,7 +456,7 @@ Results :
 Tests run: 484, Failures: 0, Errors: 0, Skipped: 295
 ```
 
-Exception stack traces come from root [`AbstractIntegrationTest`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/blogspot/nurkiewicz/jdbcrepository/AbstractIntegrationTest.java).
+Exception stack traces come from root [`AbstractIntegrationTest`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/nurkiewicz/jdbcrepository/AbstractIntegrationTest.java).
 
 ## Design
 
@@ -464,11 +464,15 @@ Library consists of only a handful of classes, highlighted in the diagram below 
 
 ![UML diagram](https://raw.github.com/nurkiewicz/spring-data-jdbc-repository/master/src/main/docs/classes.png)
 
-[`JdbcRepository`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/JdbcRepository.java) is the most important class that implements all [`PagingAndSortingRepository`](http://static.springsource.org/spring-data/data-commons/docs/current/api/org/springframework/data/repository/PagingAndSortingRepository.html) methods. Each user repository has to extend this class. Also each such repository must at least implement [`RowMapper`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/jdbc/core/RowMapper.html) and [`RowUnmapper`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/RowUnmapper.java) (only if you want to modify table data).
+[`JdbcRepository`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/nurkiewicz/jdbcrepository/JdbcRepository.java) is the most important class that implements all [`PagingAndSortingRepository`](http://static.springsource.org/spring-data/data-commons/docs/current/api/org/springframework/data/repository/PagingAndSortingRepository.html) methods. Each user repository has to extend this class. Also each such repository must at least implement [`RowMapper`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/jdbc/core/RowMapper.html) and [`RowUnmapper`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/nurkiewicz/jdbcrepository/RowUnmapper.java) (only if you want to modify table data).
 
-SQL generation is delegated to [`SqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/SqlGenerator.java). [`PostgreSqlGenerator.`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/PostgreSqlGenerator.java) and [`DerbySqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/blogspot/nurkiewicz/jdbcrepository/sql/DerbySqlGenerator.java) are provided for databases that don't work with standard generator.
+SQL generation is delegated to [`SqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/nurkiewicz/jdbcrepository/sql/SqlGenerator.java). [`PostgreSqlGenerator.`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/nurkiewicz/jdbcrepository/sql/PostgreSqlGenerator.java) and [`DerbySqlGenerator`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/main/java/com/nurkiewicz/jdbcrepository/sql/DerbySqlGenerator.java) are provided for databases that don't work with standard generator.
 
 ## Changelog
+
+### 0.4
+
+* Repackaged: `com.blogspot.nurkiewicz` -> `com.nurkiewicz`
 
 ### 0.3.2
 
