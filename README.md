@@ -124,20 +124,13 @@ Maven coordinates:
 
 ```xml
 <dependency>
-	<groupId>com.blogspot.nurkiewicz</groupId>
+	<groupId>com.nurkiewicz.jdbcrepository</groupId>
 	<artifactId>jdbcrepository</artifactId>
-	<version>0.3.1</version>
+	<version>0.3.2</version>
 </dependency>
 ```
 
-Unfortunately the project **is not yet in maven central repository**. For the time being you can install the library in your local repository by cloning it:
-
-```bash
-$ git clone git://github.com/nurkiewicz/spring-data-jdbc-repository.git
-$ cd spring-data-jdbc-repository
-$ git checkout 0.3.1
-$ mvn javadoc:jar source:jar install
-```
+This project is available under maven central repository.
 
 Alternatively you can [download source code as ZIP](https://github.com/nurkiewicz/spring-data-jdbc-repository/tags).
 
@@ -477,10 +470,15 @@ SQL generation is delegated to [`SqlGenerator`](https://github.com/nurkiewicz/sp
 
 ## Changelog
 
+### 0.3.2
+
+* First version available in Maven central repository
+* Upgraded Spring Data Commons 1.6.1 -> 1.8.0
+
 ### 0.3.1
 
 * Upgraded Spring dependencies: 3.2.1 -> 3.2.4 and 1.5.0 -> 1.6.1
-* Fied [#5 Allow manually injecting JdbcOperations, SqlGenerator and DataSource](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues/5)
+* Fixed [#5 Allow manually injecting JdbcOperations, SqlGenerator and DataSource](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues/5)
 
 ### 0.3
 
