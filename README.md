@@ -470,6 +470,10 @@ SQL generation is delegated to [`SqlGenerator`](https://github.com/nurkiewicz/sp
 
 ## Changelog
 
+### 0.4.1
+
+* Fixed [*Standalone Configuration and CDI Implementation*](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues/10)
+
 ### 0.4
 
 * Repackaged: `com.blogspot.nurkiewicz` -> `com.nurkiewicz`

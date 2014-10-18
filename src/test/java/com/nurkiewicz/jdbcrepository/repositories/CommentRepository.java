@@ -39,7 +39,7 @@ public class CommentRepository extends JdbcRepository<Comment, Integer> {
 		}
 	};
 
-	private static final RowUnmapper<Comment> ROW_UNMAPPER = new RowUnmapper<Comment>() {
+	public static final RowUnmapper<Comment> ROW_UNMAPPER = new RowUnmapper<Comment>() {
 		@Override
 		public Map<String, Object> mapColumns(Comment comment) {
 			Map<String, Object> mapping = new LinkedHashMap<String, Object>();

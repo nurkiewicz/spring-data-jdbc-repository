@@ -100,8 +100,8 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 		this.jdbcOperations = jdbcOperations;
 	}
 
-	protected JdbcOperations getJdbcOperations() {
-		return jdbcOperations;
+	public void setDataSource(DataSource dataSource) {
+		this.jdbcOperations = new JdbcTemplate(dataSource);
 	}
 
 	protected TableDescription getTable() {
