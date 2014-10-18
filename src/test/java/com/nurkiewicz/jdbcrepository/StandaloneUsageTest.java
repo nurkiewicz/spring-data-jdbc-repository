@@ -18,11 +18,13 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 public class StandaloneUsageTest {
 
+	public static final String JDBC_URL = "jdbc:h2:mem:DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:schema_h2.sql'";
+
 	@Test
 	public void shouldStartRepositoryWithoutSpring() throws Exception {
 		//given
 		final JdbcDataSource dataSource = new JdbcDataSource();
-		dataSource.setURL("jdbc:h2:mem:DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:schema_h2.sql'");
+		dataSource.setURL(JDBC_URL);
 
 		final UserRepository userRepository = new UserRepository("users");
 		userRepository.setDataSource(dataSource);
@@ -39,7 +41,7 @@ public class StandaloneUsageTest {
 	public void shouldInsertIntoDatabase() throws Exception {
 		//given
 		final JdbcDataSource dataSource = new JdbcDataSource();
-		dataSource.setURL("jdbc:h2:mem:DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:schema_h2.sql';TRACE_LEVEL_FILE=4");
+		dataSource.setURL(JDBC_URL);
 
 		final UserRepository userRepository = new UserRepository("users");
 		userRepository.setDataSource(dataSource);
