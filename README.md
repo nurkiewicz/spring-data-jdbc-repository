@@ -1,7 +1,5 @@
 # Spring Data JDBC generic DAO implementation
 
-[![Build Status](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository.svg?branch=master)](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository) [![Coverage Status](https://coveralls.io/repos/nurkiewicz/spring-data-jdbc-repository/badge.png)](https://coveralls.io/r/nurkiewicz/spring-data-jdbc-repository)
-
 The purpose of this project is to provide generic, lightweight and easy to use DAO implementation for relational databases based on [`JdbcTemplate`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/jdbc/core/JdbcTemplate.html) from [Spring framework](http://www.springsource.org/spring-framework), compatible with Spring Data umbrella of projects.
 
 ## Design objectives
@@ -161,8 +159,6 @@ public class MinimalConfig {
 
 }
 ```
-
-You can also use this project without Spring context (see: [`StandaloneUsageTest.java`](https://github.com/nurkiewicz/spring-data-jdbc-repository/blob/master/src/test/java/com/nurkiewicz/jdbcrepository/StandaloneUsageTest.java)
 
 ### Entity with auto-generated key
 
@@ -440,7 +436,7 @@ Spring Data JDBC repository library is not providing any caching abstraction or 
 
 ### Testing
 
-This library is continuously tested using Travis [![Build Status](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository.svg?branch=master)](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository). Test suite consists of 60+ distinct tests each run against 8 different databases: MySQL, PostgreSQL, H2, HSQLDB and Derby + MS SQL Server and Oracle tests not run as part of CI.
+This library is continuously tested using Travis ([![Build Status](https://secure.travis-ci.org/nurkiewicz/spring-data-jdbc-repository.png?branch=master)](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository)). Test suite consists of 60+ distinct tests each run against 8 different databases: MySQL, PostgreSQL, H2, HSQLDB and Derby + MS SQL Server and Oracle tests not run as part of CI.
 
 When filling [bug reports](https://github.com/nurkiewicz/spring-data-jdbc-repository/issues) or submitting new features please try including supporting test cases. Each [pull request](https://github.com/nurkiewicz/spring-data-jdbc-repository/pulls) is automatically tested on a separate branch.
 
