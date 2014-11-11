@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/nurkiewicz/spring-data-jdbc-repository.png?branch=master)](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.nurkiewicz.jdbcrepository/jdbcrepository/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.nurkiewicz.jdbcrepository/jdbcrepository)
+
 # Spring Data JDBC generic DAO implementation
 
 The purpose of this project is to provide generic, lightweight and easy to use DAO implementation for relational databases based on [`JdbcTemplate`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/jdbc/core/JdbcTemplate.html) from [Spring framework](http://www.springsource.org/spring-framework), compatible with Spring Data umbrella of projects.
