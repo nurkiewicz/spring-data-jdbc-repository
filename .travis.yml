@@ -8,4 +8,4 @@ before_script:
   - psql -c 'create database spring_data_jdbc_repository_test;' -U postgres
   - psql spring_data_jdbc_repository_test < src/test/resources/schema_postgresql.sql
 after_success:
-  - mvn clean test jacoco:report
+  - mvn clean cobertura:cobertura coveralls:report
