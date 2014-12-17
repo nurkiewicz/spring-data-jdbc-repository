@@ -124,7 +124,7 @@ public class SqlGeneratorTest {
 	}
 
 	@Test
-	public void buildSqlForDeleteByMultipleIdColumns() throws Exception {
+	public void buildSqlForDeleteByTwoIdColumns() throws Exception {
 		//given
 		final TableDescription table = new TableDescription("table", null, "num1", "num2");
 
@@ -133,6 +133,18 @@ public class SqlGeneratorTest {
 
 		//then
 		assertThat(sql).isEqualTo("DELETE FROM table WHERE num1 = ? AND num2 = ?");
+	}
+
+	@Test
+	public void buildSqlForDeleteByMultipleIdColumns() throws Exception {
+		//given
+		final TableDescription table = new TableDescription("table", null, "num1", "num2", "num3");
+
+		//when
+		final String sql = sqlGenerator.deleteById(table);
+
+		//then
+		assertThat(sql).isEqualTo("DELETE FROM table WHERE num1 = ? AND num2 = ? AND num3 = ?");
 	}
 
 	@Test

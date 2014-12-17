@@ -91,6 +91,18 @@ public abstract class JdbcRepositoryCompoundPkTest extends AbstractIntegrationTe
 	}
 
 	@Test
+	public void shouldDeleteByEntityUsingCompoundPk() throws Exception {
+		//given
+		final BoardingPass bp = repository.save(new BoardingPass("FOO-100", 1, "Smith", "B01"));
+
+		//when
+		repository.delete(bp);
+
+		//then
+		assertThat(repository.findAll()).isEmpty();
+	}
+
+	@Test
 	public void shouldAllowSortingByAllPrimaryKeyColumns() throws Exception {
 		//given
 		repository.save(new BoardingPass("FOO-100", 1, "Smith", "B01"));

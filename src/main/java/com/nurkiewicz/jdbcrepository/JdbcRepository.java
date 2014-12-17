@@ -142,7 +142,7 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 
 	@Override
 	public void delete(T entity) {
-		jdbcOperations.update(sqlGenerator.deleteById(table), entity.getId());
+		jdbcOperations.update(sqlGenerator.deleteById(table), idToObjectArray(entity.getId()));
 	}
 
 	@Override
