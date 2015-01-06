@@ -21,8 +21,8 @@ public class DerbySqlGenerator extends SqlGenerator {
 
 	@Override
 	public String selectAll(TableDescription table, Pageable page) {
-		final int offset = page.getPageNumber() * page.getPageSize() + 1;
-		return ROW_NUM_COLUMN_CLAUSE + super.selectAll(table, page) + ") AS t) AS a WHERE " + ROW_NUM_COLUMN + " BETWEEN " + offset + " AND " + (offset + page.getPageSize() - 1);
+		final int offset = page.getPageNumber() * page.getPageSize();
+		return super.selectAll(table, page) + " OFFSET " + offset + " ROWS FETCH NEXT " + page.getPageSize() + " ROWS ONLY";
 	}
 
 	@Override
