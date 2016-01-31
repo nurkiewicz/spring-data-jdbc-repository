@@ -173,4 +173,27 @@ public class SqlGeneratorTest {
 		assertThat(sql).isEqualTo("UPDATE table SET x = ?, y = ?, z = ? WHERE num1 = ? AND num2 = ?");
 	}
 
+	@Test
+	public void buildSqlForExistsBySingleIdColumn() throws Exception {
+		//given
+		final TableDescription table = new TableDescription("table", "num");
+
+		//when
+		final String sql = sqlGenerator.existsById(table);
+
+		//then
+		assertThat(sql).isEqualTo("SELECT 1 FROM table WHERE num = ?");
+	}
+
+	@Test
+	public void buildSqlForExistsByMultipleIdColumns() throws Exception {
+		//given
+		final TableDescription table = new TableDescription("table", null, "num1", "num2");
+
+		//when
+		final String sql = sqlGenerator.existsById(table);
+
+		//then
+		assertThat(sql).isEqualTo("SELECT 1 FROM table WHERE num1 = ? AND num2 = ?");
+	}
 }

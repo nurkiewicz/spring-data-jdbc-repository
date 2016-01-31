@@ -191,6 +191,10 @@ public class SqlGenerator {
 		return count(table) + whereByIdClause(table);
 	}
 
+	public String existsById(TableDescription table) {
+		return SELECT + "1 " + FROM + table.getName() + whereByIdClause(table);
+	}
+
 	public String getAllColumnsClause() {
 		return allColumnsClause;
 	}

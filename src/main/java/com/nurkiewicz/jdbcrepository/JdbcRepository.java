@@ -159,7 +159,7 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 
 	@Override
 	public boolean exists(ID id) {
-		return jdbcOperations.queryForObject(sqlGenerator.countById(table), Integer.class, idToObjectArray(id)) > 0;
+		return ! jdbcOperations.queryForList(sqlGenerator.existsById(table), idToObjectArray(id), Integer.class).isEmpty();
 	}
 
 	@Override
