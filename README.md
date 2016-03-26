@@ -4,7 +4,7 @@
 
 ----
 
-### Check out [https://github.com/jirutka/spring-data-jdbc-repository](spring-data-jdbc-repository) fork that is actively developed and maintained. This repository is no longer supported. 
+### Check out [jirutka/spring-data-jdbc-repository](https://github.com/jirutka/spring-data-jdbc-repository) fork that is actively developed and maintained. This repository is no longer supported. 
 
 ----
 
