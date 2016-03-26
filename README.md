@@ -2,6 +2,12 @@
 
 # Spring Data JDBC generic DAO implementation
 
+----
+
+### Check out [jirutka/spring-data-jdbc-repository](https://github.com/jirutka/spring-data-jdbc-repository) fork that is actively developed and maintained. This repository is no longer supported. 
+
+----
+
 The purpose of this project is to provide generic, lightweight and easy to use DAO implementation for relational databases based on [`JdbcTemplate`](http://static.springsource.org/spring/docs/3.0.x/api/org/springframework/jdbc/core/JdbcTemplate.html) from [Spring framework](http://www.springsource.org/spring-framework), compatible with Spring Data umbrella of projects.
 
 ## Design objectives
