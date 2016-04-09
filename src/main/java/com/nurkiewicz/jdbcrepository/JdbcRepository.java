@@ -86,7 +86,9 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		obtainJdbcTemplate();
+		if(jdbcOperations == null){
+			obtainJdbcTemplate();
+		}
 		if (sqlGenerator == null) {
 			obtainSqlGenerator();
 		}
