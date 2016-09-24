@@ -205,8 +205,8 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 			columns.put(table.getIdColumns().get(i), idValues.get(i));
 		}
 		final Object[] queryParams = columns.values().toArray();
-		jdbcOperations.update(updateQuery, queryParams);
-		return postUpdate(entity);
+		final int rowsAffected = jdbcOperations.update(updateQuery, queryParams);
+		return postUpdate(entity, rowsAffected);
 	}
 
 	protected Map<String,Object> preUpdate(T entity, Map<String, Object> columns) {
@@ -264,6 +264,20 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 		return new LinkedHashMap<String, Object>(rowUnmapper.mapColumns(entity));
 	}
 
+	/**
+	 * General purpose hook method that is called every time {@link #update} is called.
+	 *
+	 * @param entity Entity that was passed to {@link #update}
+	 * @param rowsAffected The number of rows affected (updated)
+	 * @return Either the same object as an argument or completely different one
+	 */
+	protected <S extends T> S postUpdate(S entity, int rowsAffected) {
+		return postUpdate(entity);
+	}
+
+	/**
+	 * @see #postUpdate(Persistable)
+	 */
 	protected <S extends T> S postUpdate(S entity) {
 		return entity;
 	}
